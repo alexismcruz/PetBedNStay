@@ -29,25 +29,13 @@ export default function SearchFilters() {
       </select>
 
       <select
-        value={params.get("type") ?? ""}
-        onChange={(e) => update("type", e.target.value)}
-        className="text-sm border border-amber-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400 text-stone-700"
-      >
-        <option value="">All Types</option>
-        <option value="HOTEL">Pet Hotel</option>
-        <option value="SITTER">Pet Sitter</option>
-        <option value="BOTH">Hotel & Sitter</option>
-      </select>
-
-      <select
         value={params.get("tier") ?? ""}
         onChange={(e) => update("tier", e.target.value)}
         className="text-sm border border-amber-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400 text-stone-700"
       >
-        <option value="">All Tiers</option>
-        <option value="PREMIUM">Premium</option>
-        <option value="FEATURED">Featured</option>
-        <option value="FREE">Free</option>
+        <option value="">All Listings</option>
+        <option value="PREMIUM">⭐ Premium</option>
+        <option value="FEATURED">✨ Featured</option>
       </select>
 
       {(params.get("state") || params.get("type") || params.get("tier") || params.get("q")) && (
