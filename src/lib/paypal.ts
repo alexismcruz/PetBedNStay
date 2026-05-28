@@ -61,7 +61,5 @@ export async function capturePayPalOrder(orderId: string) {
   return res.json();
 }
 
-export const PRICING = {
-  FEATURED: { amount: "29.00", label: "Featured", description: "PetBedNStay Featured Listing — 30 days" },
-  PREMIUM: { amount: "59.00", label: "Premium", description: "PetBedNStay Premium Listing — 30 days" },
-} as const;
+// Re-export from pricing.ts so existing server-side imports still work
+export { PRICING } from "./pricing";

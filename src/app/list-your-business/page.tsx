@@ -4,7 +4,7 @@ import { useState } from "react";
 import { US_STATES } from "@/lib/utils";
 import { CheckCircle, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PRICING } from "@/lib/paypal";
+import { PRICING } from "@/lib/pricing";
 
 const PLANS = [
   {

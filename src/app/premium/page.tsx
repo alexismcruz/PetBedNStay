@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PRICING } from "@/lib/paypal";
+import { PRICING } from "@/lib/pricing";
 
 const PLANS = [
   {
