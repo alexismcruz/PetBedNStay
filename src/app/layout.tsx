@@ -24,6 +24,11 @@ export const metadata: Metadata = {
       "Discover trusted pet hotels, boarding facilities, and pet sitters across all 50 US states.",
   },
   robots: { index: true, follow: true },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

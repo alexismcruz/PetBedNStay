@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Brand-500 rounded square background, matching the header logo -->
+  <rect width="32" height="32" rx="7" fill="#c96b2c"/>
+  <!-- Paw print (white), modelled after Lucide PawPrint at 20x20 centered in 32x32 -->
+  <!-- toe pads: 4 small circles -->
+  <circle cx="11"  cy="9.5" r="2.4" fill="white"/>
+  <circle cx="16"  cy="8"   r="2.4" fill="white"/>
+  <circle cx="21"  cy="9.5" r="2.4" fill="white"/>
+  <!-- main central pad -->
+  <ellipse cx="16" cy="20.5" rx="6" ry="5" fill="white"/>
+  <!-- two side lobes at the bottom of the main pad -->
+  <ellipse cx="11.5" cy="23" rx="3"   ry="2.5" fill="white"/>
+  <ellipse cx="20.5" cy="23" rx="3"   ry="2.5" fill="white"/>
+</svg>
