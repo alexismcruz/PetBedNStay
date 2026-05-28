@@ -1,6 +1,7 @@
 import Hero from "@/components/home/Hero";
 import FeaturedListings from "@/components/home/FeaturedListings";
 import HowItWorks from "@/components/home/HowItWorks";
+import HappyPawrents from "@/components/home/HappyPawrents";
 import Stats from "@/components/home/Stats";
 import StateGrid from "@/components/home/StateGrid";
 import { db } from "@/lib/db";
@@ -43,6 +44,7 @@ export default async function HomePage() {
       <Hero />
       <Stats listingCount={counts.listings} stateCount={counts.states} />
       <HowItWorks />
+      <HappyPawrents />
       <FeaturedListings listings={featuredTyped} />
       <StateGrid />
 

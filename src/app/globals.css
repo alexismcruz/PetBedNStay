@@ -1,25 +1,26 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #fffbeb;
-  --color-brand-100: #fef3c7;
-  --color-brand-200: #fde68a;
-  --color-brand-300: #fcd34d;
-  --color-brand-400: #fbbf24;
-  --color-brand-500: #f59e0b;
-  --color-brand-600: #d97706;
-  --color-brand-700: #b45309;
-  --color-brand-800: #92400e;
-  --color-brand-900: #78350f;
+  /* Warm terracotta-amber — muted, rich, not neon */
+  --color-brand-50:  #fdf5ec;
+  --color-brand-100: #faeadb;
+  --color-brand-200: #f5cfb4;
+  --color-brand-300: #ecad84;
+  --color-brand-400: #e08a56;
+  --color-brand-500: #c96b2c;
+  --color-brand-600: #a85420;
+  --color-brand-700: #8a431a;
+  --color-brand-800: #6f3514;
+  --color-brand-900: #5a2b10;
 
-  --color-forest-50: #ecfdf5;
-  --color-forest-100: #d1fae5;
-  --color-forest-500: #10b981;
-  --color-forest-600: #059669;
-  --color-forest-700: #047857;
+  --color-forest-50:  #eef7f2;
+  --color-forest-100: #d4ecdd;
+  --color-forest-500: #3a8a5c;
+  --color-forest-600: #2e7049;
+  --color-forest-700: #245a3a;
 
-  --color-warm-50: #fefce8;
-  --color-warm-100: #fef9c3;
+  --color-warm-50:  #fdf8f3;
+  --color-warm-100: #f9f0e6;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
