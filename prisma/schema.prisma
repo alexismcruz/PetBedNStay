@@ -141,6 +141,21 @@ model AdSpot {
   createdAt   DateTime    @default(now())
 }
 
+model AdRequest {
+  id           String   @id @default(cuid())
+  spotName     String
+  billing      String
+  price        Float
+  businessName String
+  contactName  String
+  email        String
+  phone        String?
+  website      String
+  targetState  String?
+  message      String?  @db.Text
+  createdAt    DateTime @default(now())
+}
+
 model StateContent {
   id           String   @id @default(cuid())
   stateSlug    String   @unique

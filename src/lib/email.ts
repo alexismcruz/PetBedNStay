@@ -65,3 +65,58 @@ export async function sendListingRequestNotification(data: {
     `,
   });
 }
+
+export async function sendAdRequestNotification(data: {
+  spotName: string;
+  billing: string;
+  price: number;
+  businessName: string;
+  contactName: string;
+  email: string;
+  phone?: string;
+  website: string;
+  targetState?: string;
+  message?: string;
+}) {
+  const resend = getResend();
+  if (!resend) return;
+
+  const billingLabel = data.billing === "monthly" ? `$${data.price}/month (recurring)` : `$${data.price} one-time (30 days)`;
+
+  await resend.emails.send({
+    from: FROM,
+    to: ADMIN_EMAIL,
+    subject: `New Ad Request: ${data.spotName} — ${data.businessName}`,
+    html: `
+      <h2>New Ad Space Request</h2>
+      <table cellpadding="6" style="font-family:sans-serif;font-size:14px;">
+        <tr><td><strong>Ad Spot:</strong></td><td>${data.spotName}</td></tr>
+        <tr><td><strong>Billing:</strong></td><td>${billingLabel}</td></tr>
+        <tr><td><strong>Business:</strong></td><td>${data.businessName}</td></tr>
+        <tr><td><strong>Contact:</strong></td><td>${data.contactName}</td></tr>
+        <tr><td><strong>Email:</strong></td><td>${data.email}</td></tr>
+        <tr><td><strong>Phone:</strong></td><td>${data.phone ?? "—"}</td></tr>
+        <tr><td><strong>Website:</strong></td><td>${data.website}</td></tr>
+        <tr><td><strong>Target State:</strong></td><td>${data.targetState || "—"}</td></tr>
+        <tr><td><strong>Notes:</strong></td><td>${data.message || "—"}</td></tr>
+      </table>
+    `,
+  });
+
+  await resend.emails.send({
+    from: FROM,
+    to: data.email,
+    subject: `We received your ad request — PetBedNStay`,
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:0 auto;">
+        <h2 style="color:#c96b2c;">Thanks, ${data.contactName}!</h2>
+        <p>We've received your request to advertise on <strong>${data.spotName}</strong> at <strong>${billingLabel}</strong>.</p>
+        <p>Our team will review and reach out within <strong>24 hours</strong> with a payment link and your ad creative specs.</p>
+        <p>No charge until you confirm.</p>
+        <hr style="margin:24px 0;border:none;border-top:1px solid #eee;"/>
+        <p style="color:#999;font-size:12px;">Questions? Reply to this email or write to <a href="mailto:ads@petbednstay.com" style="color:#c96b2c;">ads@petbednstay.com</a></p>
+        <p style="color:#999;font-size:12px;">PetBedNStay — Trusted pet boarding directory across all 50 states</p>
+      </div>
+    `,
+  });
+}
