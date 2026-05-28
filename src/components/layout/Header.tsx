@@ -20,6 +20,7 @@ export default function Header() {
 
   const navLinks = [
     { href: "/search", label: "Browse Listings" },
+    { href: "/blog", label: "Guides" },
     { href: "/list-your-business", label: "List Your Business" },
     { href: "/advertise", label: "Advertise" },
   ];

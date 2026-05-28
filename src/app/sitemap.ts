@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { db } from "@/lib/db";
 import { US_STATES } from "@/lib/utils";
+import { getAllPosts } from "@/lib/blog";
 
 const BASE = "https://petbednstay.com";
 
@@ -9,12 +10,21 @@ export const revalidate = 3600; // rebuild sitemap hourly
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
+  const blogPosts = getAllPosts();
+
   const statics: MetadataRoute.Sitemap = [
     { url: BASE,                          lastModified: now, changeFrequency: "daily"   as const, priority: 1.0 },
     { url: `${BASE}/search`,              lastModified: now, changeFrequency: "daily"   as const, priority: 0.8 },
+    { url: `${BASE}/blog`,               lastModified: now, changeFrequency: "weekly"  as const, priority: 0.7 },
     { url: `${BASE}/list-your-business`,  lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 },
     { url: `${BASE}/premium`,             lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${BASE}/advertise`,           lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 },
+    ...blogPosts.map((p) => ({
+      url: `${BASE}/blog/${p.slug}`,
+      lastModified: new Date(p.publishedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
   ];
 
   const statePages: MetadataRoute.Sitemap = US_STATES.map((s) => ({
