@@ -1,9 +1,16 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const FROM = "PetBedNStay <hello@petbednstay.com>";
 const ADMIN_EMAIL = "hello@petbednstay.com";
+
+function getResend() {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) {
+    console.warn("[email] RESEND_API_KEY not set — skipping email");
+    return null;
+  }
+  return new Resend(key);
+}
 
 export async function sendListingRequestNotification(data: {
   businessName: string;
@@ -16,6 +23,9 @@ export async function sendListingRequestNotification(data: {
   website?: string;
   message?: string;
 }) {
+  const resend = getResend();
+  if (!resend) return;
+
   // 1. Notify admin
   await resend.emails.send({
     from: FROM,
