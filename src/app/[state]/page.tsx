@@ -12,6 +12,60 @@ const RESERVED = new Set([
   "privacy", "terms", "contact", "api", "favicon.ico",
 ]);
 
+// Neighboring / nearby states for cross-linking
+const NEIGHBORS: Record<string, string[]> = {
+  alabama:          ["georgia", "florida", "tennessee", "mississippi"],
+  alaska:           ["washington", "oregon"],
+  arizona:          ["california", "nevada", "utah", "new-mexico"],
+  arkansas:         ["tennessee", "missouri", "oklahoma", "texas"],
+  california:       ["oregon", "nevada", "arizona"],
+  colorado:         ["utah", "wyoming", "nebraska", "new-mexico"],
+  connecticut:      ["new-york", "rhode-island", "massachusetts"],
+  delaware:         ["maryland", "pennsylvania", "new-jersey"],
+  florida:          ["georgia", "alabama"],
+  georgia:          ["florida", "tennessee", "south-carolina", "alabama"],
+  hawaii:           ["california"],
+  idaho:            ["washington", "oregon", "montana", "utah"],
+  illinois:         ["wisconsin", "iowa", "indiana", "missouri"],
+  indiana:          ["illinois", "ohio", "michigan", "kentucky"],
+  iowa:             ["minnesota", "wisconsin", "illinois", "missouri"],
+  kansas:           ["nebraska", "missouri", "oklahoma", "colorado"],
+  kentucky:         ["tennessee", "indiana", "ohio", "virginia"],
+  louisiana:        ["texas", "arkansas", "mississippi"],
+  maine:            ["new-hampshire", "vermont"],
+  maryland:         ["virginia", "pennsylvania", "delaware", "west-virginia"],
+  massachusetts:    ["connecticut", "rhode-island", "new-york", "new-hampshire"],
+  michigan:         ["indiana", "ohio", "wisconsin"],
+  minnesota:        ["wisconsin", "iowa", "north-dakota", "south-dakota"],
+  mississippi:      ["tennessee", "alabama", "louisiana", "arkansas"],
+  missouri:         ["illinois", "kentucky", "kansas", "tennessee"],
+  montana:          ["idaho", "north-dakota", "south-dakota", "wyoming"],
+  nebraska:         ["iowa", "kansas", "south-dakota", "colorado"],
+  nevada:           ["california", "oregon", "arizona", "utah"],
+  "new-hampshire":  ["maine", "vermont", "massachusetts"],
+  "new-jersey":     ["new-york", "delaware", "pennsylvania"],
+  "new-mexico":     ["colorado", "texas", "arizona", "oklahoma"],
+  "new-york":       ["pennsylvania", "connecticut", "massachusetts", "new-jersey"],
+  "north-carolina": ["virginia", "tennessee", "south-carolina", "georgia"],
+  "north-dakota":   ["minnesota", "south-dakota", "montana"],
+  ohio:             ["pennsylvania", "west-virginia", "kentucky", "indiana"],
+  oklahoma:         ["kansas", "missouri", "arkansas", "texas"],
+  oregon:           ["washington", "california", "nevada", "idaho"],
+  pennsylvania:     ["new-york", "new-jersey", "ohio", "maryland"],
+  "rhode-island":   ["connecticut", "massachusetts"],
+  "south-carolina": ["north-carolina", "georgia"],
+  "south-dakota":   ["north-dakota", "minnesota", "iowa", "nebraska"],
+  tennessee:        ["kentucky", "virginia", "north-carolina", "georgia"],
+  texas:            ["oklahoma", "arkansas", "louisiana", "new-mexico"],
+  utah:             ["idaho", "wyoming", "colorado", "nevada"],
+  vermont:          ["new-york", "new-hampshire", "massachusetts"],
+  virginia:         ["maryland", "west-virginia", "north-carolina", "tennessee"],
+  washington:       ["oregon", "idaho"],
+  "west-virginia":  ["ohio", "pennsylvania", "maryland", "virginia"],
+  wisconsin:        ["minnesota", "iowa", "illinois", "michigan"],
+  wyoming:          ["montana", "idaho", "utah", "colorado"],
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -73,10 +127,14 @@ export default async function StatePage({
     .filter((l) => l.lat && l.lng)
     .map((l) => ({ id: l.id, name: l.name, lat: l.lat, lng: l.lng, city: l.city, state: l.state, slug: l.slug, tier: l.tier }));
 
-  const totalListings = data.listings.length;
+  const shownListings = data.listings.length;
+  const totalCount    = data.cityCounts.reduce((acc: number, c: any) => acc + c._count._all, 0);
+  const isCapped      = shownListings >= 48 && totalCount > shownListings;
   const totalCities   = data.cityCounts.length;
   const topCities     = data.cityCounts.slice(0, 24);
   const extraCities   = data.cityCounts.length - topCities.length;
+  const neighborSlugs = NEIGHBORS[state] ?? [];
+  const nearbyStates  = neighborSlugs.map((slug) => US_STATES.find((s) => s.slug === slug)).filter(Boolean) as { name: string; slug: string; abbr: string }[];
 
   const faqs = [
     {
@@ -141,9 +199,9 @@ export default async function StatePage({
         <h1 className="text-3xl sm:text-4xl font-bold text-stone-800">
           Pet Boarding in {stateName}
         </h1>
-        {totalListings > 0 && (
+        {totalCount > 0 && (
           <p className="mt-2 text-stone-500">
-            {totalListings}+ boarding facilities and pet sitters across {totalCities} {totalCities === 1 ? "city" : "cities"} in {stateName}
+            {totalCount}+ boarding {totalCount === 1 ? "facility" : "facilities"} and pet sitters across {totalCities} {totalCities === 1 ? "city" : "cities"} in {stateName}
           </p>
         )}
       </div>
@@ -196,7 +254,14 @@ export default async function StatePage({
             </div>
           ) : (
             <>
-              <h2 className="text-lg font-semibold text-stone-700 mb-4">All Facilities in {stateName}</h2>
+              <div className="flex items-baseline justify-between mb-4">
+                <h2 className="text-lg font-semibold text-stone-700">All Facilities in {stateName}</h2>
+                {isCapped && (
+                  <span className="text-xs text-stone-400">
+                    Showing {shownListings} of {totalCount} — browse by city above for more
+                  </span>
+                )}
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {data.listings.map((listing) => (
                   <ListingCard key={listing.id} listing={listing} />
@@ -229,7 +294,7 @@ export default async function StatePage({
       </div>
 
       {/* CTA */}
-      <div className="bg-stone-900 rounded-2xl p-8 text-center text-white">
+      <div className="bg-stone-900 rounded-2xl p-8 text-center text-white mb-12">
         <h2 className="text-2xl font-bold mb-2">Own a Pet Boarding Business in {stateName}?</h2>
         <p className="text-stone-400 mb-6 max-w-md mx-auto">
           List your kennel, pet hotel, or sitting service for free and reach pet owners searching in {stateName}.
@@ -241,6 +306,24 @@ export default async function StatePage({
           List Your Business — Free
         </Link>
       </div>
+
+      {/* Nearby / neighboring states */}
+      {nearbyStates.length > 0 && (
+        <div className="max-w-3xl">
+          <h2 className="text-lg font-semibold text-stone-700 mb-4">Pet Boarding in Nearby States</h2>
+          <div className="flex flex-wrap gap-3">
+            {nearbyStates.map((s) => (
+              <Link
+                key={s.slug}
+                href={`/${s.slug}`}
+                className="bg-white border border-amber-100 hover:border-brand-400 hover:shadow-sm rounded-xl px-4 py-2.5 text-sm font-medium text-stone-700 hover:text-brand-600 transition-all"
+              >
+                Pet Boarding in {s.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

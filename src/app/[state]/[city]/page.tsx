@@ -76,10 +76,36 @@ export default async function CityPage({
     })),
   } : null;
 
+  const faqs = [
+    {
+      q: `How much does pet boarding cost in ${cityName}, ${stateName}?`,
+      a: `Pet boarding rates in ${cityName} typically range from $35–$75 per night for dogs and $20–$45 per night for cats. Pricing depends on the type of accommodation (private suite, shared kennel, or in-home stay), your pet's size, and any add-on services like extra walks, training, or grooming. In-home pet sitters in ${cityName} often charge $30–$60 per visit or overnight stay. Always confirm current rates directly with each facility, as prices can vary seasonally.`,
+    },
+    {
+      q: `What vaccinations are required for pet boarding in ${cityName}?`,
+      a: `Most pet boarding facilities in ${cityName} require dogs to be current on Rabies, DHPP (distemper, hepatitis, parvovirus, parainfluenza), and Bordetella (kennel cough) vaccines. Cats typically need Rabies and FVRCP. Some facilities also require a negative fecal exam or proof of recent flea prevention. Vaccination requirements vary by facility — always check with the specific boarding provider before your pet's first stay and bring documentation from your vet.`,
+    },
+    {
+      q: `How do I find a trusted pet boarding facility in ${cityName}?`,
+      a: `Start by browsing the listings above — each profile includes contact info, amenities, and facility type. When you've found a few options, call ahead to ask about staff-to-pet ratios, overnight supervision, their emergency protocols, and whether they require a meet-and-greet before your pet's first stay. If possible, schedule a tour before booking. Look for facilities that are clean, transparent about policies, and willing to answer your questions — those are strong indicators of a trustworthy operation.`,
+    },
+  ];
+
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       {itemListLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }} />}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <Breadcrumb items={[
         { label: "Home",                          href: "/" },
         { label: stateName,                        href: `/${state}` },
@@ -121,6 +147,21 @@ export default async function CityPage({
           <div className="sticky top-24 h-[400px] rounded-2xl overflow-hidden border border-amber-100 shadow-sm">
             <MapWrapper listings={mapListings} zoom={12} />
           </div>
+        </div>
+      </div>
+
+      {/* FAQ */}
+      <div className="max-w-3xl mt-12 mb-4">
+        <h2 className="text-xl font-bold text-stone-800 mb-6">
+          Frequently Asked Questions — Pet Boarding in {cityName}
+        </h2>
+        <div className="space-y-5">
+          {faqs.map((faq, i) => (
+            <div key={i} className="bg-white border border-amber-100 rounded-2xl p-6">
+              <h3 className="font-semibold text-stone-800 mb-2">{faq.q}</h3>
+              <p className="text-stone-500 text-sm leading-relaxed">{faq.a}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

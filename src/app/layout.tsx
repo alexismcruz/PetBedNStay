@@ -14,15 +14,17 @@ export const metadata: Metadata = {
   description:
     "Find trusted pet boarding, dog kennels, and pet hotels across all 50 US states. Search free — compare facilities, read details, and contact them directly.",
   keywords: ["pet boarding", "dog boarding", "dog kennel", "pet hotel", "cat boarding", "pet sitter", "pet care near me", "boarding kennel"],
+  alternates: { canonical: "https://petbednstay.com" },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: process.env.NEXT_PUBLIC_APP_URL ?? "https://petbednstay.com",
+    url: "https://petbednstay.com",
     siteName: "PetBedNStay",
     title: "PetBedNStay — Pet Boarding & Kennels Across All 50 US States",
     description:
       "Find trusted pet boarding, dog kennels, and pet hotels across all 50 US states. Free to search.",
   },
+  twitter: { card: "summary_large_image" },
   robots: { index: true, follow: true },
   icons: {
     icon: "/icon.svg",

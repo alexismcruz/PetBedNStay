@@ -1,3 +1,4 @@
+import { cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -6,9 +7,21 @@ import {
   MapPin, Phone, Globe, Mail, BadgeCheck, Clock, Star, Navigation,
 } from "lucide-react";
 import { db } from "@/lib/db";
-import { formatPhone, tierLabel, tierColor, typeLabel, DAYS, cn, getPlaceholderPhoto, googleMapsUrl, generateListingDescription } from "@/lib/utils";
+import { formatPhone, tierLabel, tierColor, typeLabel, DAYS, cn, getPlaceholderPhoto, googleMapsUrl, generateListingDescription, getStateAbbr } from "@/lib/utils";
 import MapWrapper from "@/components/map/MapWrapper";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+
+// Single cached DB fetch — shared between generateMetadata and the page component
+const getListing = cache(async (slug: string) => {
+  try {
+    return await db.listing.findUnique({
+      where: { slug },
+      include: { images: true, amenities: true, hours: { orderBy: { dayOfWeek: "asc" } } },
+    });
+  } catch {
+    return null;
+  }
+});
 
 export async function generateMetadata({
   params,
@@ -16,30 +29,25 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  try {
-    const listing = await db.listing.findUnique({
-      where: { slug },
-      include: { images: { where: { isPrimary: true }, take: 1 } },
-    });
-    if (!listing) return { title: "Listing Not Found" };
-    const description =
-      listing.description ??
-      generateListingDescription({ name: listing.name, city: listing.city, state: listing.state, type: listing.type, phone: listing.phone });
-    const ogImage = listing.images[0]?.url;
-    return {
-      title: `${listing.name} — Pet Hotel in ${listing.city}, ${listing.state}`,
+  const listing = await getListing(slug);
+  if (!listing) return { title: "Listing Not Found" };
+  const stateAbbr = getStateAbbr(listing.stateSlug);
+  const description =
+    listing.description ??
+    generateListingDescription({ name: listing.name, city: listing.city, state: listing.state, type: listing.type, phone: listing.phone });
+  const ogImage = listing.images.find((i: any) => i.isPrimary)?.url ?? listing.images[0]?.url;
+  return {
+    title: `${listing.name} — Pet Boarding in ${listing.city}, ${stateAbbr}`,
+    description,
+    alternates: { canonical: `https://petbednstay.com/listing/${slug}` },
+    openGraph: {
+      title: `${listing.name} — Pet Boarding in ${listing.city}, ${stateAbbr}`,
       description,
-      alternates: { canonical: `https://petbednstay.com/listing/${slug}` },
-      openGraph: {
-        title: `${listing.name} — Pet Hotel in ${listing.city}, ${listing.state}`,
-        description,
-        url: `https://petbednstay.com/listing/${slug}`,
-        ...(ogImage ? { images: [{ url: ogImage, width: 1200, height: 630, alt: listing.name }] } : {}),
-      },
-    };
-  } catch {
-    return { title: "Listing" };
-  }
+      url: `https://petbednstay.com/listing/${slug}`,
+      ...(ogImage ? { images: [{ url: ogImage, width: 1200, height: 630, alt: listing.name }] } : {}),
+    },
+    twitter: { card: "summary_large_image" },
+  };
 }
 
 export default async function ListingPage({
@@ -49,15 +57,7 @@ export default async function ListingPage({
 }) {
   const { slug } = await params;
 
-  let listing: any = null;
-  try {
-    listing = await db.listing.findUnique({
-      where: { slug },
-      include: { images: true, amenities: true, hours: { orderBy: { dayOfWeek: "asc" } } },
-    });
-  } catch {
-    // DB not connected
-  }
+  const listing = await getListing(slug);
 
   if (!listing) notFound();
 
@@ -212,7 +212,7 @@ export default async function ListingPage({
             <div className="bg-white rounded-2xl border border-amber-100 p-4">
               <h2 className="font-semibold text-stone-800 text-lg mb-3">Location</h2>
               <div className="h-64 rounded-xl overflow-hidden">
-                <MapWrapper listings={mapListings} zoom={14} center={[listing.lat, listing.lng]} />
+                <MapWrapper listings={mapListings} zoom={14} center={[listing.lat!, listing.lng!]} />
               </div>
             </div>
           )}
