@@ -102,6 +102,36 @@ export function typeLabel(type: string): string {
 
 export const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+// Curated Unsplash pet/boarding photos used as placeholders for listings without images
+const PLACEHOLDER_PHOTOS = [
+  "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?auto=format&fit=crop&w=800&q=75",
+];
+
+/** Returns a consistent placeholder photo URL for a listing that has no uploaded images */
+export function getPlaceholderPhoto(seed: string): string {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  return PLACEHOLDER_PHOTOS[hash % PLACEHOLDER_PHOTOS.length];
+}
+
+/** Builds a Google Maps URL using coordinates if available, otherwise falls back to a name search */
+export function googleMapsUrl(listing: {
+  name: string; city: string; state: string; lat?: number | null; lng?: number | null; address?: string | null;
+}): string {
+  if (listing.lat && listing.lng) {
+    return `https://www.google.com/maps?q=${listing.lat},${listing.lng}`;
+  }
+  const query = [listing.name, listing.address, listing.city, listing.state].filter(Boolean).join(", ");
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
 export function buildListingSlug(name: string, city: string, id: string): string {
   return `${toSlug(name)}-${toSlug(city)}-${id.slice(-6)}`;
 }

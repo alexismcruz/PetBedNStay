@@ -24,8 +24,10 @@ async function getListings(params: SearchParams) {
   if (params.tier) where.tier = params.tier;
   if (params.q) {
     where.OR = [
-      { name: { contains: params.q, mode: "insensitive" } },
-      { city: { contains: params.q, mode: "insensitive" } },
+      { name:        { contains: params.q, mode: "insensitive" } },
+      { city:        { contains: params.q, mode: "insensitive" } },
+      { state:       { contains: params.q, mode: "insensitive" } },
+      { stateSlug:   { contains: params.q, mode: "insensitive" } },
       { description: { contains: params.q, mode: "insensitive" } },
     ];
   }

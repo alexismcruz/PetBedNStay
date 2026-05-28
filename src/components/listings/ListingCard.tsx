@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Phone, Globe, BadgeCheck, Star } from "lucide-react";
-import { cn, tierColor, tierLabel, typeLabel, formatPhone } from "@/lib/utils";
+import { cn, tierColor, tierLabel, typeLabel, formatPhone, getPlaceholderPhoto } from "@/lib/utils";
 import type { Listing } from "@/types";
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
 
 export default function ListingCard({ listing, className }: Props) {
   const primaryImage = listing.images.find((i) => i.isPrimary) ?? listing.images[0];
+  const photoUrl = primaryImage?.url ?? getPlaceholderPhoto(listing.id);
 
   return (
     <Link
@@ -23,19 +24,13 @@ export default function ListingCard({ listing, className }: Props) {
     >
       {/* Image */}
       <div className="relative h-44 bg-amber-50 overflow-hidden">
-        {primaryImage ? (
-          <Image
-            src={primaryImage.url}
-            alt={listing.name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <span className="text-5xl">🐾</span>
-          </div>
-        )}
+        <Image
+          src={photoUrl}
+          alt={listing.name}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
 
         {/* Tier badge */}
         {listing.tier !== "FREE" && (

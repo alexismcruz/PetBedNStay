@@ -3,10 +3,10 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  MapPin, Phone, Globe, Mail, BadgeCheck, Clock, Star,
+  MapPin, Phone, Globe, Mail, BadgeCheck, Clock, Star, Navigation,
 } from "lucide-react";
 import { db } from "@/lib/db";
-import { formatPhone, tierLabel, tierColor, typeLabel, DAYS, cn } from "@/lib/utils";
+import { formatPhone, tierLabel, tierColor, typeLabel, DAYS, cn, getPlaceholderPhoto, googleMapsUrl } from "@/lib/utils";
 import MapWrapper from "@/components/map/MapWrapper";
 
 export async function generateMetadata({
@@ -50,6 +50,8 @@ export default async function ListingPage({
 
   const primaryImage = listing.images.find((i: any) => i.isPrimary) ?? listing.images[0];
   const otherImages = listing.images.filter((i: any) => !i.isPrimary && i !== primaryImage);
+  const photoUrl = primaryImage?.url ?? getPlaceholderPhoto(listing.id);
+  const mapsUrl = googleMapsUrl(listing);
 
   const mapListings = listing.lat && listing.lng
     ? [{ id: listing.id, name: listing.name, lat: listing.lat, lng: listing.lng, city: listing.city, state: listing.state, slug: listing.slug, tier: listing.tier }]
@@ -97,29 +99,27 @@ export default async function ListingPage({
           </div>
 
           {/* Images */}
-          {primaryImage && (
-            <div className="rounded-2xl overflow-hidden">
-              <div className="relative h-72 sm:h-96 bg-amber-50">
-                <Image
-                  src={primaryImage.url}
-                  alt={listing.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 66vw"
-                  priority
-                />
-              </div>
-              {otherImages.length > 0 && (
-                <div className="grid grid-cols-3 gap-1 mt-1">
-                  {otherImages.slice(0, 3).map((img: any) => (
-                    <div key={img.id} className="relative h-24 bg-amber-50">
-                      <Image src={img.url} alt={listing.name} fill className="object-cover" sizes="33vw" />
-                    </div>
-                  ))}
-                </div>
-              )}
+          <div className="rounded-2xl overflow-hidden">
+            <div className="relative h-72 sm:h-96 bg-amber-50">
+              <Image
+                src={photoUrl}
+                alt={listing.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 66vw"
+                priority
+              />
             </div>
-          )}
+            {otherImages.length > 0 && (
+              <div className="grid grid-cols-3 gap-1 mt-1">
+                {otherImages.slice(0, 3).map((img: any) => (
+                  <div key={img.id} className="relative h-24 bg-amber-50">
+                    <Image src={img.url} alt={listing.name} fill className="object-cover" sizes="33vw" />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Description */}
           {listing.description && (
@@ -215,6 +215,17 @@ export default async function ListingPage({
               {!listing.phone && !listing.email && !listing.website && (
                 <p className="text-sm text-stone-400">No contact info available</p>
               )}
+
+              {/* Google Maps — always shown */}
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-sm text-white bg-brand-500 hover:bg-brand-600 transition-colors px-4 py-2.5 rounded-xl font-semibold mt-2"
+              >
+                <Navigation className="h-4 w-4 shrink-0" />
+                Open in Google Maps
+              </a>
             </div>
 
             {/* Upgrade prompt for free listings */}
