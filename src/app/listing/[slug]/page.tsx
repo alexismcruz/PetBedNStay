@@ -8,6 +8,7 @@ import {
 import { db } from "@/lib/db";
 import { formatPhone, tierLabel, tierColor, typeLabel, DAYS, cn, getPlaceholderPhoto, googleMapsUrl, generateListingDescription } from "@/lib/utils";
 import MapWrapper from "@/components/map/MapWrapper";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 
 export async function generateMetadata({
   params,
@@ -92,22 +93,27 @@ export default async function ListingPage({
     ? [{ id: listing.id, name: listing.name, lat: listing.lat, lng: listing.lng, city: listing.city, state: listing.state, slug: listing.slug, tier: listing.tier }]
     : [];
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home",                                          item: "https://petbednstay.com" },
+      { "@type": "ListItem", position: 2, name: `Pet Boarding in ${listing.state}`,               item: `https://petbednstay.com/${listing.stateSlug}` },
+      { "@type": "ListItem", position: 3, name: listing.city,                                     item: `https://petbednstay.com/${listing.stateSlug}/${listing.citySlug}` },
+      { "@type": "ListItem", position: 4, name: listing.name,                                     item: `https://petbednstay.com/listing/${listing.slug}` },
+    ],
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      {/* Breadcrumb */}
-      <div className="text-sm text-stone-500 mb-4">
-        <Link href="/" className="hover:text-brand-600">Home</Link>
-        {" / "}
-        <Link href={`/${listing.stateSlug}`} className="hover:text-brand-600">{listing.state}</Link>
-        {" / "}
-        <Link href={`/${listing.stateSlug}/${listing.citySlug}`} className="hover:text-brand-600">{listing.city}</Link>
-        {" / "}
-        <span className="text-stone-700">{listing.name}</span>
-      </div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      <Breadcrumb items={[
+        { label: "Home",         href: "/" },
+        { label: listing.state,  href: `/${listing.stateSlug}` },
+        { label: listing.city,   href: `/${listing.stateSlug}/${listing.citySlug}` },
+        { label: listing.name },
+      ]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content */}

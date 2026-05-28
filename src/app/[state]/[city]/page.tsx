@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { US_STATES, getStateName } from "@/lib/utils";
 import ListingCard from "@/components/listings/ListingCard";
 import MapWrapper from "@/components/map/MapWrapper";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 
 export async function generateMetadata({
   params,
@@ -79,14 +80,11 @@ export default async function CityPage({
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       {itemListLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }} />}
-      {/* Breadcrumb */}
-      <div className="text-sm text-stone-500 mb-4">
-        <Link href="/" className="hover:text-brand-600">Home</Link>
-        {" / "}
-        <Link href={`/${state}`} className="hover:text-brand-600">{stateName}</Link>
-        {" / "}
-        <span className="text-stone-700">{cityName}</span>
-      </div>
+      <Breadcrumb items={[
+        { label: "Home",                          href: "/" },
+        { label: stateName,                        href: `/${state}` },
+        { label: `Pet Boarding in ${cityName}` },
+      ]} />
 
       <h1 className="text-3xl sm:text-4xl font-bold text-stone-800 mb-2">
         Pet Boarding in {cityName}, {stateName}

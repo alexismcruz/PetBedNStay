@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { US_STATES, getStateName } from "@/lib/utils";
 import ListingCard from "@/components/listings/ListingCard";
 import MapWrapper from "@/components/map/MapWrapper";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 
 const RESERVED = new Set([
   "search", "list-your-business", "premium", "advertise",
@@ -130,12 +131,10 @@ export default async function StatePage({
       {itemListLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }} />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
-      {/* Breadcrumb */}
-      <div className="text-sm text-stone-500 mb-2">
-        <Link href="/" className="hover:text-brand-600">Home</Link>
-        {" / "}
-        <span className="text-stone-700">{stateName}</span>
-      </div>
+      <Breadcrumb items={[
+        { label: "Home", href: "/" },
+        { label: `Pet Boarding in ${stateName}` },
+      ]} />
 
       {/* Header */}
       <div className="mb-6">

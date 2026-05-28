@@ -10,17 +10,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const statics: MetadataRoute.Sitemap = [
-    { url: BASE,                          lastModified: now, changeFrequency: "daily",   priority: 1.0 },
-    { url: `${BASE}/search`,              lastModified: now, changeFrequency: "daily",   priority: 0.8 },
-    { url: `${BASE}/list-your-business`,  lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE}/premium`,             lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE}/advertise`,           lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: BASE,                          lastModified: now, changeFrequency: "daily"   as const, priority: 1.0 },
+    { url: `${BASE}/search`,              lastModified: now, changeFrequency: "daily"   as const, priority: 0.8 },
+    { url: `${BASE}/list-your-business`,  lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 },
+    { url: `${BASE}/premium`,             lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${BASE}/advertise`,           lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 },
   ];
 
   const statePages: MetadataRoute.Sitemap = US_STATES.map((s) => ({
     url: `${BASE}/${s.slug}`,
     lastModified: now,
-    changeFrequency: "weekly",
+    changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
 
