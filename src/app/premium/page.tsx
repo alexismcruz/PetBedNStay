@@ -116,6 +116,7 @@ export default function PremiumPage() {
             key={plan.key}
             className={cn(
               "relative bg-white rounded-2xl border p-6 flex flex-col",
+              "transition-all duration-200 hover:scale-105 hover:shadow-xl",
               plan.color,
               plan.highlight && "shadow-xl"
             )}

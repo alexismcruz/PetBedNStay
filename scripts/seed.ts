@@ -8,6 +8,10 @@
 
 import { PrismaClient } from "@prisma/client";
 import slugify from "slugify";
+import { execSync } from "child_process";
+import { writeFileSync, readFileSync, unlinkSync } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
 
 const db = new PrismaClient();
 
@@ -70,14 +74,12 @@ function toSlug(str: string) {
 
 function buildQuery(stateAbbr: string): string {
   return `
-[out:json][timeout:90];
+[out:json][timeout:120];
 area["ISO3166-2"="US-${stateAbbr}"][admin_level=4]->.state;
 (
   node["amenity"="animal_boarding"](area.state);
   way["amenity"="animal_boarding"](area.state);
   node["amenity"="animal_shelter"]["name"](area.state);
-  node["shop"="pet"](area.state);
-  node["shop"="pet_grooming"](area.state);
 );
 out body;
 >;
@@ -86,13 +88,44 @@ out skel qt;
 }
 
 async function queryOverpass(query: string) {
-  const res = await fetch("https://overpass-api.de/api/interpreter", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `data=${encodeURIComponent(query)}`,
-  });
-  if (!res.ok) throw new Error(`Overpass error: ${res.status}`);
-  return res.json();
+  // Node.js fetch is blocked by Windows Firewall for Hetzner IPs.
+  // Workaround: write a .ps1 script + body to temp files, execute via PowerShell -File
+  // (avoids all inline-string escaping issues).
+  const ts = Date.now();
+  const bodyFile = join(tmpdir(), `overpass_body_${ts}.txt`);
+  const outFile  = join(tmpdir(), `overpass_out_${ts}.json`);
+  const psFile   = join(tmpdir(), `overpass_${ts}.ps1`);
+
+  writeFileSync(bodyFile, `data=${encodeURIComponent(query)}`, "utf8");
+
+  writeFileSync(psFile, `
+$body = Get-Content -Path '${bodyFile.replace(/\\/g, "\\\\")}' -Raw
+$headers = @{
+  'User-Agent' = 'PetBedNStay/1.0 (petbednstay.com)'
+}
+$r = Invoke-WebRequest \`
+  -Uri 'https://overpass-api.de/api/interpreter' \`
+  -Method POST \`
+  -Body $body \`
+  -ContentType 'application/x-www-form-urlencoded' \`
+  -Headers $headers \`
+  -UseBasicParsing \`
+  -TimeoutSec 90
+$utf8NoBom = New-Object System.Text.UTF8Encoding $false
+[System.IO.File]::WriteAllText('${outFile.replace(/\\/g, "\\\\")}', $r.Content, $utf8NoBom)
+`.trimStart(), "utf8");
+
+  try {
+    execSync(`powershell -NoProfile -ExecutionPolicy Bypass -File "${psFile}"`, {
+      timeout: 300_000, // 5 minutes
+    });
+    const content = readFileSync(outFile, "utf8").replace(/^﻿/, ""); // strip BOM if any
+    return JSON.parse(content);
+  } finally {
+    for (const f of [bodyFile, outFile, psFile]) {
+      try { unlinkSync(f); } catch {}
+    }
+  }
 }
 
 function sleep(ms: number) {
@@ -108,8 +141,9 @@ async function seedState(
   let data: any;
   try {
     data = await queryOverpass(buildQuery(stateMeta.abbr));
-  } catch (e) {
-    console.error(`  Failed: ${e}`);
+  } catch (e: any) {
+    console.error(`  Failed: ${e?.message ?? e}`);
+    if (e?.cause) console.error(`  Cause:`, e.cause);
     return 0;
   }
 
@@ -128,8 +162,16 @@ async function seedState(
     const lon: number | undefined = el.lon ?? el.center?.lon;
     const osmId = String(el.id);
 
-    const city: string =
-      tags["addr:city"] ?? tags["is_in:city"] ?? tags["is_in"] ?? "";
+    // Try multiple OSM fields for city — many nodes lack addr:city but have others
+    const rawCity: string =
+      tags["addr:city"] ??
+      tags["is_in:city"] ??
+      tags["addr:suburb"] ??
+      tags["addr:county"] ??
+      tags["is_in"] ??
+      "";
+    // is_in can be "CityName, State, USA" — take the first comma-segment
+    const city = rawCity.includes(",") ? rawCity.split(",")[0].trim() : rawCity.trim();
     if (!city) { skipped++; continue; }
 
     const citySlug = toSlug(city);

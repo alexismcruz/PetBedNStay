@@ -66,7 +66,7 @@ export default async function HomePage() {
               List Your Business — Free
             </a>
             <a
-              href="/premium"
+              href="/list-your-business#pricing"
               className="inline-block bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3 rounded-xl transition-colors border border-white/20"
             >
               See Premium Plans

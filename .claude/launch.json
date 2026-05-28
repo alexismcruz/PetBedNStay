@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "petbednstay",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000,
+      "env": {
+        "DATABASE_URL": "postgresql://user:pass@localhost:5432/petbednstay"
+      }
+    }
+  ]
+}
