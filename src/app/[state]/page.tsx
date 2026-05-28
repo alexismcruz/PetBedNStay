@@ -19,8 +19,8 @@ export async function generateMetadata({
   const { state } = await params;
   const stateName = getStateName(state);
   return {
-    title: `Pet Hotels & Sitters in ${stateName}`,
-    description: `Browse trusted pet hotels, boarding facilities, and pet sitters across ${stateName}. Find the perfect care for your pet.`,
+    title: `Pet Boarding in ${stateName} | Kennels, Dog Hotels & Sitters`,
+    description: `Find trusted pet boarding in ${stateName}. Browse kennels, dog hotels, and pet sitters across the state. Free to search — contact facilities directly.`,
     alternates: { canonical: `https://petbednstay.com/${state}` },
   };
 }
@@ -64,8 +64,32 @@ export default async function StatePage({
     .filter((l) => l.lat && l.lng)
     .map((l) => ({ id: l.id, name: l.name, lat: l.lat, lng: l.lng, city: l.city, state: l.state, slug: l.slug, tier: l.tier }));
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://petbednstay.com" },
+      { "@type": "ListItem", position: 2, name: `Pet Boarding in ${stateName}`, item: `https://petbednstay.com/${state}` },
+    ],
+  };
+
+  const itemListLd = data.listings.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `Pet Boarding Facilities in ${stateName}`,
+    numberOfItems: data.listings.length,
+    itemListElement: data.listings.map((l: any, i: number) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `https://petbednstay.com/listing/${l.slug}`,
+      name: l.name,
+    })),
+  } : null;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      {itemListLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }} />}
       {/* Header */}
       <div className="mb-8">
         <div className="text-sm text-stone-500 mb-2">
@@ -74,7 +98,7 @@ export default async function StatePage({
           <span className="text-stone-700">{stateName}</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-bold text-stone-800">
-          Pet Hotels & Sitters in {stateName}
+          Pet Boarding in {stateName}
         </h1>
         <p className="mt-2 text-stone-500">
           {data.listings.length > 0

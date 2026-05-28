@@ -39,8 +39,22 @@ export default async function HomePage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const featuredTyped = featured as any[];
 
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "PetBedNStay",
+    url: "https://petbednstay.com",
+    description: "Find trusted pet boarding, dog kennels, and pet hotels across all 50 US states.",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: { "@type": "EntryPoint", urlTemplate: "https://petbednstay.com/search?q={search_term_string}" },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       <Hero />
       <Stats listingCount={counts.listings} stateCount={counts.states} />
       <HowItWorks />

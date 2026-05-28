@@ -135,3 +135,24 @@ export function googleMapsUrl(listing: {
 export function buildListingSlug(name: string, city: string, id: string): string {
   return `${toSlug(name)}-${toSlug(city)}-${id.slice(-6)}`;
 }
+
+/** Generates a unique, keyword-rich fallback description for listings that have no description */
+export function generateListingDescription(listing: {
+  name: string;
+  city: string;
+  state: string;
+  type?: string | null;
+  amenities?: { name: string }[];
+  phone?: string | null;
+}): string {
+  const typeWord =
+    listing.type === "SITTER" ? "pet sitter" :
+    listing.type === "BOTH"   ? "pet boarding and sitting service" :
+                                "pet boarding facility";
+  const amenityPart =
+    listing.amenities && listing.amenities.length > 0
+      ? ` Services include ${listing.amenities.slice(0, 3).map((a) => a.name.toLowerCase()).join(", ")}.`
+      : "";
+  const contactPart = listing.phone ? " Call to book your pet's stay." : "";
+  return `${listing.name} is a ${typeWord} in ${listing.city}, ${listing.state}.${amenityPart}${contactPart} Browse more pet boarding options across ${listing.state} on PetBedNStay.`;
+}

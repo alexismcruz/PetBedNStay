@@ -15,8 +15,8 @@ export async function generateMetadata({
   const stateName = getStateName(state);
   const cityName = city.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   return {
-    title: `Pet Hotels & Sitters in ${cityName}, ${stateName}`,
-    description: `Find pet hotels, boarding facilities, and pet sitters in ${cityName}, ${stateName}. Browse listings and contact them directly.`,
+    title: `Pet Boarding in ${cityName}, ${stateName} | Kennels & Dog Hotels`,
+    description: `Find pet boarding in ${cityName}, ${stateName}. Browse kennels, dog hotels, and pet sitters. Compare options and contact facilities directly — free to search.`,
     alternates: { canonical: `https://petbednstay.com/${state}/${city}` },
   };
 }
@@ -52,8 +52,33 @@ export default async function CityPage({
     .filter((l) => l.lat && l.lng)
     .map((l) => ({ id: l.id, name: l.name, lat: l.lat, lng: l.lng, city: l.city, state: l.state, slug: l.slug, tier: l.tier }));
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://petbednstay.com" },
+      { "@type": "ListItem", position: 2, name: `Pet Boarding in ${stateName}`, item: `https://petbednstay.com/${state}` },
+      { "@type": "ListItem", position: 3, name: `Pet Boarding in ${cityName}`, item: `https://petbednstay.com/${state}/${city}` },
+    ],
+  };
+
+  const itemListLd = listings.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `Pet Boarding in ${cityName}, ${stateName}`,
+    numberOfItems: listings.length,
+    itemListElement: listings.map((l: any, i: number) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `https://petbednstay.com/listing/${l.slug}`,
+      name: l.name,
+    })),
+  } : null;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      {itemListLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }} />}
       {/* Breadcrumb */}
       <div className="text-sm text-stone-500 mb-4">
         <Link href="/" className="hover:text-brand-600">Home</Link>
@@ -64,7 +89,7 @@ export default async function CityPage({
       </div>
 
       <h1 className="text-3xl sm:text-4xl font-bold text-stone-800 mb-2">
-        Pet Hotels & Sitters in {cityName}, {stateName}
+        Pet Boarding in {cityName}, {stateName}
       </h1>
       <p className="text-stone-500 mb-8">
         {listings.length > 0

@@ -6,7 +6,7 @@ import {
   MapPin, Phone, Globe, Mail, BadgeCheck, Clock, Star, Navigation,
 } from "lucide-react";
 import { db } from "@/lib/db";
-import { formatPhone, tierLabel, tierColor, typeLabel, DAYS, cn, getPlaceholderPhoto, googleMapsUrl } from "@/lib/utils";
+import { formatPhone, tierLabel, tierColor, typeLabel, DAYS, cn, getPlaceholderPhoto, googleMapsUrl, generateListingDescription } from "@/lib/utils";
 import MapWrapper from "@/components/map/MapWrapper";
 
 export async function generateMetadata({
@@ -23,7 +23,7 @@ export async function generateMetadata({
     if (!listing) return { title: "Listing Not Found" };
     const description =
       listing.description ??
-      `${listing.name} is a pet boarding facility located in ${listing.city}, ${listing.state}. Find contact info, hours, and more on PetBedNStay.`;
+      generateListingDescription({ name: listing.name, city: listing.city, state: listing.state, type: listing.type, phone: listing.phone });
     const ogImage = listing.images[0]?.url;
     return {
       title: `${listing.name} — Pet Hotel in ${listing.city}, ${listing.state}`,

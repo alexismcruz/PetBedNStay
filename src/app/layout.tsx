@@ -8,20 +8,20 @@ const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
 
 export const metadata: Metadata = {
   title: {
-    default: "PetBedNStay — Find Pet Hotels & Sitters Across the US",
+    default: "PetBedNStay — Pet Boarding & Kennels Across All 50 US States",
     template: "%s | PetBedNStay",
   },
   description:
-    "Discover trusted pet hotels, boarding facilities, and pet sitters across all 50 US states. Free to search, easy to find the perfect stay for your pet.",
-  keywords: ["pet hotel", "pet boarding", "dog hotel", "cat boarding", "pet sitter", "pet care"],
+    "Find trusted pet boarding, dog kennels, and pet hotels across all 50 US states. Search free — compare facilities, read details, and contact them directly.",
+  keywords: ["pet boarding", "dog boarding", "dog kennel", "pet hotel", "cat boarding", "pet sitter", "pet care near me", "boarding kennel"],
   openGraph: {
     type: "website",
     locale: "en_US",
     url: process.env.NEXT_PUBLIC_APP_URL ?? "https://petbednstay.com",
     siteName: "PetBedNStay",
-    title: "PetBedNStay — Find Pet Hotels & Sitters Across the US",
+    title: "PetBedNStay — Pet Boarding & Kennels Across All 50 US States",
     description:
-      "Discover trusted pet hotels, boarding facilities, and pet sitters across all 50 US states.",
+      "Find trusted pet boarding, dog kennels, and pet hotels across all 50 US states. Free to search.",
   },
   robots: { index: true, follow: true },
   icons: {
