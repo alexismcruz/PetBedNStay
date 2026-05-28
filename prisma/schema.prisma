@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ListingType {
+  HOTEL
+  SITTER
+  BOTH
+}
+
+enum ListingTier {
+  FREE
+  FEATURED
+  PREMIUM
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum AdPlacement {
+  BANNER
+  SIDEBAR
+}
+
+model Listing {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  name        String
+  type        ListingType @default(HOTEL)
+  description String?     @db.Text
+  address     String?
+  city        String
+  state       String
+  stateSlug   String
+  citySlug    String
+  zip         String?
+  lat         Float?
+  lng         Float?
+  phone       String?
+  email       String?
+  website     String?
+  tier        ListingTier @default(FREE)
+  isVerified  Boolean     @default(false)
+  isActive    Boolean     @default(true)
+  source      String?
+  osmId       String?     @unique
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  images      ListingImage[]
+  amenities   ListingAmenity[]
+  hours       ListingHour[]
+  premiumPlan PremiumPlan?
+
+  @@index([stateSlug])
+  @@index([stateSlug, citySlug])
+  @@index([tier])
+  @@index([isActive])
+  @@index([lat, lng])
+}
+
+model ListingImage {
+  id        String  @id @default(cuid())
+  listingId String
+  url       String
+  isPrimary Boolean @default(false)
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId])
+}
+
+model ListingAmenity {
+  id        String  @id @default(cuid())
+  listingId String
+  name      String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId])
+}
+
+model ListingHour {
+  id        String  @id @default(cuid())
+  listingId String
+  dayOfWeek Int
+  openTime  String?
+  closeTime String?
+  isClosed  Boolean @default(false)
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId])
+}
+
+model ListingRequest {
+  id           String        @id @default(cuid())
+  businessName String
+  ownerName    String
+  email        String
+  phone        String?
+  address      String?
+  city         String
+  state        String
+  website      String?
+  message      String?       @db.Text
+  status       RequestStatus @default(PENDING)
+  createdAt    DateTime      @default(now())
+}
+
+model PremiumPlan {
+  id            String      @id @default(cuid())
+  listingId     String      @unique
+  tier          ListingTier
+  paypalOrderId String?
+  paypalSubId   String?
+  startsAt      DateTime
+  endsAt        DateTime?
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  listing       Listing     @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+model AdSpot {
+  id          String      @id @default(cuid())
+  name        String
+  imageUrl    String
+  targetUrl   String
+  placement   AdPlacement
+  targetState String?
+  startsAt    DateTime
+  endsAt      DateTime
+  impressions Int         @default(0)
+  clicks      Int         @default(0)
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+}
+
+model StateContent {
+  id           String   @id @default(cuid())
+  stateSlug    String   @unique
+  stateName    String
+  writeup      String   @db.Text
+  imageUrl     String?
+  listingCount Int      @default(0)
+  updatedAt    DateTime @updatedAt
+}
