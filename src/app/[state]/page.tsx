@@ -21,6 +21,7 @@ export async function generateMetadata({
   return {
     title: `Pet Hotels & Sitters in ${stateName}`,
     description: `Browse trusted pet hotels, boarding facilities, and pet sitters across ${stateName}. Find the perfect care for your pet.`,
+    alternates: { canonical: `https://petbednstay.com/${state}` },
   };
 }
 

@@ -16,13 +16,25 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const listing = await db.listing.findUnique({ where: { slug } });
+    const listing = await db.listing.findUnique({
+      where: { slug },
+      include: { images: { where: { isPrimary: true }, take: 1 } },
+    });
     if (!listing) return { title: "Listing Not Found" };
+    const description =
+      listing.description ??
+      `${listing.name} is a pet boarding facility located in ${listing.city}, ${listing.state}. Find contact info, hours, and more on PetBedNStay.`;
+    const ogImage = listing.images[0]?.url;
     return {
       title: `${listing.name} — Pet Hotel in ${listing.city}, ${listing.state}`,
-      description:
-        listing.description ??
-        `${listing.name} is a pet boarding facility located in ${listing.city}, ${listing.state}. Find contact info, hours, and more on PetBedNStay.`,
+      description,
+      alternates: { canonical: `https://petbednstay.com/listing/${slug}` },
+      openGraph: {
+        title: `${listing.name} — Pet Hotel in ${listing.city}, ${listing.state}`,
+        description,
+        url: `https://petbednstay.com/listing/${slug}`,
+        ...(ogImage ? { images: [{ url: ogImage, width: 1200, height: 630, alt: listing.name }] } : {}),
+      },
     };
   } catch {
     return { title: "Listing" };
@@ -53,12 +65,39 @@ export default async function ListingPage({
   const photoUrl = primaryImage?.url ?? getPlaceholderPhoto(listing.id);
   const mapsUrl = googleMapsUrl(listing);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: listing.name,
+    description: listing.description ?? undefined,
+    url: `https://petbednstay.com/listing/${listing.slug}`,
+    image: primaryImage?.url ?? undefined,
+    telephone: listing.phone ?? undefined,
+    email: listing.email ?? undefined,
+    ...(listing.website ? { sameAs: [listing.website] } : {}),
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: listing.address ?? undefined,
+      addressLocality: listing.city,
+      addressRegion: listing.state,
+      postalCode: listing.zip ?? undefined,
+      addressCountry: "US",
+    },
+    ...(listing.lat && listing.lng
+      ? { geo: { "@type": "GeoCoordinates", latitude: listing.lat, longitude: listing.lng } }
+      : {}),
+  };
+
   const mapListings = listing.lat && listing.lng
     ? [{ id: listing.id, name: listing.name, lat: listing.lat, lng: listing.lng, city: listing.city, state: listing.state, slug: listing.slug, tier: listing.tier }]
     : [];
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Breadcrumb */}
       <div className="text-sm text-stone-500 mb-4">
         <Link href="/" className="hover:text-brand-600">Home</Link>
