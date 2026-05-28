@@ -12,6 +12,9 @@ export interface BlogPost {
   description: string;
   publishedAt: string; // YYYY-MM-DD
   readingTime: string;
+  category: string;
+  coverImage: string;
+  coverImageAlt: string;
   relatedStates?: { name: string; slug: string }[];
   sections: BlogSection[];
 }
@@ -25,6 +28,9 @@ export const BLOG_POSTS: BlogPost[] = [
       "First-time boarding does not have to be stressful. Here is exactly how to prepare your dog for a smooth, comfortable stay at a kennel or pet hotel.",
     publishedAt: "2026-05-20",
     readingTime: "7 min read",
+    category: "Preparation",
+    coverImage: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1200&q=80",
+    coverImageAlt: "Two dogs running and playing together outdoors",
     relatedStates: [
       { name: "California", slug: "california" },
       { name: "Texas", slug: "texas" },
@@ -115,6 +121,9 @@ export const BLOG_POSTS: BlogPost[] = [
       "Should you book a boarding kennel or hire a pet sitter? Here is a practical side-by-side comparison to help you choose the right option for your dog or cat.",
     publishedAt: "2026-05-15",
     readingTime: "6 min read",
+    category: "Choosing a Facility",
+    coverImage: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=80",
+    coverImageAlt: "Orange tabby cat looking curiously at camera",
     relatedStates: [
       { name: "New York", slug: "new-york" },
       { name: "Illinois", slug: "illinois" },
@@ -184,6 +193,9 @@ export const BLOG_POSTS: BlogPost[] = [
       "Most boarding kennels require proof of specific vaccines before accepting your dog. Here is exactly which shots are required, which are optional, and how to prepare in time.",
     publishedAt: "2026-05-10",
     readingTime: "6 min read",
+    category: "Health & Safety",
+    coverImage: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=1200&q=80",
+    coverImageAlt: "Healthy golden retriever dog sitting outdoors",
     relatedStates: [
       { name: "California", slug: "california" },
       { name: "Texas", slug: "texas" },
@@ -255,6 +267,9 @@ export const BLOG_POSTS: BlogPost[] = [
       "Dog boarding costs range widely depending on your location, the type of facility, and your dog's size. Here is what to expect across the US in 2026.",
     publishedAt: "2026-05-05",
     readingTime: "7 min read",
+    category: "Costs & Budgeting",
+    coverImage: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1200&q=80",
+    coverImageAlt: "Dog resting comfortably on a cozy bed",
     relatedStates: [
       { name: "California", slug: "california" },
       { name: "New York", slug: "new-york" },
@@ -329,6 +344,9 @@ export const BLOG_POSTS: BlogPost[] = [
       "Before you hand over your dog or cat, ask these 10 questions. The answers will tell you everything you need to know about whether a boarding facility is actually trustworthy.",
     publishedAt: "2026-04-28",
     readingTime: "6 min read",
+    category: "Choosing a Facility",
+    coverImage: "https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&w=1200&q=80",
+    coverImageAlt: "Person bonding with their dog outdoors",
     relatedStates: [
       { name: "Pennsylvania", slug: "pennsylvania" },
       { name: "Ohio", slug: "ohio" },
@@ -404,6 +422,9 @@ export const BLOG_POSTS: BlogPost[] = [
       "Cats have different boarding needs than dogs. Here is how to decide between a cat boarding facility and an in-home pet sitter for your feline.",
     publishedAt: "2026-04-20",
     readingTime: "5 min read",
+    category: "Cat Care",
+    coverImage: "https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=1200&q=80",
+    coverImageAlt: "Gray cat relaxing peacefully at home",
     relatedStates: [
       { name: "California", slug: "california" },
       { name: "Massachusetts", slug: "massachusetts" },
@@ -476,6 +497,9 @@ export const BLOG_POSTS: BlogPost[] = [
       "Searching for overnight dog boarding near you? Here is how to find, vet, and book a quality facility — and what to avoid when making your choice.",
     publishedAt: "2026-04-15",
     readingTime: "6 min read",
+    category: "Finding Boarding",
+    coverImage: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=1200&q=80",
+    coverImageAlt: "Dog settled in at a boarding facility",
     relatedStates: [
       { name: "Texas", slug: "texas" },
       { name: "Florida", slug: "florida" },
@@ -551,6 +575,9 @@ export const BLOG_POSTS: BlogPost[] = [
       "Not all dog kennels are created equal. Here is how to spot a genuinely high-quality boarding facility — and the warning signs that should send you looking elsewhere.",
     publishedAt: "2026-04-10",
     readingTime: "7 min read",
+    category: "Choosing a Facility",
+    coverImage: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1200&q=80",
+    coverImageAlt: "Happy dog with a joyful expression",
     relatedStates: [
       { name: "North Carolina", slug: "north-carolina" },
       { name: "Tennessee", slug: "tennessee" },
@@ -627,6 +654,9 @@ export const BLOG_POSTS: BlogPost[] = [
       "Does your dog get stressed when away from home? These practical strategies help anxious dogs adapt to boarding more comfortably — and when boarding may not be the right choice.",
     publishedAt: "2026-04-05",
     readingTime: "6 min read",
+    category: "Tips & Tricks",
+    coverImage: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=1200&q=80",
+    coverImageAlt: "Small fluffy dog looking calm and relaxed",
     relatedStates: [
       { name: "Oregon", slug: "oregon" },
       { name: "Minnesota", slug: "minnesota" },
@@ -700,6 +730,9 @@ export const BLOG_POSTS: BlogPost[] = [
       "A complete checklist of everything you need to bring, prepare, and communicate before dropping your dog or cat off at a boarding facility.",
     publishedAt: "2026-03-30",
     readingTime: "5 min read",
+    category: "Preparation",
+    coverImage: "https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?auto=format&fit=crop&w=1200&q=80",
+    coverImageAlt: "Dog ready and prepared for an adventure",
     relatedStates: [
       { name: "Georgia", slug: "georgia" },
       { name: "Nevada", slug: "nevada" },
