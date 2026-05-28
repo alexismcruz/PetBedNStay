@@ -79,17 +79,17 @@ export default function PremiumPage() {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/paypal/create-order", {
+      const res = await fetch("/api/paypal/create-subscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tier, listingId }),
       });
-      const order = await res.json();
-      const approveLink = order.links?.find((l: any) => l.rel === "approve")?.href;
+      const subscription = await res.json();
+      const approveLink = subscription.links?.find((l: any) => l.rel === "approve")?.href;
       if (approveLink) window.location.href = approveLink;
-      else throw new Error("No approval link");
-    } catch {
-      alert("Something went wrong. Please try again.");
+      else throw new Error(subscription.error ?? "No approval link returned from PayPal");
+    } catch (err: any) {
+      alert(err?.message ?? "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
