@@ -207,6 +207,17 @@ export default async function StatePage({
         </div>
       </div>
 
+      {/* State tagline banner */}
+      {data.content?.tagline && (
+        <div className="bg-amber-50 border-b border-amber-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <p className="text-center text-amber-900 text-sm font-semibold">
+              {data.content.tagline}
+            </p>
+          </div>
+        </div>
+      )}
+
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
       {/* Writeup */}

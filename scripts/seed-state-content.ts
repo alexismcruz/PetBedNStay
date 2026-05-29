@@ -1,575 +1,534 @@
+/**
+ * Seed state content: unique writeups + taglines for all 50 states.
+ * Run: npx tsx scripts/seed-state-content.ts
+ * Safe to re-run — uses upsert.
+ */
 import { PrismaClient } from "@prisma/client";
-
 const db = new PrismaClient();
 
-const STATE_CONTENT: { stateSlug: string; stateName: string; writeup: string }[] = [
+const STATES = [
   {
-    stateSlug: "alabama",
-    stateName: "Alabama",
-    writeup: `Pet boarding in Alabama spans from the Gulf Coast beaches near Gulf Shores and Fairhope to the urban centers of Birmingham, Huntsville, Montgomery, and Mobile. Alabama's humid subtropical climate brings hot, muggy summers with temperatures regularly exceeding 95°F, making climate-controlled indoor facilities essential from May through September.
+    slug: "alabama",
+    name: "Alabama",
+    tagline: "🏈 Heart of Dixie — SEC football, Gulf Coast sunsets & legendary Southern hospitality",
+    writeup: `Alabama surprises first-timers with just how much it has to offer. From the white-sand beaches of Gulf Shores and Orange Beach to the rolling Appalachian foothills in the north, the state packs remarkable geographic variety into its borders. Birmingham has reinvented itself as one of the South's most livable cities, with a growing food scene, expansive parks, and a community that takes its pets seriously. Huntsville, fueled by NASA and a booming tech corridor, has become home to a younger, highly pet-centric crowd who expect quality care for their animals.
 
-Most boarding facilities across Alabama require current Rabies, DHPP, and Bordetella (kennel cough) vaccinations. Alabama does not enforce a statewide kennel licensing program, so asking facilities directly about their inspection history, staff certifications, and emergency protocols is important.
+Pet boarding in Alabama runs the full spectrum. The Birmingham metro has a solid mix of modern dog resorts and daycare facilities, while the Gulf Coast towns of Mobile and Daphne cater to a mix of year-round residents and snowbirds who often travel with their pets. In more rural stretches between the cities, you'll find long-established family-run kennels that offer a quieter, countryside experience.
 
-The Huntsville and Decatur corridor has seen rapid growth in pet care businesses, while Birmingham hosts the largest concentration of full-service boarding kennels, doggy daycares, and in-home sitters in the state. Coastal facilities near Mobile and Baldwin County see high demand during hurricane season (June–November) — book your pet's stay well in advance when traveling during that period.
-
-Whether you're visiting Alabama's state parks, attending a game in Tuscaloosa, or relocating to the Heart of Dixie, PetBedNStay connects you with trusted pet boarding options across all major Alabama cities.`,
+Alabama summers are genuinely hot and humid — temperatures regularly exceed 95°F from June through August. When choosing a boarding facility, prioritize places with air-conditioned kennels and shaded outdoor areas. Ask specifically about their protocols for high-heat days. Winters are mild enough that outdoor exercise is rarely an issue, making fall and spring the best times for longer boarding stays if you're planning a trip.`,
   },
   {
-    stateSlug: "alaska",
-    stateName: "Alaska",
-    writeup: `Pet boarding in Alaska requires special consideration due to the state's extreme climate and remote geography. Anchorage hosts the greatest concentration of boarding kennels and in-home sitters, followed by Fairbanks, Juneau, Wasilla, and Kenai. In Fairbanks, winter temperatures can plunge to -40°F — fully heated, insulated indoor facilities are a non-negotiable requirement for your pet's safety.
+    slug: "alaska",
+    name: "Alaska",
+    tagline: "🏔️ The Last Frontier — Glaciers, Northern Lights & the wildest backyard on Earth",
+    writeup: `Alaska has a relationship with dogs unlike anywhere else in the United States. This is a place where sled dogs are cultural icons, where mushers are local celebrities, and where the bond between humans and working animals is woven into the state's identity. The Iditarod Trail Sled Dog Race — run every March from Anchorage to Nome — draws global attention and reflects a deep, genuine reverence for canine companions that shapes how Alaskans approach pet care across the board.
 
-Alaska's pet care industry caters to a rugged lifestyle. Many facilities accommodate large breeds, working dogs, and sled dogs with spacious runs and enrichment activities. Alaska state law requires current Rabies vaccination for all dogs; most facilities also require DHPP and Bordetella.
+Boarding facilities are concentrated around Anchorage, Fairbanks, and the Matanuska-Susitna Valley, with a handful of quality operations serving Juneau and Ketchikan. What Alaska's facilities lack in volume they often make up for in character — many are set on large properties with serious outdoor space, run by owners who understand what it means to care for animals in a demanding, wilderness-adjacent environment. You won't find many glitzy pet resorts here, but you will find genuine, experienced care.
 
-Alaska's tourism season (May–September) brings a surge in visitors heading to Denali, Kenai Fjords, and other national parks, creating high demand for boarding services. Book at least two weeks in advance during summer. Military families stationed at Joint Base Elmendorf-Richardson in Anchorage have access to on-base and nearby boarding options as well.
-
-With PetBedNStay, you can find trusted kennels and sitters across Alaska's vast and beautiful terrain, from the Kenai Peninsula to the Interior.`,
+Logistics matter more in Alaska than in most states. Daylight swings from 22 hours in midsummer to under 4 in December, which affects animal routines in ways mainland pet owners may not expect. If you're visiting during peak summer tourism season (June–August), book boarding well ahead — good facilities fill up fast. Winter boarding near Fairbanks is a different experience entirely; temperatures can drop to -40°F, so confirm that facilities are properly heated and that outdoor time is managed responsibly.`,
   },
   {
-    stateSlug: "arizona",
-    stateName: "Arizona",
-    writeup: `Pet boarding in Arizona demands extra attention to heat management. Phoenix, Tucson, Scottsdale, Mesa, Tempe, and Chandler sit in one of the hottest urban environments in the country — summer temperatures regularly exceed 110°F from June through September. Climate-controlled indoor facilities are an absolute necessity during this period; never leave pets in outdoor enclosures during peak summer heat.
+    slug: "arizona",
+    name: "Arizona",
+    tagline: "🌵 The Grand Canyon State — Saguaro sunsets, red rock canyons & 300 days of sunshine",
+    writeup: `Arizona has quietly become one of the most pet-forward states in the country, and it's not hard to see why. The Valley of the Sun — encompassing Phoenix, Scottsdale, Tempe, and Chandler — is a sprawling, sun-soaked metro where outdoor living is a year-round lifestyle. Dog parks are everywhere, pet-friendly patios are the norm rather than the exception, and the region has developed a premium pet care economy that rivals anything you'd find in California or Texas. Scottsdale in particular has become known for luxury boarding facilities that wouldn't look out of place as boutique hotels for humans.
 
-Arizona does not have a statewide mandatory kennel licensing program, though facilities in Maricopa County must hold a local business license. Scottsdale and Paradise Valley have a high concentration of luxury pet resorts offering individual climate-controlled suites, webcam access, and spa services. Required vaccinations include Rabies (required by state law), DHPP, and Bordetella.
+Beyond the Phoenix metro, Tucson brings its own distinct culture — more relaxed, artistically inclined, and close to some remarkable desert landscapes like Saguaro National Park and Mount Lemmon. Flagstaff, at 7,000 feet elevation, offers cooler summers and a mountain-town vibe that's especially attractive for pet owners who love hiking. Sedona's red rock country has also developed several quality boarding options serving its tourist economy.
 
-Cooler northern Arizona cities like Flagstaff (elevation 7,000 ft) offer more temperate boarding options for heat-sensitive pets. Sedona's growing pet-friendly tourism industry has also expanded boarding options in that region. The Phoenix metro's "snowbird" season (November–April) peaks boarding demand — book early if traveling during the winter months.
-
-PetBedNStay lists boarding options across the Valley of the Sun, Tucson, Flagstaff, and communities throughout Arizona.`,
+The single most important factor for Arizona pet boarding is heat management. Phoenix summers regularly top 110°F, and even overnight temperatures rarely drop below 85°F in July and August. Any facility worth booking will have climate-controlled kennels, restrict outdoor time to early morning and evening during peak heat months, and have clear protocols for heat emergencies. Always ask these questions directly — your pet's safety depends on the answers. From October through April, Arizona's weather is among the most pleasant in the country, and your pet will thrive.`,
   },
   {
-    stateSlug: "arkansas",
-    stateName: "Arkansas",
-    writeup: `Pet boarding in Arkansas spans the Natural State's diverse landscape — from the Ozark and Ouachita Mountains in the northwest and west to the Delta lowlands in the east. Little Rock, the state capital, hosts the largest concentration of boarding kennels and pet sitters, followed by Fayetteville, Springdale, Fort Smith, and Jonesboro.
+    slug: "arkansas",
+    name: "Arkansas",
+    tagline: "🌲 The Natural State — Ozark Mountains, crystal-clear rivers & untouched wilderness",
+    writeup: `Arkansas earned its nickname "The Natural State" honestly. The Ozark and Ouachita mountain ranges cover much of the state's northern and central regions, laced with hiking trails, float rivers, and lakes that draw outdoor enthusiasts year-round. Bentonville in the northwest corner has transformed dramatically thanks to Walmart's headquarters and a world-class mountain bike trail network, bringing a wave of young, active residents who tend to bring their dogs everywhere they go. Fayetteville, home to the University of Arkansas Razorbacks, buzzes with energy and has developed a solid pet care infrastructure around its growing population.
 
-Arkansas has a humid subtropical climate with hot, humid summers regularly topping 95°F and mild winters, though the northwest Ozarks region can receive significant snowfall. Look for indoor, climate-controlled facilities during summer months. The Fayetteville-Springdale-Rogers metro has seen rapid growth in premium pet care businesses alongside the region's population expansion.
+Little Rock, the capital, anchors the state's central region and offers the densest concentration of boarding options. The city has seen significant investment in pet services over the past decade, with several modern dog daycare and boarding facilities operating alongside traditional kennels. Hot Springs, famous for its thermal baths and Ouachita National Forest proximity, is a popular tourist stop with a handful of boarding options suited to travelers passing through.
 
-Arkansas does not have a statewide kennel licensing law. Required vaccinations at most facilities include Rabies, DHPP, and Bordetella. The state's extensive trail systems, lakes, and Buffalo National River attract many outdoor-loving pet owners who need reliable boarding when exploring restricted areas.
-
-Whether visiting Crystal Bridges Museum, Eureka Springs, or Hot Springs National Park, PetBedNStay connects you with trusted boarding options across the Natural State.`,
+Arkansas boarding rates tend to be more affordable than the national average, which is good news for pet owners. The state's climate is four-season with mild winters and hot, humid summers — similar to Tennessee or Missouri. Tornado season runs spring through early summer, so it's worth asking boarding facilities about their severe weather protocols if you're traveling during that window. Overall, Arkansas facilities lean toward the personal and community-oriented, which suits the state's character well.`,
   },
   {
-    stateSlug: "california",
-    stateName: "California",
-    writeup: `Pet boarding in California is among the most developed and regulated in the nation. California's massive pet-owning population has driven the growth of thousands of licensed kennels, luxury pet hotels, doggy daycares, and certified in-home sitters across every region. Los Angeles, San Diego, San Francisco, San Jose, Sacramento, Fresno, and Oakland are the state's major boarding hubs.
+    slug: "california",
+    name: "California",
+    tagline: "🌴 The Golden State — Redwood forests, Pacific coastline & 40 million pet lovers",
+    writeup: `California's sheer size and diversity mean that pet boarding here looks dramatically different depending on where you are. In Los Angeles, premium dog hotels compete for space in neighborhoods like Silverlake and Brentwood, offering amenities like webcams, individual suites, and behavioral enrichment programs. San Francisco's dense, dog-obsessed culture has produced some of the most thoughtfully designed urban boarding facilities in the country — partly out of necessity, since SF has more dogs than children. San Diego's laid-back beach culture and year-round near-perfect weather makes it one of the most pet-friendly metro areas in the nation.
 
-California requires facilities operating commercial kennels to obtain local business licenses, and many counties enforce strict health and safety codes. The Bay Area's tech culture has driven innovation in pet care — many facilities offer webcam access, climate-controlled suites, and personalized enrichment programs. Southern California's wildfire season (May–November) can disrupt travel plans; confirm your facility has an emergency evacuation protocol.
+Inland California tells a different story. The Central Valley — Fresno, Bakersfield, Stockton — has a more agricultural, utilitarian approach to pet care, with traditional kennels and boarding ranches that prioritize space and outdoor time over luxury. The Bay Area's wine country around Napa and Sonoma has developed charming boutique boarding options, while the Sierra Nevada foothills serve a mix of hiking-focused residents and weekend warriors.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Heartworm prevention is strongly recommended statewide. The coastal climate of the Bay Area is gentler than the Inland Empire's extreme heat, so factor climate into your search.
-
-PetBedNStay covers boarding options across all California counties, from the Redwoods to the Mojave Desert.`,
+With 1,000+ listing on PetBedNStay, California has the most boarding options of any state — but that also means quality varies enormously. Look for PCSA-accredited facilities or those with consistently strong Google reviews. State regulations for commercial kennels are among the stricter in the US, which generally means better baseline standards. Summer fire season in rural Northern California and air quality concerns in the Central Valley are worth factoring in if you're boarding near those areas.`,
   },
   {
-    stateSlug: "colorado",
-    stateName: "Colorado",
-    writeup: `Pet boarding in Colorado reflects the state's active outdoor lifestyle and diverse terrain — from the mile-high Denver metro to ski resort towns approaching 10,000 feet. Denver, Colorado Springs, Aurora, Fort Collins, Boulder, and Pueblo host the majority of boarding facilities, with growing options in mountain communities like Vail, Aspen, Steamboat Springs, and Breckenridge.
+    slug: "colorado",
+    name: "Colorado",
+    tagline: "🏔️ Centennial State — Rocky Mountain peaks, world-class skiing & outdoor adventure at every turn",
+    writeup: `Colorado and dogs go together like powder and skis. This is one of the most outdoor-oriented states in the country, and its residents treat their pets as full adventure partners — hiking 14ers, paddleboarding on mountain reservoirs, and exploring the thousands of miles of trails that crisscross the Front Range and beyond. Denver consistently ranks among the top dog-friendly cities in the US, with more dogs per capita than almost any other major American city and a pet care industry built to match.
 
-Colorado's semi-arid climate features cold, snowy winters and warm, dry summers. Note that high-altitude environments can affect pets — allow adjustment time before strenuous activities. Wildfire smoke during dry summer months can affect pets with respiratory sensitivities; look for facilities with air filtration in fire-prone western regions.
+The Front Range corridor — Fort Collins, Boulder, Denver, Colorado Springs — has an exceptionally high concentration of quality boarding options. Boulder especially leans toward the holistic and premium end, with several facilities that incorporate training, nature walks, and enrichment activities into their boarding programs. Denver's urban facilities range from neighborhood doggy daycares to large resort-style campuses on the city's outskirts. Fort Collins, a college town with a strong outdoor culture, punches well above its size in boarding quality.
 
-The Denver metro's rapid population growth has driven a boom in premium pet care, with many facilities accredited by the Pet Care Services Association (PCSA). Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Boulder's dog-friendly culture has produced some of the most innovative boarding and enrichment facilities in the Rocky Mountain region.
-
-Whether visiting Rocky Mountain National Park, skiing in Summit County, or relocating to the Front Range, PetBedNStay has trusted pet boarding options across Colorado.`,
+Colorado's mountain towns — Breckenridge, Vail, Aspen, Steamboat Springs — have limited but often high-quality boarding options geared toward the ski and outdoor tourism economy. Altitude is a genuine consideration for pets not used to elevations above 8,000 feet, so inform your boarding facility if your dog is coming from sea level. Winter boarding also means navigating icy roads; always call ahead to confirm accessibility during snowstorms. From May through October, Colorado offers some of the best conditions for active, outdoor-loving dogs anywhere in the country.`,
   },
   {
-    stateSlug: "connecticut",
-    stateName: "Connecticut",
-    writeup: `Pet boarding in Connecticut serves one of the most densely populated states in the country, where pet ownership is a cultural cornerstone. Hartford, Bridgeport, New Haven, Stamford, Waterbury, and Norwalk are the major boarding markets, with high-quality facilities also found in small towns throughout the Litchfield Hills, Quiet Corner, and Shoreline regions.
+    slug: "connecticut",
+    name: "Connecticut",
+    tagline: "🍂 The Constitution State — Colonial villages, ivy-covered campuses & New England charm",
+    writeup: `Connecticut packs a remarkable amount into its small footprint. As the third-smallest state by area, it manages to contain both shoreline beauty along Long Island Sound and the rolling hills and farmland of its interior. The state's affluence — Connecticut regularly ranks among the wealthiest states per capita — translates directly into a well-developed premium pet care market, particularly in Fairfield County towns like Greenwich, Westport, and Darien that house New York commuters with high expectations and disposable income.
 
-Connecticut has a humid continental climate with hot summers and cold, snowy winters. The Stamford-Greenwich corridor, with its proximity to New York City, has a high concentration of premium pet resorts. New Haven's Yale University community also supports a strong local pet care market. Connecticut does not have a statewide kennel licensing law, but many municipalities regulate boarding through local ordinances.
+Hartford, the capital, and New Haven, home to Yale University, anchor the state's two largest metro areas and offer strong concentrations of boarding facilities. The shoreline towns from Mystic to Old Saybrook cater to a seasonal tourism economy and tend to have solid options for travelers passing through. Litchfield County in the northwest is Connecticut's most rural and scenic region, with rolling hills and farmsteads that have given rise to several lovely country kennel operations.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Connecticut's shoreline along Long Island Sound and proximity to Cape Cod drive summer travel — plan boarding reservations early from Memorial Day through Labor Day. The state's well-developed network of certified pet sitters makes in-home boarding a popular alternative to traditional kennels.
-
-PetBedNStay lists trusted boarding options across all Connecticut counties, from Greenwich to Storrs.`,
+Connecticut's four-season climate means boarding facilities are well-equipped for both summer heat and winter cold. The state's proximity to New York City also means many facilities are accustomed to last-minute holiday bookings — a consequence of serving a population that travels frequently. Book early around Thanksgiving, Christmas, and Fourth of July, as quality facilities in this state fill up faster than almost anywhere in New England.`,
   },
   {
-    stateSlug: "delaware",
-    stateName: "Delaware",
-    writeup: `Pet boarding in Delaware — the nation's second-smallest state — is conveniently located in the heart of the Mid-Atlantic corridor. Wilmington, Newark, Dover, and Middletown are the state's primary boarding markets, with additional options in Sussex County's popular beach communities including Rehoboth Beach and Lewes.
+    slug: "delaware",
+    name: "Delaware",
+    tagline: "🏖️ The First State — Atlantic beaches, tax-free shopping & big personality in a small package",
+    writeup: `Don't let Delaware's size fool you — it's the second-smallest state in the country, but it carries outsized character. The state's Atlantic coastline, anchored by Rehoboth Beach and Dewey Beach, is one of the East Coast's most beloved summer destinations, drawing vacationers from Washington D.C., Philadelphia, and Baltimore who often bring their dogs along for the trip. Rehoboth has long been known as one of the most dog-friendly beach towns on the East Coast, with dedicated dog beaches and a summer culture that embraces four-legged visitors.
 
-Delaware's compact size means no location is more than about 30 miles from neighboring Maryland, Pennsylvania, or New Jersey boarding options, giving pet owners strong regional flexibility. The state has a humid subtropical climate in the south and humid continental in the north, with hot summers and cold winters.
+Wilmington, Delaware's largest city, sits at the northern tip of the state near the Pennsylvania border and has a working professional population that's helped build a solid urban pet care market. Dover, the capital, serves the state's more agricultural central region with several traditional boarding kennels. The Lewes and Milton area in the south has seen significant growth in recent years as beach-town living has attracted retirees and remote workers who bring their pets.
 
-Delaware does not have a statewide kennel licensing law, though facilities are subject to local business regulations. Required vaccinations include Rabies, DHPP, and Bordetella. Delaware's thriving beach tourism in Sussex County creates high summer demand — Rehoboth Beach and Dewey Beach area facilities fill up from June through August, so book early.
-
-The Wilmington metro, driven by its corporate and banking sectors, supports a strong market for full-service pet boarding and doggy daycare. Dover Air Force Base families have access to several nearby boarding options built around extended military travel.`,
+Given Delaware's compact geography, no part of the state is more than about an hour's drive from a quality boarding facility. The coastal areas see heavy summer demand, so booking ahead from Memorial Day through Labor Day is strongly advised. Delaware is also one of the few states with no sales tax, which keeps pet services slightly more price-competitive than neighboring states.`,
   },
   {
-    stateSlug: "florida",
-    stateName: "Florida",
-    writeup: `Pet boarding in Florida operates year-round in one of the most pet-dense states in the country. Miami, Orlando, Tampa, Jacksonville, Fort Lauderdale, St. Petersburg, Cape Coral, and hundreds of other cities host thousands of boarding facilities, luxury pet resorts, and in-home sitters across the Sunshine State.
+    slug: "florida",
+    name: "Florida",
+    tagline: "🌊 The Sunshine State — Year-round warmth, endless coastline & wildlife at every corner",
+    writeup: `Florida is many things at once: a retirement haven, a theme park empire, a wildlife sanctuary, and one of the most pet-populated states in the country. The sheer diversity of its population — snowbirds from the Northeast, Cuban-American families in Miami, military families near Jacksonville and Tampa, retirees everywhere — creates an unusually varied pet care market. From ultra-premium boarding resorts in Boca Raton and Naples to no-frills but reliable kennels in the Panhandle, Florida has something for every budget and style.
 
-Florida's warm, humid climate means heat management is critical year-round — temperatures and heat indices exceed 100°F from June through September. Mosquito-borne heartworm is prevalent year-round in Florida; confirm your pet is on preventive medication before boarding. Hurricane season (June–November) can disrupt travel — confirm your facility has an emergency protocol and backup power.
+Miami's pet scene leans cosmopolitan — boutique facilities with salon services and Instagram-worthy aesthetics that reflect the city's broader culture. Orlando's tourism-driven economy has produced a cluster of boarding options specifically designed to handle guests who fly in for theme park visits and need to drop pets somewhere convenient. Tampa Bay, consistently ranked among the most pet-friendly metro areas in the Southeast, has a warm, family-oriented pet care culture. The Panhandle towns of Pensacola and Destin serve a beach-tourism economy mixed with military families from nearby bases.
 
-Required vaccinations include Rabies (required by state law), DHPP, DHLPP (leptospirosis is recommended), and Bordetella. South Florida's pet culture — particularly in Miami Beach, Boca Raton, and Fort Lauderdale — has driven the growth of luxury pet hotels rivaling five-star accommodations.
-
-Florida also has a large retiree population with high demand for quality extended-stay boarding. PetBedNStay covers boarding facilities across all 67 Florida counties, from the Panhandle to the Florida Keys.`,
+Heat and humidity are Florida's defining climate characteristics, and they matter for pet boarding. Facilities throughout the state should have robust air conditioning and limit midday outdoor time from May through October. Hurricane preparedness is another important question — ask boarding facilities about their emergency protocols for tropical storms. Florida's hurricane season runs June through November, and a responsible facility will have a clear plan for protecting animals in their care.`,
   },
   {
-    stateSlug: "georgia",
-    stateName: "Georgia",
-    writeup: `Pet boarding in Georgia centers around Atlanta, one of the fastest-growing cities in the South and the state's dominant metropolitan area. Savannah, Augusta, Columbus, Macon, Athens, and Roswell also host strong concentrations of boarding facilities. The greater Atlanta metro — spanning Alpharetta, Marietta, Smyrna, and Decatur — offers hundreds of boarding options for north Georgia pet owners.
+    slug: "georgia",
+    name: "Georgia",
+    tagline: "🍑 The Peach State — Atlanta's energy, Blue Ridge mountains & deep Southern roots",
+    writeup: `Georgia is a state of striking contrasts. Atlanta, one of the fastest-growing major cities in America, has developed one of the South's most sophisticated pet care markets — driven by a large, young professional population and a culture where dogs are social accessories as much as companions. Buckhead, Midtown, and Virginia-Highland have premium doggy daycares where owners drop off their pets before heading to offices in Midtown's gleaming towers. Meanwhile, just two hours north, the Blue Ridge Mountains and the charming town of Helen offer a completely different, countryside-style boarding experience.
 
-Georgia has a humid subtropical climate with hot, humid summers regularly exceeding 95°F. Climate-controlled indoor facilities are essential during summer months. Tick-borne diseases are common in Georgia's wooded regions — ensure your pet is up-to-date on tick prevention. Brief but real ice storms occur in January and February across the Piedmont.
+Savannah brings its own Southern Gothic elegance to the picture — a city famous for its Spanish moss-draped squares and horse-drawn carriages that has also developed a genuinely pet-friendly culture, particularly in its historic district. Augusta, Columbus, and Macon round out the state's secondary markets, each with solid boarding options suited to their distinct characters. The Sea Islands of the Georgia coast — St. Simons, Jekyll Island — are popular with vacationers who often need boarding arrangements.
 
-Georgia does not have a statewide kennel licensing requirement, though Atlanta-area counties enforce local health and zoning codes. Required vaccinations include Rabies (state law), DHPP, and Bordetella. Savannah's tourism industry and Augusta National's Masters Tournament both create boarding demand spikes — book well in advance during those events.
-
-PetBedNStay connects Georgia pet owners with trusted kennels and sitters from Atlanta's suburbs to the Golden Isles coast.`,
+Georgia's climate is warm and humid with mild winters, which means year-round outdoor activity for pets. The Atlanta metro's traffic can make accessing boarding facilities an adventure during rush hour, so factor drive time into your planning. Overall, Georgia's boarding market has grown significantly in the past decade — quality has improved markedly across the state, and options that feel genuinely premium are no longer limited to Atlanta's wealthiest neighborhoods.`,
   },
   {
-    stateSlug: "hawaii",
-    stateName: "Hawaii",
-    writeup: `Pet boarding in Hawaii comes with unique considerations tied to island life. Hawaii has some of the strictest pet import regulations in the United States, designed to protect the islands' ecosystem from diseases like rabies, which has never been established in Hawaii. If bringing a pet to Hawaii, contact the Hawaii Department of Agriculture well in advance — the process requires microchipping, rabies vaccination, OIE-FAVN blood tests, and health certificates.
+    slug: "hawaii",
+    name: "Hawaii",
+    tagline: "🌺 The Aloha State — Volcanic islands, turquoise waters & the spirit of aloha",
+    writeup: `Hawaii is extraordinary in almost every way, and its approach to pet care is no exception. The state takes animal health protections seriously — Hawaii is one of the few US states with a robust program to protect its unique native ecosystem, which means strict quarantine requirements for pets arriving from the mainland or internationally. If you're moving to Hawaii or bringing a pet for an extended stay, the preparation process starts months in advance with specific vaccination timelines, health certificates, and OIE-FAVN blood tests.
 
-For pets already residing in Hawaii, boarding facilities are primarily concentrated on Oahu (Honolulu, Kailua, Kaneohe), with options on Maui, the Big Island, and Kauai. Hawaii's warm tropical climate is gentle on pets year-round, though humidity and heat require well-ventilated, shaded facilities.
+For residents already on the islands, the boarding market is concentrated primarily on Oahu, which holds about 70% of the state's population. Honolulu has a solid range of facilities from traditional kennels to modern daycare-style operations in neighborhoods like Kaimuki and Kaneohe. Maui has a smaller but growing pet care market, particularly around Kahului and Kihei. The Big Island and Kauai have fewer options, with the most quality facilities clustered near their respective main towns of Hilo/Kailua-Kona and Lihue.
 
-Local Hawaiian boarding tends to be smaller and more personal than mainland operations — many offer cage-free, home-style environments. Required vaccinations include Rabies (for mainland-imported pets), DHPP, and Bordetella. Inter-island travel for pets requires advance planning given airline crate and policy requirements.
-
-PetBedNStay lists boarding options across all major Hawaiian islands, from Honolulu's urban kennels to rural Kauai sitters.`,
+Hawaii's weather is genuinely enviable — warm year-round, tempered by trade winds, with none of the extreme heat of Arizona or the brutal winters of the Northeast. Most boarding facilities operate with open-air or semi-open designs that take advantage of the climate. The biggest challenge for Hawaii pet owners is simply the limited number of facilities relative to the population — booking well ahead is strongly recommended, especially on neighbor islands where options are fewer.`,
   },
   {
-    stateSlug: "idaho",
-    stateName: "Idaho",
-    writeup: `Pet boarding in Idaho reflects the state's vast landscape — from the dense population of the Boise metro to the remote valleys of Central Idaho and the northern panhandle near Coeur d'Alene. Boise, Nampa, Meridian, Idaho Falls, Pocatello, and Coeur d'Alene are the state's primary boarding markets.
+    slug: "idaho",
+    name: "Idaho",
+    tagline: "🥔 The Gem State — Snake River canyon, Sawtooth peaks & outdoor life without the crowds",
+    writeup: `Idaho has spent years flying under the radar, but word is out: this is one of the best states in the country for people who love the outdoors — and their dogs. Boise, the capital, has been one of the fastest-growing cities in America for over a decade, pulling in outdoor-loving transplants from California, Washington, and beyond who bring their dogs and expect quality care. The city's Greenbelt along the Boise River is one of the most beloved urban trail systems in the West, and its dog culture reflects a population that genuinely prioritizes active living with pets.
 
-Idaho has a semi-arid climate with cold winters and warm, dry summers. Eastern Idaho, near Yellowstone's western entrance, experiences particularly harsh winters, making heated indoor facilities essential. Coeur d'Alene and the northern panhandle receive heavy snowfall and need covered, secure outdoor runs. The Boise metro — one of the fastest-growing cities in the West — has driven significant investment in modern pet care infrastructure.
+Coeur d'Alene in northern Idaho sits in one of the most scenic settings in the Pacific Northwest — a lakefront city surrounded by forests, with a boarding market that caters to both year-round residents and a steady stream of summer tourists. Twin Falls, perched near the dramatic Snake River Canyon, and Pocatello in the southeast round out Idaho's secondary markets. Sun Valley and Ketchum in central Idaho serve an affluent ski and outdoor tourism economy, with a small but quality-conscious boarding scene.
 
-Idaho does not have a statewide kennel licensing law. Required vaccinations include Rabies, DHPP, and Bordetella. Many Idaho facilities cater to hunting dogs and working breeds, with specialized kennels for retrievers, pointers, and hounds particularly common in the Magic Valley and eastern Idaho regions.
-
-PetBedNStay covers boarding across Idaho's diverse regions, from the Treasure Valley to the Gem State's remote mountain communities.`,
+Idaho's outdoor lifestyle means that boarding facilities here often have more space than equivalents in coastal cities — expect larger outdoor runs and more room to roam. Winters in northern Idaho can be severe, so confirm that facilities in Coeur d'Alene and Sandpoint are adequately heated. Spring through fall is Idaho's sweet spot, when the landscapes are at their most spectacular and pets can be active from morning to night.`,
   },
   {
-    stateSlug: "illinois",
-    stateName: "Illinois",
-    writeup: `Pet boarding in Illinois is shaped by the enormous influence of Chicago — the nation's third-largest city and one of its most dog-friendly. Chicago alone has hundreds of boarding facilities, luxury dog hotels, and certified in-home sitters. Suburban markets in Naperville, Aurora, Rockford, Joliet, Springfield, and Peoria extend the state's boarding options across central and northern Illinois.
+    slug: "illinois",
+    name: "Illinois",
+    tagline: "🌆 The Prairie State — Chicago's skyline, deep-dish pizza & Midwestern heartland stretching to the horizon",
+    writeup: `Illinois is, in practical terms, two states: Chicago and everything else. Chicago is one of the great dog cities of America — a dense, walkable city with a culture that has fully embraced pets as part of urban life. Neighborhoods like Lincoln Park, Wicker Park, Logan Square, and Roscoe Village have boardings facilities, doggy daycares, and pet boutiques packed tightly alongside coffee shops and cocktail bars. The city's off-leash dog beaches along Lake Michigan are iconic, and the city consistently ranks among the most pet-friendly major metros in the country.
 
-Illinois has a humid continental climate with harsh winters (Chicago's lake-effect wind chills can reach -30°F), warm humid summers, and unpredictable spring weather. Most facilities maintain heated indoor boarding year-round. Illinois does not have a statewide kennel licensing law, but Chicago and other municipalities enforce local animal control and boarding regulations.
+Outside Chicago, Illinois spreads into the flat agricultural heartland of the Midwest. Springfield (the capital), Peoria, Rockford, and Champaign-Urbana each have solid but less concentrated boarding markets than the city. The collar counties around Chicago — DuPage, Lake, Kane, and Will — have developed their own strong suburban boarding scenes catering to commuters who need reliable weekday care.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Chicago's competitive pet care market has fostered a strong concentration of Fear Free-certified handlers, cage-free boarding, and enrichment-focused daycares — particularly in dog-dense neighborhoods like Lincoln Park, Lakeview, and Wicker Park.
-
-Whether you're traveling for work or heading downstate to Shawnee National Forest, PetBedNStay helps you find quality pet boarding across all of Illinois.`,
+Illinois winters are not for the faint of heart — Chicago's "Polar Vortex" events can bring temperatures well below zero, and the wind off Lake Michigan adds a brutal chill factor. Any quality boarding facility in the Chicago area will have fully heated indoor facilities and carefully managed outdoor time in winter. Summer thunderstorms and severe weather are also a consideration — ask facilities about their protocols for storm events, which are not uncommon from May through September.`,
   },
   {
-    stateSlug: "indiana",
-    stateName: "Indiana",
-    writeup: `Pet boarding in Indiana stretches from the urban core of Indianapolis — the state's dominant market — to mid-size cities like Fort Wayne, Evansville, South Bend, Carmel, and Bloomington. Indianapolis has a well-developed pet care industry with dozens of full-service kennels, doggy daycares, and certified sitters throughout Marion County and surrounding suburbs.
+    slug: "indiana",
+    name: "Indiana",
+    tagline: "🏎️ The Crossroads of America — Indianapolis 500, rolling farmland & Hoosier pride",
+    writeup: `Indiana sits at the intersection of Midwestern practicality and surprising livability. Indianapolis has evolved remarkably in recent years — once overlooked, the city has developed a genuine culture scene, a food and drink reputation that draws national attention, and a growing population of young professionals who expect quality pet care options. The Indianapolis metro has seen significant investment in pet services, with modern boarding facilities, doggy daycares, and training centers spread across its walkable downtown neighborhoods and growing suburbs.
 
-Indiana has a humid continental climate with cold, snowy winters and hot, humid summers. Tornado risk is real in spring — look for facilities in permanent structures with storm shelter protocols. Indiana does not have a statewide kennel licensing requirement, though local counties may have animal control ordinances affecting boarding operations.
+Beyond Indianapolis, Indiana's second-tier cities each have their own character. Fort Wayne in the northeast has a quiet, family-oriented boarding market. Bloomington, home to Indiana University, has a college-town vibrancy and a small but solid pet care scene. South Bend and Evansville round out the state's map of options. The rolling hills and farm country between cities are home to several traditional kennels that offer spacious, countryside-style boarding at rates often below what you'd find in the metro.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. The Indianapolis 500 and Indiana State Fair create seasonal boarding demand each spring and summer — reserve early if traveling during those events. South Bend's Notre Dame University community creates steady demand during football weekends. Rural Indiana also has a growing number of farm-based boarding operations offering large open spaces for energetic dogs.
-
-PetBedNStay makes it easy to find trusted pet boarding across Indiana, from the Indy metro to the dunes of Lake Michigan.`,
+Indiana's climate is solidly four-season: warm, humid summers and cold winters with reliable snowfall. Boarding facilities across the state are accustomed to both extremes. The state is also in Tornado Alley's eastern reaches, so spring severe weather is worth asking facilities about. One notable perk: Indiana's lower cost of living compared to coasts translates to boarding rates that are generally very reasonable, making quality care accessible even on tighter budgets.`,
   },
   {
-    stateSlug: "iowa",
-    stateName: "Iowa",
-    writeup: `Pet boarding in Iowa is anchored by Des Moines and Cedar Rapids, the state's two largest cities, with strong secondary markets in Davenport, Sioux City, Iowa City, and Waterloo. Iowa's pet boarding culture leans toward practical, attentive quality — though the Des Moines metro has seen growth in premium cage-free facilities in recent years.
+    slug: "iowa",
+    name: "Iowa",
+    tagline: "🌽 The Hawkeye State — Endless cornfields, State Fair wonder & the friendliest neighbors you'll ever meet",
+    writeup: `Iowa has a quiet confidence about it. This is a state of open skies, rolling agricultural land, and tight-knit communities that take genuine pride in doing things well — and that ethos extends to pet care. Des Moines, the capital and largest city, has punched well above its weight in livability rankings for years, with a growing downtown core, excellent parks system, and a pet care market that reflects a community investing in quality of life. Iowa City, anchored by the University of Iowa, brings a college-town energy and an arts-oriented community that appreciates thoughtful businesses of all kinds, including pet boarding.
 
-Iowa has a humid continental climate with harsh, cold winters (Des Moines averages over 30 inches of snow), hot, humid summers, and significant tornado risk each spring. Look for boarding facilities in secure, permanent structures with documented storm protocols. Iowa does not have a statewide kennel licensing program.
+Cedar Rapids, Davenport (part of the Quad Cities), and Sioux City fill out Iowa's secondary markets, each with solid boarding options suited to their communities. In the stretches of agricultural land between cities, family-run kennels and farm-based boarding operations offer space and fresh air that urban dogs rarely experience. Iowa's farming culture means animals are genuinely respected and understood here — this isn't a state where pet care is an afterthought.
 
-Required vaccinations include Rabies (required by Iowa law), DHPP, and Bordetella. The University of Iowa in Iowa City and Iowa State University in Ames create localized boarding demand during football season and academic events. Iowa's extensive trail networks and state parks attract outdoor-oriented pet owners who need reliable boarding when pets can't accompany them to restricted natural areas.
-
-PetBedNStay connects Iowa pet owners with trusted boarding facilities from the Missouri River to the Mississippi.`,
+Iowa winters are genuinely cold, with temperatures regularly dropping below zero in January and February — make sure any facility you choose has robust heating and indoor facilities. Summers are warm and humid, which is ideal for active dogs who enjoy outdoor play. The Iowa State Fair in August is the state's biggest annual event and often means boarding fills up quickly in the Des Moines area during that week — book early if you're planning around it.`,
   },
   {
-    stateSlug: "kansas",
-    stateName: "Kansas",
-    writeup: `Pet boarding in Kansas is concentrated in the eastern cities of Wichita, Overland Park, Kansas City, Topeka, and Lawrence, with secondary options in Manhattan, Salina, and Hutchinson. Wichita, the state's largest city, has a well-developed pet care industry spanning traditional kennels to modern cage-free boarding studios.
+    slug: "kansas",
+    name: "Kansas",
+    tagline: "🌾 The Sunflower State — Endless prairie skies, wildflower fields & the spirit of the American frontier",
+    writeup: `Kansas is wide open in the best possible sense — big skies, rolling prairies, and an honest, hardworking character that runs through its communities from Wichita to Dodge City. The state's reputation for flatness sells it short: the Flint Hills in the east are genuinely beautiful, with tallgrass prairie that looks like something out of a landscape painting, and the far west opens into the dramatic high plains. For pet owners, this translates to boarding facilities that often have more outdoor space per animal than you'd find in more densely populated states.
 
-Kansas has a continental climate with cold winters, hot summers regularly exceeding 100°F in the west, and significant tornado risk across the plains each spring. A tornado-ready facility in a sturdy structure with documented emergency protocols is an important consideration. Kansas does not have a statewide kennel licensing requirement.
+Wichita, Kansas's largest city, is the center of the state's most developed pet care market. Often called the "Air Capital of the World" for its aviation industry, Wichita has grown into a surprisingly cosmopolitan city with a boarding scene that belies its Midwest-small-city reputation. Overland Park and Kansas City (Kansas side, just across the Missouri border) benefit from the broader Kansas City metro's pet culture, with several high-quality facilities serving the suburban sprawl.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. The Overland Park and Kansas City metro area offers some of the most diverse boarding options in the state, including luxury pet resorts with webcam monitoring. The Flint Hills region and Tallgrass Prairie National Preserve attract nature-loving pet owners who need boarding when exploring protected wildlife areas.
-
-PetBedNStay helps Kansas pet owners find trusted boarding from the wide-open plains to the vibrant KC metro.`,
+Lawrence, home to the University of Kansas, brings a collegiate energy and a notably progressive attitude toward pet services for a city its size. Topeka, the capital, and Manhattan (home of Kansas State University) round out the state's boarding landscape. Kansas tornadoes are famous for a reason — severe weather season runs spring through early summer, and it's genuinely worth asking any facility about their storm shelter protocols before booking.`,
   },
   {
-    stateSlug: "kentucky",
-    stateName: "Kentucky",
-    writeup: `Pet boarding in Kentucky blends Southern hospitality with the state's iconic horse culture. Louisville, Lexington, Bowling Green, Owensboro, Covington, and Frankfort are the primary boarding markets, with smaller operations throughout the Bluegrass, Cumberland Plateau, and western Kentucky regions.
+    slug: "kentucky",
+    name: "Kentucky",
+    tagline: "🐎 The Bluegrass State — Thoroughbred horses, rolling farmland & bourbon country",
+    writeup: `Kentucky's relationship with animals runs deeper than almost any other state. This is the home of thoroughbred horse racing — the Kentucky Derby at Churchill Downs is one of the most storied sporting events in the world — and that reverence for animals permeates the culture in ways that extend well beyond the racetrack. The Bluegrass Region around Lexington is dotted with horse farms of breathtaking beauty, and a community that has cared for prized animals for generations brings a high standard to pet care of all kinds.
 
-Kentucky has a humid subtropical climate with hot, humid summers and mild winters, though January ice storms are not uncommon. The thoroughbred horse industry has indirectly elevated standards for all animal care in the state — many pet boarding operators in the Lexington and Louisville areas maintain high-caliber facilities and protocols.
+Lexington and Louisville are Kentucky's twin anchors. Lexington, surrounded by horse country, has developed a pet care market that reflects its agricultural roots — you'll find facilities here with genuine outdoor space and staff experienced with animals large and small. Louisville, the state's largest city and a food and bourbon destination in its own right, has a more urban boarding scene with excellent options in neighborhoods like the Highlands and NuLu. Covington and Newport, just across the Ohio River from Cincinnati, benefit from the tri-state metro's resources.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. The Kentucky Derby in early May and the Breeders' Cup at Keeneland in October are major events that spike boarding demand in Louisville and Lexington — book well in advance for race weekends. Mammoth Cave National Park and Red River Gorge are popular destinations where boarding may be needed, as pets have limited access to some park areas.
-
-PetBedNStay connects you with trusted pet boarding options across the Bluegrass State, from Louisville to the Appalachian foothills.`,
+Kentucky's climate is four-season with mild winters by Midwest standards and warm, humid summers. The state sits in a region that occasionally gets ice storms in winter — check road conditions before driving to boarding facilities in January and February. Eastern Kentucky's Appalachian region is more rural with fewer options, so if you're traveling through that area, plan ahead. Kentucky bourbon country, centered around Bardstown and the Bourbon Trail, draws significant tourism, and several facilities near those areas cater specifically to travelers.`,
   },
   {
-    stateSlug: "louisiana",
-    stateName: "Louisiana",
-    writeup: `Pet boarding in Louisiana requires careful attention to the state's extreme heat and humidity — conditions that can be dangerous for pets without proper climate control. New Orleans, Baton Rouge, Shreveport, Metairie, Lafayette, and Lake Charles are the state's primary boarding hubs, each with a range of kennels, daycares, and in-home sitters.
+    slug: "louisiana",
+    name: "Louisiana",
+    tagline: "🎷 The Pelican State — Jazz, Mardi Gras, Cajun cuisine & the most alive culture in America",
+    writeup: `Louisiana is unlike any other state in the Union. Its culture — a gumbo of French, Spanish, African, Caribbean, and Native American influences — produced jazz, Cajun and Creole cooking, and a joie de vivre that is genuinely infectious. New Orleans is one of the great cities of the world, a place where life is celebrated loudly and food is a spiritual experience. It is also a city with serious pet owners who love their dogs and cats as enthusiastically as they love everything else about their city.
 
-Louisiana has a humid subtropical climate with long, hot, extremely humid summers — heat indices regularly exceed 105°F — and mild winters. Climate-controlled indoor boarding is essential from May through October. Mosquito-borne heartworm is prevalent throughout Louisiana year-round; confirm your pet is on prevention medication before any boarding stay.
+The Greater New Orleans area has a concentrated and growing pet boarding market, with facilities ranging from traditional kennels in Metairie and Kenner to more boutique urban operations serving the Uptown and Lakeview neighborhoods. Baton Rouge, the state capital and home to LSU, has its own solid market, particularly around the suburban areas of Gonzales and Prairieville. Lafayette anchors Cajun Country and has a warm, community-focused boarding scene that reflects the area's close-knit culture.
 
-Hurricane season (June–November) is a serious consideration. Look for boarding facilities in elevated or flood-resistant structures with backup generators and documented emergency protocols. Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. New Orleans' calendar of major events — Mardi Gras, Jazz Fest — creates significant boarding demand throughout the year.
-
-PetBedNStay helps Louisiana pet owners find trusted boarding from the French Quarter to the Cajun Prairie.`,
+Louisiana's climate is subtropical — hot, humid summers with significant rainfall, and mild winters that occasionally dip to freezing. Hurricane season (June through November) is a serious consideration: any reputable boarding facility should have a clear evacuation or shelter-in-place plan, and you should know that plan before leaving your pet. Post-Katrina New Orleans has rebuilt with resilience, and most facilities in flood-prone areas have upgraded their infrastructure significantly. Summer heat indexes regularly exceed 105°F, so confirm that all facilities have robust climate control.`,
   },
   {
-    stateSlug: "maine",
-    stateName: "Maine",
-    writeup: `Pet boarding in Maine serves one of the most scenic and rural states in the Northeast. Portland, the state's largest city, anchors the coastal boarding market, with significant options in Bangor, Lewiston-Auburn, Augusta, and Brunswick. Summer tourism along Maine's rocky coastline and in Acadia National Park creates strong seasonal demand from June through September.
+    slug: "maine",
+    name: "Maine",
+    tagline: "🦞 The Pine Tree State — Rocky coastline, lobster shacks & wilderness that goes on forever",
+    writeup: `Maine has a wild, uncompromising beauty that draws people who love nature in its most authentic form. The state has more coastline than California, thousands of lakes, and a forest interior so vast and undisturbed that moose sightings on country roads are routine. The people who choose to live here tend to have a particular relationship with the outdoors — and with the animals that share their lives. Dogs in Maine go everywhere: hiking Acadia National Park, riding in pickup trucks down logging roads, and accompanying their owners on lobster boat mornings.
 
-Maine has a humid continental climate with long, cold winters — Bar Harbor averages over 60 inches of snow annually — and short, beautiful summers. Most facilities are equipped for harsh New England winters with fully heated indoor boarding. Maine facilities operate under local municipal licensing and state animal welfare laws.
+Portland, Maine's largest and most vibrant city, has developed an impressive pet care market for its size. The city's Old Port and East End neighborhoods have a Brooklyn-meets-fishing-village energy, and the pet care businesses here reflect a community that is both progressive and practical. Bangor serves the state's interior as a hub, and Augusta, the small capital, has modest but reliable options. The coastal towns from Kennebunkport to Bar Harbor cater significantly to summer tourism and have boarding options that fill up fast in July and August.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. The coastal vacation economy — Bar Harbor, Kennebunkport, Camden, and Boothbay Harbor — drives a summer boarding market among both visitors and local residents. Acadia National Park, while pet-friendly on many trails, restricts pets in certain areas, creating regular boarding demand in the Bar Harbor region.
-
-PetBedNStay connects Maine pet owners and visitors with trusted boarding from Portland Harbor to the Downeast coast.`,
+Maine winters are serious. Deep cold, significant snowfall, and occasionally brutal wind chills mean boarding facilities must be equipped for real winter conditions — look for heated kennels and indoor exercise areas. Summer is Maine's magical season, with long evenings, wildflowers, and near-perfect conditions for active dogs. If you're visiting Acadia National Park, note that several facilities in the Bar Harbor area specifically cater to hiking and outdoor tourists bringing their dogs along.`,
   },
   {
-    stateSlug: "maryland",
-    stateName: "Maryland",
-    writeup: `Pet boarding in Maryland benefits from the state's position in the heart of the Mid-Atlantic corridor. Baltimore, Frederick, Rockville, Gaithersburg, Annapolis, and the densely populated Washington DC suburbs (Montgomery and Prince George's Counties) represent the state's largest boarding markets.
+    slug: "maryland",
+    name: "Maryland",
+    tagline: "🦀 The Old Line State — Chesapeake Bay crabs, colonial history & the edge of two worlds",
+    writeup: `Maryland sits at a fascinating intersection — part Mid-Atlantic, part Southern, with the Chesapeake Bay at its heart and the Baltimore-Washington corridor defining much of its character. It's a state of contrasts: dense urban neighborhoods and serene tidal wetlands, old money in horse country and new money in tech and federal contracting, crab shacks on the water and Michelin-starred restaurants in Baltimore. That diversity creates a pet care market that ranges from sophisticated urban daycare facilities to expansive rural kennels in Frederick and Howard counties.
 
-Maryland is one of the few states with a formal kennel licensing program — commercial kennels must obtain a state license through the Maryland Department of Agriculture, providing a meaningful quality baseline. The state's combination of urban, suburban, and rural environments spans the Chesapeake Bay region, Blue Ridge foothills, and Eastern Shore, giving pet owners diverse options.
+The Baltimore metro area and its surrounding counties — Anne Arundel, Howard, Carroll — have an exceptionally strong boarding market shaped by a large, professional, pet-obsessed population. Many residents work in DC but live in Maryland for its slightly more suburban character and lower costs, and they bring high expectations for pet care with them. The Washington DC suburbs of Montgomery and Prince George's counties offer dense concentrations of facilities serving government and tech workers.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Baltimore's Federal Hill and Canton neighborhoods are particularly pet-dense, with high-quality urban boarding. Eastern Shore beach areas near Ocean City create seasonal summer demand. Government contractor and military families throughout the DC suburbs generate strong demand for reliable extended-stay boarding.
-
-PetBedNStay covers pet boarding options across all Maryland counties, from the mountains of Garrett County to the beaches of Ocean City.`,
+Maryland's Eastern Shore — a peninsula between the Chesapeake Bay and the Atlantic Ocean — has a more agricultural, waterman's-culture character with several quiet, spacious kennels that provide a genuinely different experience from the DC suburbs. Ocean City draws significant summer tourism, and several facilities in the area cater to vacationers. Maryland winters are moderate compared to states further north, but ice storms can hit, particularly in February — always confirm road conditions before dropping pets in bad weather.`,
   },
   {
-    stateSlug: "massachusetts",
-    stateName: "Massachusetts",
-    writeup: `Pet boarding in Massachusetts is anchored by Greater Boston, one of the most pet-friendly large cities in the country. Boston, Worcester, Springfield, Cambridge, Lowell, and Newton represent the state's primary boarding markets, with the Boston metro hosting hundreds of licensed kennels, luxury dog hotels, and cage-free boarding facilities.
+    slug: "massachusetts",
+    name: "Massachusetts",
+    tagline: "🦞 The Bay State — Revolutionary history, Ivy League brilliance & New England's beating heart",
+    writeup: `Massachusetts is one of the most intellectually and culturally dense states in the country. Greater Boston — a city that contains more universities, hospitals, and per-capita Nobel laureates than almost anywhere on Earth — has also developed one of the most sophisticated pet care markets in New England. The city's neighborhoods like Cambridge, Somerville, Jamaica Plain, and Brookline have a highly educated, deeply pet-committed population that expects excellent care and is willing to pay for it.
 
-Massachusetts requires commercial boarding kennels to hold a state kennel license, providing an important regulatory baseline. New England storm seasons — nor'easters in winter and occasional hurricanes in fall — mean facilities should have documented emergency protocols. Boston averages 48 inches of snow annually; all major facilities maintain fully heated indoor boarding.
+The Pioneer Valley in western Massachusetts (Amherst, Northampton, Springfield) has its own distinct character, anchored by five colleges including UMass Amherst and Smith, and a pet care market that's thoughtful and community-oriented. Worcester, the state's second city, serves as a practical hub for central Massachusetts. Cape Cod, Martha's Vineyard, and Nantucket attract significant summer tourism — and often need boarding for visiting pets — but can be harder to access in winter.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Boston's dense urban neighborhoods — Back Bay, South End, Beacon Hill, and Brookline — have high concentrations of premium boarding studios and certified in-home sitters. The Cape Cod and Martha's Vineyard summer tourism economy creates seasonal boarding demand, and the Berkshires' fall foliage season draws weekend visitors who need trusted care.
-
-PetBedNStay lists boarding options across Massachusetts, from the South Shore to the Berkshire Hills.`,
+New England winters arrive reliably in Massachusetts, and Boston's legendary snowfall means boarding facilities in the metro need to be prepared for serious winter operations. Summers in Boston and along the coast are beautiful, with the kind of moderate, sunny weather that makes outdoor activity ideal for dogs. Boston's compact geography means that even in a dense urban environment, quality boarding is rarely more than a short Uber ride away. Book early around university move-in weekends (August–September) when demand spikes dramatically.`,
   },
   {
-    stateSlug: "michigan",
-    stateName: "Michigan",
-    writeup: `Pet boarding in Michigan serves two very different geographies: the densely populated Lower Peninsula anchored by Detroit, Grand Rapids, Lansing, and Ann Arbor, and the sparsely populated but spectacular Upper Peninsula. The Detroit metro — including Troy, Sterling Heights, Warren, and Dearborn — hosts the greatest concentration of boarding facilities in the state.
+    slug: "michigan",
+    name: "Michigan",
+    tagline: "🚗 The Great Lakes State — Surrounded by freshwater, built on grit & full of hidden treasures",
+    writeup: `Michigan is surrounded by more freshwater than any other state — bordered by four of the five Great Lakes, it has 3,288 miles of freshwater coastline, the most of any state in the US. That lake-country lifestyle shapes everything about how Michiganders live, including how they care for their pets. Boating with dogs on Lake Michigan, hiking in the Upper Peninsula's wilderness, and traversing the Sleeping Bear Dunes are the kinds of activities that define Michigan summers — and they create a demand for quality pet care when travel plans don't include four-legged companions.
 
-Michigan has a humid continental climate shaped by the Great Lakes, with cold, snowy winters (the UP can exceed 200 inches of snow annually) and warm summers. Most facilities maintain heated indoor boarding year-round. Michigan does not have a statewide kennel licensing program; facilities operate under local licensing and state animal welfare statutes.
+Detroit, once written off and now experiencing a genuine renaissance, has seen a surge in pet-friendly businesses as the city rebuilds. Neighborhoods like Corktown, Midtown, and Ferndale have developed vibrant pet care ecosystems that reflect the city's broader cultural revival. Ann Arbor, home to the University of Michigan, has long had an excellent boarding market serving its educated, progressive community. Grand Rapids, Michigan's second city, has become a destination in its own right with a strong craft beer scene and a growing pet care industry.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Grand Rapids has seen rapid growth in modern cage-free and enrichment-focused boarding facilities. Traverse City and northern Michigan create summer boarding demand as tourists visit Sleeping Bear Dunes and the Leelanau Peninsula. Upper Peninsula facilities near Marquette often cater to outdoor enthusiasts visiting Pictured Rocks National Lakeshore.
-
-PetBedNStay helps Michigan pet owners find trusted boarding from the Metro Detroit area to the Mackinac Straits.`,
+The Upper Peninsula is a different world entirely — sparse, forested, and wild, with boarding options concentrated around Marquette and the occasional well-run kennel in smaller towns. It's genuinely spectacular for outdoor adventures with dogs. Michigan winters are significant: Lake Effect snow can drop several feet on western Michigan in hours, and Upper Peninsula winters rival Alaska for severity. Any boarding facility you choose must be thoroughly winterized.`,
   },
   {
-    stateSlug: "minnesota",
-    stateName: "Minnesota",
-    writeup: `Pet boarding in Minnesota operates in one of the coldest climates in the contiguous United States. Minneapolis, St. Paul, Rochester, Duluth, Bloomington, and Eden Prairie represent the state's primary boarding markets. The Twin Cities metro is exceptionally dog-friendly, with a high concentration of well-run boarding facilities, cage-free daycares, and Fear Free-certified handlers.
+    slug: "minnesota",
+    name: "Minnesota",
+    tagline: "❄️ The Land of 10,000 Lakes — Boundary Waters wilderness, Scandinavian heritage & nice Minnesotans",
+    writeup: `Minnesota is consistently ranked among the best states in the country for quality of life, and that excellence extends to pet care. The Twin Cities metro — Minneapolis and Saint Paul — has a remarkable concentration of quality boarding facilities, driven by a population that is educated, civic-minded, and deeply committed to the wellbeing of its animals. Minneapolis's greenway system, its abundance of dog parks, and its culture of year-round outdoor activity (yes, even in January) have created a community that treats pet care with the same seriousness it applies to everything else.
 
-Minnesota requires commercial boarding kennels to hold a state license through the Minnesota Board of Animal Health — one of the stronger regulatory frameworks in the country. Winters regularly bring temperatures of -20°F and lower wind chills; fully heated indoor boarding with insulated outdoor areas is essential from November through March.
+Beyond the Twin Cities, Minnesota's character changes dramatically. Duluth, perched on the western tip of Lake Superior, is an outdoor recreation hub with spectacular natural scenery and a growing pet care market. Rochester, home to the Mayo Clinic, serves a well-educated medical community. Smaller cities like St. Cloud, Mankato, and Moorhead each have solid boarding options. The northern lake country around Brainerd and the Boundary Waters is resort-oriented in summer and nearly deserted in winter — boarding options there are sparse but often scenic.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Minneapolis' progressive pet culture has produced several nationally recognized boarding and enrichment facilities. The Boundary Waters Canoe Area Wilderness and Voyageurs National Park restrict pets in some areas, creating boarding demand in the Grand Marais and International Falls regions during peak outdoor season.
-
-PetBedNStay connects Minnesota pet owners with trusted boarding across the Land of 10,000 Lakes.`,
+Minnesota winters are not euphemism. The Polar Vortex is real and can bring temperatures to -30°F or colder. Any facility you choose must have fully heated kennels and temperature-controlled outdoor areas for winter exercise. On the flip side, Minnesota summers are genuinely glorious — warm, long days with perfect weather for outdoor activity from June through September. Spring and fall are spectacular, with the fall color display around the north shore of Lake Superior ranking among the finest in North America.`,
   },
   {
-    stateSlug: "mississippi",
-    stateName: "Mississippi",
-    writeup: `Pet boarding in Mississippi serves a deeply pet-loving state with a strong culture of animal care across urban centers, small towns, and rural communities. Jackson, the state capital, anchors the boarding market along with the Gulf Coast cities of Gulfport and Biloxi, Hattiesburg, Oxford, and Southaven in the northern suburbs of Memphis.
+    slug: "mississippi",
+    name: "Mississippi",
+    tagline: "🎵 The Magnolia State — Birthplace of the blues, catfish country & Mississippi River soul",
+    writeup: `Mississippi may be one of the most misunderstood states in America. Dismissed by those who've never been there, it has produced a disproportionate share of America's most important cultural contributions — blues music born in the Delta, literary giants like William Faulkner and Eudora Welty, and a cuisine that gave the country catfish, biscuits, and some of the finest smoked pork in the world. The people here are genuinely warm, community-oriented, and unpretentious — qualities that extend to how they approach businesses of all kinds, including pet care.
 
-Mississippi has a humid subtropical climate with hot, humid summers regularly topping 95°F and mild winters. Climate-controlled indoor facilities are essential from May through September. Heartworm and tick-borne diseases are particularly prevalent in Mississippi — ensure your pet is current on preventive medications before any boarding stay.
+Jackson, the state capital and largest city, anchors the state's most concentrated boarding market. Hattiesburg in the southeast serves as a regional hub with a growing university population from Southern Miss. Gulfport and Biloxi on the Gulf Coast have developed pet care options that serve both year-round residents and the tourism economy driven by the casino strip and beach culture. Oxford, home to Ole Miss, has a disproportionate sophistication for its size, with several quality facilities serving its academic and literary community.
 
-Mississippi does not have a statewide kennel licensing law. Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Gulf Coast facilities near Biloxi and Gulfport see elevated hurricane-season demand (June–November) — book early and confirm emergency protocols. The University of Mississippi in Oxford creates seasonal boarding demand during football weekends.
-
-PetBedNStay lists pet boarding options across Mississippi, from the Delta blues country to the Emerald Coast.`,
+Mississippi's climate is hot and humid with very mild winters — temperatures rarely drop below freezing in the southern part of the state. Summer heat and humidity are significant factors for pet boarding; facilities must have air-conditioned kennels, and outdoor exercise during summer afternoons should be limited. Hurricane season affects the Gulf Coast from June through November, and the coastal boarding facilities should have clear storm preparation protocols in place.`,
   },
   {
-    stateSlug: "missouri",
-    stateName: "Missouri",
-    writeup: `Pet boarding in Missouri spans the cultural divide between St. Louis in the east and Kansas City in the west — two distinct metro markets 250 miles apart on I-70. St. Louis, Kansas City, Springfield, Columbia, and St. Joseph are the state's primary boarding hubs, with Columbia's university-town environment producing a particularly vibrant pet care scene.
+    slug: "missouri",
+    name: "Missouri",
+    tagline: "🌉 The Gateway State — Gateway Arch, Ozark hollows & the confluence of American culture",
+    writeup: `Missouri is where the American West begins and the Midwest gets interesting. The Gateway Arch in St. Louis stands as a literal monument to westward expansion, and the state's geography reflects its role as a crossroads — the Mississippi and Missouri Rivers meet here, the Ozark Mountains fill the southern half with rugged beauty, and the Kansas City plains stretch west toward the horizon. It's a state with distinct regional identities that give its pet boarding market real variety.
 
-Missouri has a humid continental climate with cold, icy winters, hot and humid summers, and significant tornado risk in spring. The Kansas City area sits at the northern edge of Tornado Alley — look for facilities with storm shelter capabilities. Missouri does not have a statewide kennel licensing requirement.
+St. Louis has a deep, neighborhood-centric culture that makes it one of the most locally proud cities in America. The pet care scene here reflects that neighborhood spirit, with boutique daycares and boarding operations embedded in communities like Dogtown (yes, that's a real neighborhood), Webster Groves, and Maplewood. Kansas City is Missouri's other major metro — a city with a world-famous BBQ tradition and a lively arts scene that has embraced pets as enthusiastically as brisket. Both cities have premium boarding options alongside budget-friendly traditional kennels.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Kansas City's Crossroads Arts District and Brookside neighborhood have a high concentration of boutique boarding studios. St. Louis' pet culture is strong in neighborhoods like Webster Groves and Kirkwood. The Lake of the Ozarks creates seasonal boarding demand in the Camdenton area, and Branson's tourism industry generates periodic demand from visiting families.
-
-PetBedNStay helps Missouri pet owners find trusted boarding from the Gateway Arch to the Ozark highlands.`,
+The Ozarks in southern Missouri — centered around Branson, Lake of the Ozarks, and the college town of Springfield — offer a slower-paced, outdoor-oriented alternative with boarding facilities that lean toward the spacious and pastoral. Missouri's four-season climate means facilities are equipped for both summer heat and winter cold, though neither is typically as extreme as in neighboring states. The state's central location and strong highway network mean that no matter where you are, a quality boarding option is usually within a reasonable drive.`,
   },
   {
-    stateSlug: "montana",
-    stateName: "Montana",
-    writeup: `Pet boarding in Montana serves one of the most geographically vast and sparsely populated states in the country. Billings, Missoula, Great Falls, Bozeman, Butte, and Helena are the state's primary boarding markets, with smaller options scattered across ranching communities throughout the Big Sky State.
+    slug: "montana",
+    name: "Montana",
+    tagline: "🦌 Big Sky Country — Glacier peaks, endless plains & wildlife that reminds you who's really in charge",
+    writeup: `Montana earns its "Big Sky Country" nickname honestly — the skies here are genuinely, almost disoriently large, and the landscape that stretches beneath them is among the most spectacular in North America. Glacier National Park in the northwest and Yellowstone's northern reaches in the south frame a state that feels, more than almost anywhere in the lower 48, like genuine wilderness. The people who choose Montana are making a deliberate choice — they want space, nature, and a different pace. Their dogs tend to be working dogs or serious outdoor companions.
 
-Montana has a semi-arid to continental climate with extremely cold winters — Billings regularly sees -30°F — and warm, dry summers. Fully heated indoor boarding is essential from October through April. Montana's vast wilderness and outdoor culture mean many facilities cater to hunting dogs, working breeds, and large high-energy dogs.
+Billings is Montana's largest city and its commercial hub, with the most developed pet boarding market in the state. Missoula, a university town on the Clark Fork River with a deeply outdoor and progressive culture, has excellent boarding options that reflect its community's values. Bozeman has exploded in popularity in recent years as transplants from coastal cities discovered its combination of outdoor access and growing amenities — bringing their dogs and a demand for quality care with them. Great Falls and Helena, the capital, round out the state's market.
 
-Montana does not have a statewide kennel licensing requirement. Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Bozeman's rapid growth, driven by tech industry migration and outdoor recreation tourism, has elevated the local pet care market significantly. Glacier National Park and Yellowstone's northern entrance near Gardiner create boarding demand in the Kalispell and Livingston areas.
-
-PetBedNStay connects Montana pet owners and visitors with trusted boarding across the Big Sky State.`,
+Montana winters can be severe — particularly in the northern regions near Glacier, where temperatures can drop to -30°F and blizzards are real events. Any facility you choose for winter boarding must be fully winterized and experienced with genuinely cold conditions. Summer is Montana's glory season, with long daylight hours, perfect temperatures, and access to trails, rivers, and landscapes that will exhaust even the most energetic dogs in the best possible way.`,
   },
   {
-    stateSlug: "nebraska",
-    stateName: "Nebraska",
-    writeup: `Pet boarding in Nebraska is anchored by the Omaha metropolitan area — the state's largest city and home to the greatest concentration of boarding facilities, daycares, and in-home sitters. Lincoln, home to the University of Nebraska, is the second-largest market, followed by Bellevue, Grand Island, Kearney, and Fremont.
+    slug: "nebraska",
+    name: "Nebraska",
+    tagline: "🌽 The Cornhusker State — Sandhills solitude, Husker pride & the great American prairie sky",
+    writeup: `Nebraska is bigger, more beautiful, and more interesting than its reputation suggests. The Sandhills — a vast, rolling landscape of grass-covered sand dunes in the state's western interior — are one of the great natural wonders of the Great Plains and one of the best bird migration spectacles in North America. The state's wide open spaces and genuine agricultural character give it a grounded, no-nonsense quality that extends to how it approaches businesses of all kinds, including pet care.
 
-Nebraska has a continental climate with harsh, cold winters (Omaha averages over 30 inches of snow), hot summers, and significant tornado risk across the Great Plains each spring. Look for tornado-resistant facilities with documented storm protocols. Nebraska does not have a statewide kennel licensing requirement.
+Omaha is Nebraska's largest city and its most cosmopolitan, with a downtown that has reinvented itself significantly in recent decades. The Old Market district and Midtown neighborhoods have a genuine urban vitality, and the pet care market here is surprisingly sophisticated — several premium boarding operations serve a professional population that travels frequently for the insurance, telecommunications, and financial industries headquartered here. Lincoln, home to the University of Nebraska, has a spirited college-town character and a good concentration of boarding facilities.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Omaha's thriving pet culture — supported by a strong veterinary community — has produced a competitive boarding market with several top-rated facilities. The College World Series in Omaha each June drives boarding demand. Lincoln's university community creates consistent demand during football season, and western Nebraska's Chimney Rock region attracts road-trippers who may need boarding along the Oregon Trail corridor.
-
-PetBedNStay makes it easy to find pet boarding across Nebraska, from the Missouri River to the Sandhills.`,
+The rest of Nebraska is genuinely vast and sparsely populated. Grand Island, Kearney, and North Platte serve as regional hubs with modest but functional boarding options. Smaller towns often rely on a single quality facility for a wide geographic area. Nebraska winters are cold and can be windy — the plains offer no shelter from winter weather systems sweeping down from Canada. Summer heat on the Great Plains can be significant as well. Facilities across the state are accustomed to both extremes, and rates in Nebraska are generally among the most affordable in the country.`,
   },
   {
-    stateSlug: "nevada",
-    stateName: "Nevada",
-    writeup: `Pet boarding in Nevada is dominated by the unique demands of Las Vegas — one of the world's most visited tourist destinations. Las Vegas, Henderson, Reno, North Las Vegas, Sparks, and Carson City are the state's primary boarding markets. The Las Vegas metro generates enormous demand from frequent-traveling residents and from tourists who bring pets along.
+    slug: "nevada",
+    name: "Nevada",
+    tagline: "🎰 The Silver State — Las Vegas neon, desert solitude & mountains nobody talks about enough",
+    writeup: `Nevada contains multitudes. Las Vegas is one of the most visited cities on Earth — a place that never sleeps, runs entirely on spectacle, and hosts a pet boarding market specifically designed for people passing through from everywhere. The city's many resort and casino workers are also year-round residents who need quality daily and weekly care for their pets. Unsurprisingly, Las Vegas has developed an unusually high number of 24/7 facilities and drop-in services to match a city that operates on an unconventional schedule.
 
-Nevada has an extreme desert climate — Las Vegas summers exceed 115°F, making climate-controlled indoor boarding non-negotiable from June through September throughout southern Nevada. Reno and northern Nevada have a more temperate high-desert climate with cold winters. Nevada does not have a statewide kennel licensing law; Clark County and Washoe County have their own animal control regulations.
+Reno, Nevada's second city, has a completely different character — more laid-back, Sierra Nevada-adjacent, and increasingly popular with outdoor enthusiasts from the Bay Area. The Truckee Meadows area has good boarding options that reflect Reno's growing arts and outdoor culture. Lake Tahoe, straddling the Nevada-California border, has spectacular scenery and caters heavily to a ski and outdoor tourism economy — boarding options around Incline Village serve that market well.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Las Vegas's 24-hour economy has driven the development of several premium 24/7 boarding and daycare facilities in neighborhoods like Summerlin and Henderson. Red Rock Canyon, Lake Mead, and Great Basin National Park create demand for boarding in gateway communities across the Silver State.
-
-PetBedNStay lists boarding options across Nevada, from the Las Vegas Strip corridor to Reno's Truckee Meadows.`,
+Nevada's terrain is dramatically varied: the neon glow of Vegas exists in the same state as Great Basin National Park's ancient bristlecone pine forests. For pet owners, the desert climate matters enormously. Las Vegas summer temperatures regularly exceed 115°F — outdoor time for pets must be managed with extreme care, and any boarding facility worth considering will have fully air-conditioned kennels and restrict outdoor exercise to early morning and after sunset. Winter in Nevada's mountains can be severe; Reno area facilities need to be equipped for real cold and snow.`,
   },
   {
-    stateSlug: "new-hampshire",
-    stateName: "New Hampshire",
-    writeup: `Pet boarding in New Hampshire serves a small but passionate pet-loving state at the gateway to the White Mountains. Manchester, Nashua, Concord, Dover, Rochester, and Conway are the primary boarding markets, with smaller facilities throughout the Lakes Region, Seacoast, and Upper Valley.
+    slug: "new-hampshire",
+    name: "New Hampshire",
+    tagline: "🍁 The Granite State — Live free or die, fall foliage & Mt. Washington's wild weather",
+    writeup: `New Hampshire lives up to its motto — "Live Free or Die" captures a genuine independence of spirit that you feel in the state's politics, its landscapes, and its communities. This is a place where people are self-reliant, where small towns maintain fierce pride in their identities, and where the relationship with the natural world is foundational. The White Mountains are the dominant geographic feature — a spectacular alpine landscape with Mount Washington, the Northeast's highest peak and home to some of the most extreme recorded weather on Earth. Dogs who hike the Presidential Range are the envy of dogs everywhere.
 
-New Hampshire has a humid continental climate with cold, snowy winters — Mount Washington holds records for extreme wind and cold — and short, beautiful summers. Most facilities operate fully heated indoor boarding year-round. New Hampshire facilities operate under local municipal and state RSA Chapter 437 regulations governing kennel operations.
+Concord (the small but spirited capital), Manchester (the state's largest city), and Nashua (a Boston suburb in many respects) form the urban core of New Hampshire's pet boarding market. Portsmouth on the Seacoast is a charming small city with a surprisingly vibrant culture and excellent boarding options. The Lakes Region around Lake Winnipesaukee is a major summer and fall tourism destination with several quality facilities serving visiting pet owners.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. North Conway and Conway see high boarding demand during ski season (December–March) and fall foliage season (September–October). Nashua and Manchester, within the greater Boston commuter sphere, maintain strong year-round demand. New Hampshire's independent spirit extends to pet care — the state has a tradition of family-operated boarding kennels that emphasize personal attention.
-
-PetBedNStay helps you find trusted pet boarding across the Granite State, from the Seacoast to the White Mountains.`,
+New Hampshire attracts enormous fall foliage tourism in September and October — if you're visiting during leaf-peeping season and need boarding, book several weeks ahead. Ski season (December through March) brings another wave of tourism, particularly to the North Country around Conway and Lincoln. New Hampshire winters are genuine and cold, and the mountains are no joke — facilities in elevated areas must be equipped for serious winter conditions. Summer is spectacular, with long days and ideal outdoor conditions for active dogs.`,
   },
   {
-    stateSlug: "new-jersey",
-    stateName: "New Jersey",
-    writeup: `Pet boarding in New Jersey benefits from one of the most densely populated states in the country and its proximity to New York City and Philadelphia. Newark, Jersey City, Trenton, Camden, Atlantic City, and hundreds of suburban communities throughout Bergen, Morris, Essex, Monmouth, and Burlington Counties represent some of the richest boarding markets on the East Coast.
+    slug: "new-jersey",
+    name: "New Jersey",
+    tagline: "🌊 The Garden State — Jersey Shore sunsets, farm country & the most culturally diverse zip codes on Earth",
+    writeup: `New Jersey is simultaneously one of the most misunderstood and most underrated states in the country. Yes, it's dense — the most densely populated state in the US — but that density has produced extraordinary cultural diversity, extraordinary food (the diner capital of America and home to some of the best pizza and Italian food outside of Italy), and an extremely well-developed pet care infrastructure. The state's proximity to New York City has elevated expectations across the board: New Jersey residents have the sophistication of New York consumers with slightly more suburban breathing room.
 
-New Jersey requires commercial boarding kennels to hold a state license through the New Jersey Department of Health, providing a meaningful regulatory framework. The state has a humid subtropical to humid continental climate with hot, humid summers and cold, snowy winters. The Jersey Shore creates high seasonal boarding demand around Atlantic City, Asbury Park, Cape May, and Long Beach Island each summer.
+Northern Jersey's suburbs — Montclair, Summit, Short Hills, Hoboken — have premium boarding facilities that cater to NYC commuters who are accustomed to paying for quality. The Jersey Shore, stretching from Sandy Hook to Cape May, is one of the East Coast's most beloved summer destinations and has boarding operations scaled to handle the summer tourist surge. Central Jersey (a real place, debates aside) around Princeton and New Brunswick has a college-town intellectual energy and solid boarding options. South Jersey around Camden and Cherry Hill is influenced more by Philadelphia's orbit.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. The wealthy commuter suburbs of Bergen, Essex, and Morris Counties have a particularly high concentration of premium boarding facilities. Many NYC residents cross the Hudson for more spacious and affordable New Jersey boarding options.
-
-PetBedNStay covers pet boarding options across the Garden State, from the Delaware Water Gap to the Atlantic Shore.`,
+New Jersey's climate is classic Mid-Atlantic — four full seasons with hot summers, cold winters, and spectacular falls and springs. The state is well-prepared for all of them. Hurricane season occasionally brings tropical storms up the coast; Sandy's impact in 2012 remains a reference point for emergency preparedness, and reputable facilities have updated their protocols accordingly. Traffic is a genuine factor in trip planning — allow extra time for drop-off and pickup, especially on Friday afternoons heading to the Shore.`,
   },
   {
-    stateSlug: "new-mexico",
-    stateName: "New Mexico",
-    writeup: `Pet boarding in New Mexico spans the high desert landscapes of Albuquerque and Santa Fe to the agricultural communities of Las Cruces, Farmington, and Roswell. Albuquerque, the state's largest city, hosts the greatest concentration of boarding facilities, with a growing premium market in the Nob Hill and Heights neighborhoods.
+    slug: "new-mexico",
+    name: "New Mexico",
+    tagline: "🎨 The Land of Enchantment — Painted desert, ancient pueblos & the sky that inspired Georgia O'Keeffe",
+    writeup: `New Mexico casts a spell on people. The light here is different — sharper, more golden, more luminous — and it drew Georgia O'Keeffe from New York to spend the rest of her life painting its mesas and bones. The state's rich blend of Native American, Hispanic, and Anglo cultures has produced an art scene of genuine international stature, a cuisine centered on green and red chile that is deeply, ferociously its own, and a way of life that prioritizes beauty, community, and a certain unhurried quality. Dogs in New Mexico are part of outdoor life — hiking Bandelier, exploring the Rio Grande Gorge, running the trails around the Sandia Mountains.
 
-New Mexico has a semi-arid to arid climate. Albuquerque sits at 5,300 feet, moderating summer temperatures compared to Tucson or Phoenix, but the Chihuahuan Desert region around Las Cruces and Carlsbad can still see 100°F heat. Look for climate-controlled facilities during summer months. New Mexico does not have a statewide kennel licensing requirement.
+Albuquerque, the state's largest city, has the most developed pet boarding market, with options ranging from large kennels near the airport to smaller, neighborhood-focused daycares in the Nob Hill and Northgate areas. Santa Fe, the capital and one of the great art cities in the world, has a high-end market reflecting its luxury tourism economy and affluent resident base. Taos, further north, serves a smaller population of artists, outdoor enthusiasts, and spiritual seekers, with a handful of quality boarding options.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Santa Fe's arts community has produced boutique boarding studios catering to the city's affluent part-time residents. White Sands National Park, Carlsbad Caverns, and Bandelier National Monument restrict pets in most areas — creating regular boarding demand in nearby communities. In remote areas like Gallup and Alamogordo, options are limited, so planning ahead is essential.
-
-PetBedNStay connects New Mexico pet owners and visitors with trusted boarding across the Land of Enchantment.`,
+New Mexico's high desert climate is generally excellent for pets — dry air, sunny skies, and mild winters at lower elevations. Albuquerque sits at 5,300 feet elevation, which moderates summer heat significantly compared to neighboring Arizona. Altitude is worth noting for pets arriving from sea level. The monsoon season from July through September brings afternoon thunderstorms that are often dramatic but brief — facilities in the region are well-accustomed to them.`,
   },
   {
-    stateSlug: "new-york",
-    stateName: "New York",
-    writeup: `Pet boarding in New York spans the entire spectrum of the pet care industry — from the hyper-competitive luxury pet hotel market of Manhattan, Brooklyn, and Queens to the sprawling suburban kennels of Long Island and the rural boarding farms of the Adirondacks and Catskills. New York City, Buffalo, Rochester, Albany, Syracuse, and Yonkers represent the state's largest boarding markets.
+    slug: "new-york",
+    name: "New York",
+    tagline: "🗽 The Empire State — Manhattan's skyline, Adirondack wilderness & every culture on Earth",
+    writeup: `New York State is two entirely different worlds wearing the same name. New York City is one of the greatest metropolises on Earth — a place where 8 million people live at impossible density and have, remarkably, developed one of the most sophisticated pet care ecosystems anywhere. Manhattan, Brooklyn, and Queens have hundreds of boarding facilities, doggy daycares, and pet services packed into their neighborhoods. The West Village has boutique pet hotels. Astoria has family-run kennels open since the 1970s. Brooklyn has facilities that look like tech startup offices for dogs.
 
-New York State requires commercial boarding facilities to hold a kennel license and comply with NY Agriculture and Markets regulations — one of the more comprehensive regulatory frameworks in the country. New York City's density has produced hundreds of boarding options in every borough and price range, from $200/night luxury Manhattan pet hotels to certified home-based sitters in every Brooklyn neighborhood.
+Upstate New York is a revelation for those who've only seen the city. The Adirondack Mountains in the north — six million acres of protected wilderness — are spectacular. The Catskills, Hudson Valley, Finger Lakes wine country, and Niagara Falls each offer distinct landscapes and a more spacious, affordable version of New York living. Albany, Buffalo, Rochester, and Syracuse anchor a network of secondary cities with their own solid pet boarding markets, generally at a fraction of NYC prices.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. The Catskills and Hudson Valley drive weekend boarding demand from NYC. Long Island's Hamptons and North Fork wine country create high summer demand. Adirondack wilderness and Niagara Falls attract visitors who may need boarding in gateway communities.
-
-PetBedNStay covers boarding options across all of New York State, from the Five Boroughs to the North Country.`,
+The boroughs present specific logistics for boarding: outer borough facilities are usually easier to access and park near than Manhattan. Long Island has a dense suburban boarding market, particularly in Nassau County. The Hamptons have luxury options scaled to their wealthy summer tourism economy. Upstate winters can be brutally cold, particularly in the Adirondacks and Buffalo (the Great Lakes snow machine); facilities there are built for it. New York's licensing and inspection standards for commercial kennels are among the most rigorous in the US.`,
   },
   {
-    stateSlug: "north-carolina",
-    stateName: "North Carolina",
-    writeup: `Pet boarding in North Carolina has grown rapidly alongside the state's booming population. Charlotte, Raleigh, Durham, Greensboro, Winston-Salem, Asheville, and Fayetteville are the major boarding markets. The Research Triangle's tech and pharmaceutical industry has produced a well-educated, pet-focused population driving demand for premium boarding services.
+    slug: "north-carolina",
+    name: "North Carolina",
+    tagline: "🏔️ The Tar Heel State — Appalachian summits, barrier island beaches & the Research Triangle's rise",
+    writeup: `North Carolina spans the entire American geographic spectrum in a single state: from the Outer Banks' wild barrier islands on the Atlantic coast to the Great Smoky Mountains in the west, passing through the Piedmont plateau where the Research Triangle (Raleigh, Durham, Chapel Hill) has become one of the most dynamic economic and cultural regions in the South. The state has attracted an enormous influx of new residents over the past decade — technology workers, healthcare professionals, and retirees from the Northeast and Midwest who bring with them both high expectations and genuine enthusiasm for their pets.
 
-North Carolina requires commercial boarding kennels to obtain an animal shelter and boarding kennel license from the NC Department of Agriculture — one of the few states with formal oversight. The state's climate ranges from coastal plain humidity to temperate Piedmont conditions to mountain snowfall around Asheville, creating different boarding needs across regions.
+The Research Triangle's pet care market has grown dramatically to match its population boom. Raleigh, Durham, and Cary have excellent boarding options across all price points, with several facilities that rival what you'd find in much larger cities. Charlotte, the state's largest city and a major banking hub, has a robust suburban boarding market in its rapidly growing outlying areas. Asheville, the mountain city known for its arts scene, craft breweries, and progressive culture, has developed a particularly thoughtful and community-oriented pet care ecosystem that reflects its character.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Asheville's booming pet-friendly tourism and outdoor culture have created a vibrant local boarding market. Outer Banks beaches drive significant coastal boarding demand from June through August. The Research Triangle's professional community has particularly strong demand for enrichment-focused, cage-free boarding experiences.
-
-PetBedNStay lists trusted pet boarding across North Carolina, from the Great Smoky Mountains to the Crystal Coast.`,
+The barrier islands — the Outer Banks, Crystal Coast, and Brunswick Islands — draw significant summer tourism, and boarding options in those areas tend to fill quickly from Memorial Day through Labor Day. Mountain facilities around Asheville and Boone are popular in fall foliage season (October). North Carolina's climate varies significantly: coastal areas are subtropical and warm, while the mountains see genuine winters with occasional heavy snow. The Piedmont has four pleasant seasons.`,
   },
   {
-    stateSlug: "north-dakota",
-    stateName: "North Dakota",
-    writeup: `Pet boarding in North Dakota serves one of the least densely populated states in the country, where Fargo, Bismarck, Grand Forks, Minot, and Mandan represent most of the state's boarding capacity. Despite its small population, North Dakota has a strong pet-owning culture and a growing network of kennels and in-home sitters.
+    slug: "north-dakota",
+    name: "North Dakota",
+    tagline: "🦅 The Peace Garden State — Badlands beauty, rolling prairies & the most open sky you've ever seen",
+    writeup: `North Dakota is genuinely, spectacularly itself. The state doesn't try to be anything other than what it is: an honest, agricultural, wide-open place where the horizon seems impossibly far away and the sky takes up most of the visual field. The Theodore Roosevelt National Park in the west offers some of the most dramatic badlands scenery in the country — rugged buttes, roaming bison, and a silence that feels earned. For pet owners who love open space and outdoor activity without crowds, North Dakota is quietly extraordinary.
 
-North Dakota has a continental climate that is among the harshest in the lower 48 states — Fargo averages temperatures below 0°F for much of January, and blizzards regularly close roads statewide. Fully heated indoor boarding with reliable backup generators is essential. North Dakota does not have a statewide kennel licensing requirement.
+Fargo, the state's largest city (and more hip than its movie reputation suggests), has the most developed boarding market, with several quality facilities serving a university population from NDSU and a growing regional economy. Bismarck, the capital, offers a solid secondary market. Grand Forks, home to the University of North Dakota, rounds out the state's urban boarding options. In smaller towns and agricultural communities, the options are limited but often run by people who are genuinely experienced with animals.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Fargo, with its vibrant North Dakota State University community, has the most developed pet care market in the state. Theodore Roosevelt National Park's badlands attract outdoor enthusiasts who may need boarding in nearby Dickinson or Medora. Oil industry workers in the western Bakken formation also create demand for reliable long-term boarding near Williston.
-
-PetBedNStay helps North Dakota pet owners find trusted boarding across the Peace Garden State.`,
+North Dakota winters are real — this is one of the coldest states in the country, with temperatures regularly dropping below -20°F and wind chills that can make it feel like -40°F or colder. Any facility in North Dakota must be thoroughly heated and equipped for serious winter conditions. This is non-negotiable. Summer in North Dakota, by contrast, is glorious — warm, long days with abundant wildlife and the kind of open-air freedom that active dogs love. The state's low population density means boarding facilities often have more outdoor space per dog than you'd find almost anywhere else.`,
   },
   {
-    stateSlug: "ohio",
-    stateName: "Ohio",
-    writeup: `Pet boarding in Ohio is anchored by three major metropolitan markets: Columbus (the state capital and fastest-growing Ohio city), Cleveland (the Great Lakes metro), and Cincinnati (the Queen City on the Ohio River). Akron, Toledo, Dayton, Canton, and Youngstown add significant secondary capacity across the state.
+    slug: "ohio",
+    name: "Ohio",
+    tagline: "🎡 The Buckeye State — Cedar Point thrills, Amish country calm & Rock 'n' Roll history",
+    writeup: `Ohio is one of America's most underappreciated states. It gave the world the Wright Brothers, Thomas Edison, and seven US presidents — and its contribution to American culture runs from the Rock and Roll Hall of Fame in Cleveland to the invention of the cash register in Dayton to the largest Amish community in the world tucked into the rolling hills of Holmes County. Ohio's mix of industrial cities, college towns, farmland, and Lake Erie shoreline creates a genuinely diverse pet care market that reflects the state's variety.
 
-Ohio requires commercial boarding kennels to hold a state license and comply with Ohio Revised Code regulations administered by the Ohio Department of Agriculture. The state has a humid continental climate with cold, snowy winters — Cleveland's lake-effect snow can be relentless — and hot, humid summers.
+Columbus, the capital and largest city, has undergone a remarkable transformation in recent decades — its Short North arts district and Clintonville neighborhood have become destinations in their own right, and its large Ohio State University population contributes to a young, pet-forward culture. Cincinnati, a city with extraordinary food culture and a revitalized urban core, has an excellent boarding market in its walkable Over-the-Rhine and Hyde Park neighborhoods. Cleveland, long the butt of unfair jokes, has a genuine cultural renaissance underway, with solid boarding options across its Greater Cleveland metro.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Columbus's rapidly growing millennial population has driven a boom in modern cage-free boarding and doggy daycare facilities. The Cleveland market benefits from a strong veterinary community anchored by The Ohio State University College of Veterinary Medicine. Cuyahoga Valley National Park and Wayne National Forest attract outdoor-oriented pet owners who need boarding for restricted-access areas.
-
-PetBedNStay covers pet boarding across Ohio, from the shores of Lake Erie to the hills of Hocking County.`,
+Ohio's four seasons are reliable: summers are warm and humid, winters bring significant lake effect snow in the northern regions near Lake Erie, and spring and fall are often spectacular. The Cuyahoga Valley National Park near Cleveland draws outdoor enthusiasts year-round. Ohio boarding rates are generally very reasonable — the state's moderate cost of living keeps pet care affordable without sacrificing quality, and competition among facilities in the major metros ensures standards remain high.`,
   },
   {
-    stateSlug: "oklahoma",
-    stateName: "Oklahoma",
-    writeup: `Pet boarding in Oklahoma is centered around Oklahoma City and Tulsa — the state's two major metros — with secondary options in Norman, Broken Arrow, Edmond, Lawton, and Stillwater. Oklahoma City's sprawling metro has a growing pet care market driven by a young professional population and strong culture of pet ownership.
+    slug: "oklahoma",
+    name: "Oklahoma",
+    tagline: "🌪️ The Sooner State — Red dirt roads, Native American heritage & the wild heart of the Great Plains",
+    writeup: `Oklahoma is more complex and fascinating than most Americans realize. The state has the second-largest Native American population in the country, with 39 federally recognized tribes whose territories cover much of the state and whose cultures add genuine depth to Oklahoma's identity. The land itself is dramatic: the rugged Wichita Mountains in the southwest, the lush Ouachita Mountains in the east, and the wide-open red dirt plains of the Panhandle that run into the Texas border. It's a state with a lot of sky and a lot of soul.
 
-Oklahoma has a continental climate with hot summers that can exceed 105°F in the west, cold winters, and serious tornado risk across the central plains in April, May, and early June. Tornado-ready facilities in reinforced structures with documented emergency protocols are an important consideration when choosing a kennel.
+Oklahoma City, which dramatically rebuilt after the devastating 1995 federal building bombing, has become a genuinely vibrant city with a walkable Bricktown district, a growing arts scene, and a pet care market that has kept pace with its urban evolution. Tulsa is Oklahoma's second city — sometimes called the "Oil Capital of the World" and home to a stunning Art Deco architectural legacy — with a solid and growing boarding market, particularly in its South Tulsa and Midtown neighborhoods.
 
-Oklahoma does not have a statewide kennel licensing requirement. Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Tulsa's revitalized Midtown and Cherry Street neighborhoods have seen growth in boutique pet services. Oklahoma's Route 66 corridor, Native American cultural sites, and Wichita Mountains Wildlife Refuge attract visitors who may need boarding at various points across the state.
-
-PetBedNStay helps Oklahoma pet owners find trusted boarding from the panhandle to the Red River.`,
+The college towns of Norman (home to OU) and Stillwater (Oklahoma State) bring university energy to their pet care scenes. Oklahoma tornado season — running primarily from March through June — is serious. This is the heart of Tornado Alley, and any responsible boarding facility should have a clearly defined severe weather shelter protocol. Ask before you book. Oklahoma summers are hot and can be very dry; winters are variable but generally milder than states to the north.`,
   },
   {
-    stateSlug: "oregon",
-    stateName: "Oregon",
-    writeup: `Pet boarding in Oregon reflects the state's progressive, outdoor-oriented culture and strong commitment to animal welfare. Portland, Eugene, Salem, Gresham, Hillsboro, Bend, and Medford are the primary boarding markets, with Portland hosting the greatest concentration and diversity of boarding options in the state.
+    slug: "oregon",
+    name: "Oregon",
+    tagline: "🌲 The Beaver State — Portland weird, Crater Lake deep & coastline that takes your breath away",
+    writeup: `Oregon has built a reputation as one of the most intentionally livable states in the country. Portland's famous "Keep Portland Weird" ethos is not just a bumper sticker — it's a city that has genuinely committed to an independent, creative, community-first approach to urban life, and that commitment extends fully to pets. Portland is among the top dog-friendly cities in America, with a dog-to-human ratio that reflects a population that takes its animals seriously, excellent off-leash parks, and a pet care market that has evolved to match the city's standards.
 
-Oregon requires commercial boarding kennels to hold a state license through the Oregon Department of Agriculture. The Willamette Valley's mild, wet winters and warm, dry summers create comfortable year-round boarding conditions. Eastern Oregon, including Bend and Pendleton, has colder winters and hotter summers than the rainy west side of the Cascades.
+Outside Portland, Oregon's geography is extraordinarily varied. The Willamette Valley wine country stretching south through Salem and Eugene has a gentler, agricultural character with excellent boarding options in smaller-city settings. Bend, in the high desert east of the Cascades, has become one of the country's hottest destinations for outdoor-loving transplants — its pet care market has grown dramatically alongside its population. The coast, from Astoria in the north to Brookings in the south, has a rugged, wind-swept beauty with boarding options suited to its tourism economy.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Portland's nationally recognized dog-friendly culture — with more off-leash parks per capita than almost any US city — has produced a highly competitive and innovative boarding market. Bend's outdoor recreation economy supports strong boarding demand for active owners heading into the Cascades, Smith Rock, and Central Oregon wilderness. Crater Lake, the Oregon Coast, and Columbia River Gorge create regular boarding demand in gateway communities.
-
-PetBedNStay lists trusted pet boarding across Oregon, from the Coast Range to the High Desert.`,
+Oregon's climate differs dramatically between the wet, mild west side of the Cascades and the drier, more extreme east side. Portland summers are famously perfect — warm, dry, and sunny — while winters are cool and rainy rather than cold and snowy. Eastern Oregon can get serious winters. Wildfire smoke has become an increasingly significant summer concern in recent years; facilities near forests should have protocols for air quality events.`,
   },
   {
-    stateSlug: "pennsylvania",
-    stateName: "Pennsylvania",
-    writeup: `Pet boarding in Pennsylvania spans from the dense urban markets of Philadelphia and Pittsburgh to the rural landscapes of the Pocono Mountains, Lancaster County's Amish farmland, and the Endless Mountains. Philadelphia, Pittsburgh, Allentown, Erie, Reading, Scranton, and Harrisburg are the primary boarding hubs, with Philadelphia's suburban counties offering particularly strong market density.
+    slug: "pennsylvania",
+    name: "Pennsylvania",
+    tagline: "🔔 The Keystone State — Liberty Bell history, Amish farmlands & two great American cities",
+    writeup: `Pennsylvania is the original American crossroads — the state that housed the Declaration of Independence and Constitution, that gave the country the Gettysburg Address and the steel that built its cities, and that still holds two of America's most characterful urban centers at either end. Philadelphia, with its gritty, authentic culture, world-class art museums, and a food scene that goes far beyond the cheesesteak, is one of the great American cities. Pittsburgh, rebuilt on the ruins of its steel industry into a healthcare and education powerhouse, has the most passionate sports culture in the country and a surprising hipster energy in neighborhoods like Lawrenceville.
 
-Pennsylvania requires commercial boarding kennels to obtain a license from the Pennsylvania Department of Agriculture, and dog license requirements are enforced statewide — one of the more regulated environments for pet care in the country. The state has a humid continental climate with cold, snowy winters and hot, humid summers.
+Pet boarding in Pennsylvania benefits from the state's dense, metropolitan-heavy geography. Philadelphia and its Main Line suburbs have a well-developed boarding market serving a professional class that travels frequently. Pittsburgh's East End neighborhoods and suburban South Hills have excellent options. The Pennsylvania Dutch Country around Lancaster — home to the nation's oldest Amish community — has a more agricultural character, with traditional kennels offering space and countryside air.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Philadelphia's Main Line suburbs and Pittsburgh's North and South Hills have high concentrations of premium facilities. The Pocono Mountains are a major tourism destination where boarding demand spikes in summer and ski season. Lancaster County's farm-based boarding operations offer unique rural environments for energetic dogs.
-
-PetBedNStay covers pet boarding across Pennsylvania, from the Delaware River to the Ohio border.`,
+The Pocono Mountains in the northeast are a major tourism region, particularly for New York and New Jersey travelers, with boarding options near popular resort areas. Pennsylvania winters can be significant, particularly in the mountains and western regions. Spring and fall are the state's most beautiful seasons — fall foliage in the Poconos and along the Susquehanna River is spectacular. Pennsylvania has strict commercial kennel licensing requirements, which provides a good baseline quality standard across the state.`,
   },
   {
-    stateSlug: "rhode-island",
-    stateName: "Rhode Island",
-    writeup: `Pet boarding in Rhode Island — the smallest state by area — serves a densely packed coastal community with a strong pet-owning culture. Providence, Warwick, Cranston, Pawtucket, East Providence, and Woonsocket are the state's primary boarding markets, with coastal areas like Newport, South Kingstown, and Narragansett offering vacation-oriented options.
+    slug: "rhode-island",
+    name: "Rhode Island",
+    tagline: "⚓ The Ocean State — Gilded Age mansions, Newport sailing & the East Coast's smallest big personality",
+    writeup: `Rhode Island may be the smallest state in the country, but it has one of the highest personalities-per-square-mile ratios in America. Newport's Gilded Age mansions along Bellevue Avenue — the summer palaces of the Vanderbilts and Astors — tell one part of the story. Providence's RISD-fueled arts scene, Federal Hill Italian neighborhood, and surprisingly excellent restaurant culture tell another. And then there's the coast: Narragansett Bay, Block Island, and the long stretches of beaches that make Rhode Island a summer escape for the entire New England region.
 
-Rhode Island's compact size means most residents are within a short drive of multiple boarding options; the state also benefits from proximity to southeastern Massachusetts and northeastern Connecticut facilities. Rhode Island has a humid continental climate with warm, humid summers and cold, snowy winters.
+Providence is the state's urban center and home to Brown University and the Rhode Island School of Design, which give it a creative, educated energy that shapes its businesses. The pet boarding market here is compact by necessity — Rhode Island is only 37 miles wide and 48 miles tall — but quality is high. Warwick and Cranston in the southern Providence metro have a more suburban character with several solid facilities. Newport, with its tourism economy and affluent year-round population, has boarding options that match its upscale character.
 
-Rhode Island does not have a statewide kennel licensing requirement; facilities operate under local municipal regulations. Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Newport's famous mansions, sailing culture, and summer tourism create strong seasonal boarding demand in the Ocean State's most picturesque city. Providence's large college student population — Brown University, RISD, Johnson & Wales — supports year-round demand for affordable boarding options.
-
-PetBedNStay helps you find trusted pet boarding across the Ocean State, from Providence to Block Island.`,
+Because Rhode Island is so small, most residents are never more than about 20-25 minutes from a quality facility regardless of where they live. Summer demand along the coast is intense — Narragansett, South County, and Westerly see significant tourism, and facilities in those areas book up quickly from July through August. Block Island has no mainland boarding; ferry arrangements need advance planning. Rhode Island's coffee milk (the official state drink) is delightful; your dog, sadly, cannot have any.`,
   },
   {
-    stateSlug: "south-carolina",
-    stateName: "South Carolina",
-    writeup: `Pet boarding in South Carolina has grown rapidly alongside the state's population surge, driven by Charleston's booming real estate market, Greenville's manufacturing sector, and the retiree communities of Myrtle Beach and Hilton Head. Charleston, Columbia, Greenville, Myrtle Beach, Rock Hill, and Summerville are the primary boarding markets.
+    slug: "south-carolina",
+    name: "South Carolina",
+    tagline: "🌴 The Palmetto State — Charleston grace, Lowcountry magic & Atlantic coastline from the mountains to the sea",
+    writeup: `South Carolina has one of the most distinct regional identities in the South. The Lowcountry — that tidal marsh, Spanish moss, and antebellum grace that defines Charleston and the Sea Islands — is one of the most atmospheric places in America. Charleston itself is routinely ranked among the best cities in the country for its architecture, food, and quality of life, and its pet culture reflects a city that takes lifestyle seriously. The Lowcountry's outdoor character — kayaking through marshes, beachcombing Kiawah Island, cycling through historic plantation grounds — means active pets are part of the picture.
 
-South Carolina has a humid subtropical climate with long, hot summers — Charleston regularly tops 95°F — and mild winters, though upstate regions near Greenville can see ice and snow. Tick-borne diseases are particularly prevalent along the coast and in forested regions; ensure your pet is current on tick prevention. South Carolina does not have a comprehensive statewide boarding kennel licensing law.
+Hilton Head Island is another anchor of South Carolina's coast — a planned resort community with a golf-and-beach culture that draws enormous tourism and snowbird populations, creating a strong year-round demand for quality pet boarding. Myrtle Beach, the state's highest-volume tourist destination, has boarding options specifically geared toward vacation visitors. Inland, Columbia (the capital and home to the University of South Carolina) and Greenville (a midsize city that has become one of the South's most talked-about urban success stories) have well-developed boarding markets.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Charleston's historic culture and pet-friendly environment have produced a vibrant boutique boarding market. Myrtle Beach's tourism economy creates massive summer boarding demand — Grand Strand facilities fill up quickly from June through August. Hilton Head Island and Lowcountry golf resort communities maintain strong year-round boarding demand.
-
-PetBedNStay connects pet owners across the Palmetto State, from the Blue Ridge foothills to the Sea Islands.`,
+South Carolina's climate is subtropical: hot, humid summers with significant rainfall and very mild winters. The Gulf Stream warms the Atlantic coast to near-tropical temperatures in summer, making beach days with dogs feel like paradise from May through September. Hurricane season is worth noting for coastal residents — the Lowcountry is vulnerable to tropical systems, and facilities there should have clear evacuation protocols. Year-round outdoor activity is possible in the southern part of the state, which is a genuine advantage for active pets.`,
   },
   {
-    stateSlug: "south-dakota",
-    stateName: "South Dakota",
-    writeup: `Pet boarding in South Dakota serves a vast Great Plains state with strong pet ownership in its urban centers. Sioux Falls, the state's largest city, hosts the greatest concentration of boarding facilities, followed by Rapid City, Aberdeen, Brookings, Watertown, and Mitchell.
+    slug: "south-dakota",
+    name: "South Dakota",
+    tagline: "🦅 The Mount Rushmore State — Presidential granite, Badlands drama & bison on the open range",
+    writeup: `South Dakota offers some of the most dramatic scenery in the American interior. Mount Rushmore is the obvious landmark, but the Badlands — their striated, alien-landscape geology unlike anything else on Earth — are in many ways more spectacular and less crowded. The Black Hills in the southwestern corner of the state are genuinely beautiful, a granite island of forest rising from the surrounding prairie. Custer State Park hosts one of the largest free-roaming bison herds in the world. For people who love big, dramatic, uncrowded nature, South Dakota is a revelation.
 
-South Dakota has a continental climate with cold, harsh winters — Rapid City and the Black Hills can see significant snowfall, and blizzards across the eastern plains are not uncommon — and hot, dry summers. Heated indoor boarding is essential from November through March. South Dakota does not have a statewide kennel licensing requirement.
+Sioux Falls, in the state's southeastern corner, is South Dakota's largest city and its most economically vibrant — a regional hub that has attracted significant financial services industry and has a surprisingly sophisticated pet care market for its size. Rapid City, the gateway to the Black Hills and Mount Rushmore, is the western anchor of the state's boarding market, serving a significant tourist economy. Pierre, the small capital on the Missouri River, has modest but functional options.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Rapid City is the gateway to Mount Rushmore, Badlands National Park, and Custer State Park — drawing millions of visitors each summer, creating strong boarding demand in the western Black Hills from May through September. The Sturgis Motorcycle Rally in August brings enormous visitor numbers to the area; book boarding well in advance for the first week of August.
-
-PetBedNStay helps South Dakota pet owners find trusted boarding from the Missouri River to the Black Hills.`,
+South Dakota winters on the plains are serious — blizzards can arrive quickly and temperatures can drop to -20°F or colder. The state sits in a zone where weather can change dramatically in a matter of hours, and facilities must be prepared for rapid onset winter conditions. Summers on the plains are warm and sunny; the Black Hills run slightly cooler and are spectacular for hiking from June through September. The Sturgis Motorcycle Rally in August brings enormous numbers of visitors to the western part of the state — if you're traveling through that region in early August, book boarding very far ahead.`,
   },
   {
-    stateSlug: "tennessee",
-    stateName: "Tennessee",
-    writeup: `Pet boarding in Tennessee spans the musical energy of Nashville, the blues culture of Memphis, and the mountain landscapes of Knoxville and Chattanooga. Nashville, Memphis, Knoxville, Chattanooga, Clarksville, and Murfreesboro are the state's primary boarding hubs, with Nashville having seen particularly rapid growth in premium pet care businesses alongside its booming population.
+    slug: "tennessee",
+    name: "Tennessee",
+    tagline: "🎸 The Volunteer State — Nashville's music row, Smoky Mountain mists & the soul of American music",
+    writeup: `Tennessee is where American music was born and continues to evolve. Nashville is the Country Music capital of the world, but it's also become one of the fastest-growing and most economically dynamic cities in America — a phenomenon that has brought wave after wave of new residents from coastal cities who bring big-city expectations and enormous love for their pets. The city's "it" neighborhoods — East Nashville, 12South, Germantown, the Gulch — have excellent boarding options that feel as polished as the city itself.
 
-Tennessee has a humid subtropical climate with hot, humid summers regularly exceeding 95°F and mild winters. Western Tennessee around Memphis can experience tornadoes in spring. Tennessee does not have a statewide kennel licensing requirement, though local county and city regulations apply.
+Memphis, at the western tip of the state on the Mississippi River, is where the blues came up from the Delta and rock and roll got its swagger from Elvis Presley's Graceland. It's a gritty, musical, deeply soulful city with a boarding market that suits its unpretentious character — solid options at fair prices. Knoxville, near the Tennessee-North Carolina border and the gateway to Great Smoky Mountains National Park, serves a university community (UT Volunteers) and an outdoor tourism economy.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Nashville's "It city" status has driven growth in premium boarding studios throughout trendy neighborhoods like East Nashville, 12 South, and Germantown. The Great Smoky Mountains National Park — the most visited national park in the US — creates boarding demand in Gatlinburg and Pigeon Forge, since pets have very limited trail access within the park.
-
-PetBedNStay lists trusted pet boarding across Tennessee, from Memphis on the Mississippi to the Great Smoky Mountains.`,
+The Smokies are the most visited national park in the country, drawing tens of millions of visitors annually. Boarding facilities around Pigeon Forge, Gatlinburg, and Sevierville do significant business from tourists who arrive to hike but need somewhere for their pets. Tennessee's four seasons are well-defined: hot, humid summers and generally mild winters with occasional ice storms in the middle and eastern regions. Fall in the Smokies — October especially — is spectacular and extremely busy; book boarding well in advance.`,
   },
   {
-    stateSlug: "texas",
-    stateName: "Texas",
-    writeup: `Pet boarding in Texas operates at a scale as big as the state itself. Houston, Dallas, Austin, San Antonio, Fort Worth, El Paso, Arlington, and Plano are just the largest of dozens of major boarding markets across the Lone Star State. Texas has more pet boarding facilities than almost any other state, reflecting its massive population and deeply ingrained culture of pet ownership.
+    slug: "texas",
+    name: "Texas",
+    tagline: "🤠 The Lone Star State — BBQ pits, longhorn cattle & a state too big to fully understand",
+    writeup: `Texas operates at a scale that is genuinely hard to internalize until you've driven across it. From El Paso in the far west to Beaumont near the Louisiana border is farther than from Chicago to New York City. This vastness means that "pet boarding in Texas" encompasses an extraordinary range of experiences: from cutting-edge luxury pet resorts in the Galleria area of Houston to traditional ranch-style kennels on the hill country roads west of San Antonio, to Austin's famously dog-forward culture where restaurants are designed with dogs in mind and entire neighborhoods organize around their pets.
 
-Texas has an extreme and diverse climate — Gulf Coast cities like Houston see oppressive heat and humidity with heat indices exceeding 110°F from June through September. Dallas-Fort Worth sees occasional ice storms each winter. El Paso and far-west Texas have a desert climate comparable to Arizona. Climate-controlled indoor facilities are essential statewide during summer months.
+Austin has become one of the most important cities in America — a tech hub, a music capital (Live Music Capital of the World, officially), a food destination, and a place that has attracted enormous numbers of young, creative, pet-obsessed transplants. The boarding market here is exceptional. Dallas-Fort Worth, the fourth-largest metro in the US, has a massive and varied pet care industry. Houston, the most diverse city in America and an energy capital of the world, has premium facilities that rival anything on the coasts.
 
-Texas does not have a statewide mandatory kennel licensing program. Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Austin's tech-driven culture has produced some of the most innovative pet care facilities in the South, with cage-free resorts and 24/7 webcam monitoring. Houston's sprawl means the Woodlands, Sugar Land, Katy, and Pearland options are often preferable to urban-core kennels.
-
-PetBedNStay covers all Texas regions — from the Panhandle to the Rio Grande Valley, and the Hill Country to the Piney Woods.`,
+Texas summers are extreme — triple-digit temperatures are routine in Dallas, Austin, and San Antonio from June through September, and heat management at boarding facilities is life-or-death serious. Any facility operating in Texas summer must have fully air-conditioned kennels and restrict outdoor time accordingly. West Texas, the Panhandle, and the Hill Country each have their own distinct characters. Texas dog culture, like everything else Texas, tends toward the enthusiastic and the large — dogs here are well-loved and well-cared-for.`,
   },
   {
-    stateSlug: "utah",
-    stateName: "Utah",
-    writeup: `Pet boarding in Utah blends the outdoor adventure culture of one of America's most spectacularly scenic states with a rapidly growing population along the Wasatch Front. Salt Lake City, Provo, West Valley City, Ogden, St. George, and Logan are the state's primary boarding markets, with Salt Lake County hosting the majority of Utah's boarding facilities.
+    slug: "utah",
+    name: "Utah",
+    tagline: "🏜️ The Beehive State — Five national parks, red rock canyons & the greatest snow on Earth",
+    writeup: `Utah has the unlikely distinction of having both the best skiing in North America (the Wasatch Range's legendary light, dry powder) and some of the most spectacular desert landscapes on Earth (the red rock country of southern Utah that contains five national parks). It's a state of extremes: extreme landscape, extreme weather, and an extremely active outdoor culture that has made Utah one of the most attractive destinations for adventure-seeking transplants from across the country. Dogs who hike Zion, scramble the fins of Arches, or ski the backcountry near Alta are living their best possible lives.
 
-Utah has a semi-arid climate with distinct seasons — cold, snowy winters bringing Utah's famous powder snow to the mountains, and hot, dry summers in the valleys. Air quality inversions in winter can trap particulate matter in the Salt Lake Valley — a consideration for pets with respiratory sensitivities. Utah does not have a statewide kennel licensing requirement.
+Salt Lake City, the state capital and largest city, sits at the foot of the Wasatch Mountains with ski resorts visible from downtown. Its pet boarding market is strong and has grown significantly as the city has diversified economically beyond its traditional industries. Provo and Orem (home to BYU) form a secondary hub to the south. St. George in the far southwest has warm, desert climate that makes it a popular snowbird destination, with boarding facilities suited to a large retirement population.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Moab — the adventure capital of the Colorado Plateau — sees strong boarding demand from March through November as visitors head to Arches, Canyonlands, and surrounding slickrock country. Zion and Bryce Canyon National Parks restrict pets from most trails, creating demand for boarding in Springdale and Tropic. Park City's ski resort status drives winter boarding demand.
-
-PetBedNStay connects Utah pet owners and visitors with trusted boarding across the Beehive State.`,
+Park City is Utah's luxury mountain enclave — home to Sundance Film Festival and world-class skiing — with premium boarding options that match its high-end character. The national park corridor in southern Utah (Moab, Springdale, Escalante) has limited boarding options given the sparse population, so plan ahead if you're traveling through that region. Utah winters at valley elevations are cold but manageable; mountain elevations can be extreme. Summer in the desert south can be very hot — 100°F+ days in Moab are common in July.`,
   },
   {
-    stateSlug: "vermont",
-    stateName: "Vermont",
-    writeup: `Pet boarding in Vermont serves one of the smallest, most rural, and most environmentally conscious states in the country. Burlington, South Burlington, Rutland, Barre, Montpelier, and St. Johnsbury are the primary boarding markets, with many facilities scattered across small towns throughout the Green Mountains.
+    slug: "vermont",
+    name: "Vermont",
+    tagline: "🍁 The Green Mountain State — Maple syrup, ski slopes & the most beautiful fall in America",
+    writeup: `Vermont is small, deliberate, and deeply itself. The second-least-populated state in the country (after Wyoming), Vermont has no chain stores in its most famous ski towns, takes its local food economy more seriously than almost any other state, and has maintained a way of life that prioritizes quality over quantity. Its Green Mountains are the backbone of the state — ski resorts like Stowe, Killington, and Mad River Glen are world-class — and the valleys between them have a pastoral, farm-to-table beauty that makes Vermont feel like it exists slightly outside of normal American time.
 
-Vermont has a humid continental climate with long, cold winters — Burlington averages 82 inches of snow — and one of the most celebrated fall foliage seasons in the world. Most facilities maintain fully heated indoor boarding year-round. Vermont facilities operate under state animal welfare laws and local ordinances.
+Burlington, Vermont's largest city (and one of the smallest "largest cities" of any state), is a walkable, progressive, intellectually lively place on the shore of Lake Champlain with a pet care market that reflects its values. Montpelier, the capital, is the smallest state capital in the US and has a tiny but thoughtful boarding market. The ski resort towns — Stowe, Woodstock, Manchester — have boarding operations geared toward winter and foliage-season tourism.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Vermont's outdoor recreation economy — skiing at Killington, Stowe, and Sugarbush, hiking the Long Trail, fishing the Battenkill — drives year-round travel. Foliage season (late September–mid October) and ski season create the highest boarding demand. Burlington's University of Vermont community supports consistent year-round pet care demand. Vermont's farm culture has produced several farm-based boarding operations offering open-air environments for working breeds and energetic dogs.
-
-PetBedNStay helps you find trusted pet boarding across the Green Mountain State.`,
+Vermont's fall foliage season (mid-September through mid-October) is the most spectacular in America and draws visitors from around the world — boarding in the most popular areas books out weeks in advance during peak foliage weeks. Ski season from December through March is Vermont's other peak tourism window. Winters are cold and snowy — genuinely so — and any boarding facility in Vermont is built for real winter. Summer in Vermont is luminous and cool, with long green days and blooming wildflowers that make outdoor time with dogs feel like a storybook.`,
   },
   {
-    stateSlug: "virginia",
-    stateName: "Virginia",
-    writeup: `Pet boarding in Virginia spans the dense Northern Virginia suburbs of Washington DC — including Arlington, Alexandria, Fairfax, and Loudoun County — to the coastal resort city of Virginia Beach, the state capital of Richmond, and the college town of Charlottesville. Virginia Beach, Chesapeake, Richmond, Norfolk, Newport News, and Hampton are major secondary markets.
+    slug: "virginia",
+    name: "Virginia",
+    tagline: "🌿 The Old Dominion — Colonial history, Blue Ridge beauty & where the American story began",
+    writeup: `Virginia is where much of American history was made. Jamestown, the first permanent English settlement in North America. Colonial Williamsburg. Mount Vernon, Monticello, and Appomattox Court House. The Blue Ridge Mountains and Shenandoah Valley that provided a backdrop to both the Civil War and some of the East's finest outdoor recreation. Virginia is a state that carries its history thoughtfully while moving steadily into a modern identity shaped by the tech-heavy Northern Virginia suburbs, the naval culture of Hampton Roads, and the growing university towns of Charlottesville and Blacksburg.
 
-Virginia requires commercial boarding kennels to comply with VA Department of Agriculture regulations. The state has a humid subtropical climate in the east, transitioning to humid continental in the western mountains, with hot, humid summers in the Piedmont and cold, snowy winters in the Shenandoah Valley and Blue Ridge.
+Northern Virginia — Arlington, Alexandria, Fairfax, Loudoun County — is one of the most economically dynamic regions in the country, housing major tech companies and thousands of federal government employees. The pet boarding market here is dense and sophisticated, catering to a highly mobile professional population that travels frequently. Richmond, the capital and one of the South's most creative mid-size cities, has a thriving pet culture in its Church Hill, Carytown, and Scott's Addition neighborhoods.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Northern Virginia's federal government workforce and defense contractor industry generate enormous and consistent demand for pet boarding, including extended stays for deployments. Shenandoah National Park's Skyline Drive restricts pets on many trails, creating boarding demand in Front Royal and Luray. Virginia Beach's tourism economy drives strong summer boarding demand.
-
-PetBedNStay lists trusted pet boarding across Virginia, from the Blue Ridge Mountains to the Chesapeake Bay.`,
+Virginia Beach, the state's largest city, combines military culture with beach tourism to create a distinctive market on the Atlantic coast. The Shenandoah Valley's Staunton, Harrisonburg, and Roanoke offer more affordable, spacious boarding options with stunning mountain scenery. Virginia's climate is generally mild — four seasons with moderate winters in the east that become more significant in the mountains. The state's mix of coastal plain, Piedmont, and Appalachian highlands means you can experience genuinely different weather within a few hours' drive.`,
   },
   {
-    stateSlug: "washington",
-    stateName: "Washington",
-    writeup: `Pet boarding in Washington State centers around the massive Seattle metropolitan area — one of the most dog-friendly cities in the country — and extends east through the Cascades to Spokane, Yakima, and the Tri-Cities. Seattle, Spokane, Tacoma, Bellevue, Everett, Kirkland, and Redmond are the state's primary boarding markets.
+    slug: "washington",
+    name: "Washington",
+    tagline: "☕ The Evergreen State — Seattle coffee culture, Mount Rainier glaciers & Pacific coastline wilderness",
+    writeup: `Washington state divides itself dramatically along the Cascade Mountain Range: the wet, temperate, coffee-obsessed west side and the dry, sunny, agricultural east side. Seattle, the state's dominant city, is one of the most dog-forward major cities in America — off-leash areas are everywhere, dogs are welcomed at most outdoor businesses, and the city's outdoor culture (hiking the Cascades, kayaking Puget Sound, cycling the Burke-Gilman Trail) naturally integrates pets. The tech-industry wealth of Amazon, Microsoft, and Boeing has also created a premium pet care market to match.
 
-Washington requires commercial boarding kennels to be licensed through the Washington State Department of Agriculture. West of the Cascades, Seattle's mild, rainy climate creates comfortable year-round boarding conditions. East of the mountains, Spokane and the Columbia Basin have colder winters and hotter summers, requiring full climate control.
+The Seattle metro extends to the Eastside cities of Bellevue, Redmond, and Kirkland — home to Microsoft and major tech campuses — where boarding options are excellent and cater to a well-heeled professional population. Tacoma, a city with an arts identity and a beautiful setting on Commencement Bay, has more affordable options. Spokane on the eastern side of the Cascades is a genuine city in its own right, with solid boarding options serving eastern Washington and northern Idaho.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Seattle's Capitol Hill, Queen Anne, and Fremont neighborhoods have some of the highest concentrations of premium boarding facilities in the Pacific Northwest. Olympic National Park, North Cascades, and Mount Rainier create regular boarding demand in gateway communities. Eastern Washington's agricultural communities near Spokane offer more rural options at competitive prices.
-
-PetBedNStay connects Washington pet owners with trusted boarding from Puget Sound to the Palouse.`,
+Washington's geography offers extraordinary variety for outdoor dogs: the Olympic Peninsula's rainforest, the North Cascades' glaciers, the Columbia River Gorge, and the rolling wheat hills of the Palouse are all within the state. Seattle's famously gray, rainy winters are mild (rarely freezing at sea level), while eastern Washington sees genuine cold and snow. Wildfire smoke has become a serious summer concern in recent years, particularly east of the Cascades — facilities should have protocols for poor air quality days.`,
   },
   {
-    stateSlug: "west-virginia",
-    stateName: "West Virginia",
-    writeup: `Pet boarding in West Virginia serves a primarily rural mountain state where options are concentrated in a handful of urban centers. Charleston, the state capital, hosts the greatest concentration of boarding facilities, followed by Huntington, Morgantown, Parkersburg, Wheeling, and Beckley.
+    slug: "west-virginia",
+    name: "West Virginia",
+    tagline: "🏞️ The Mountain State — Wild and Wonderful — Appalachian highlands, whitewater rivers & authentic America",
+    writeup: `West Virginia's official motto is "Wild and Wonderful," and it earns every word. The state is almost entirely mountainous — the most rugged terrain in the eastern US — with the New River Gorge National Park (America's newest national park, designated in 2020) at its center. The New River Gorge Bridge, the largest single-arch steel bridge in the Western Hemisphere, is a sight that stops conversations. Seneca Rocks, Blackwater Falls, and the Monongahela National Forest add to a landscape that serious outdoor enthusiasts and their dogs find extraordinary.
 
-West Virginia has a humid continental climate shaped by its rugged Appalachian terrain — the most mountainous state east of the Mississippi. Cold, snowy winters are common in the highlands, while the eastern panhandle near Martinsburg experiences a more mild Mid-Atlantic climate. West Virginia does not have a statewide kennel licensing requirement.
+Charleston, the capital, is the state's largest city and its commercial hub, with the most developed pet boarding market. Huntington, Morgantown (home to WVU), Beckley, and Lewisburg each serve as regional hubs with varying levels of boarding options. The New River Gorge area around Fayetteville has seen significant tourism growth since the national park designation, and outdoor-oriented boarding options have grown alongside. Harpers Ferry in the Eastern Panhandle, where John Brown made his famous raid, sits at the confluence of the Potomac and Shenandoah rivers with beautiful scenery and proximity to the DC-Baltimore corridor.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Morgantown, home to West Virginia University, has the state's most dynamic boarding market relative to its population. The New River Gorge National Park — America's newest national park — and Seneca Rocks attract outdoor enthusiasts who may need boarding in the Fayetteville and Elkins areas. Snowshoe Mountain Resort drives seasonal winter boarding demand in the central highlands.
-
-PetBedNStay helps you find trusted pet boarding across the Mountain State.`,
+West Virginia's Appalachian climate means four real seasons: gorgeous springs with wildflower explosions, warm summers ideal for river activity, spectacular falls, and genuine winters with significant snowfall in the mountains. The state's natural beauty is its defining asset, and boarding facilities in rural areas often offer more outdoor space and proximity to nature than you'd find in more populated states. Rates here are generally among the most affordable in the eastern US.`,
   },
   {
-    stateSlug: "wisconsin",
-    stateName: "Wisconsin",
-    writeup: `Pet boarding in Wisconsin has a strong tradition rooted in the state's practical Midwestern values and outdoor culture. Milwaukee, Madison, Green Bay, Racine, Kenosha, Appleton, and Oshkosh are the primary boarding markets, with Madison's capital-city and university environment producing a particularly vibrant and innovative pet care scene.
+    slug: "wisconsin",
+    name: "Wisconsin",
+    tagline: "🧀 The Badger State — Cheese, beer, Packers tailgates & more lakes than you can count",
+    writeup: `Wisconsin takes its pleasures seriously: cheese made in caves, beer brewed with craft obsession, Packers games treated as religious observances in Green Bay, and lakeside summers that its residents approach as something close to sacred. The state's 15,000-plus lakes — yes, really — are the backbone of a summer culture that defines Wisconsin identity. Lake Michigan's western shore, Door County's peninsula of orchards and lighthouses, and the Apostle Islands in Lake Superior each represent different dimensions of a state that knows how to live well.
 
-Wisconsin has a humid continental climate with cold, snowy winters — Milwaukee averages 47 inches of snow and Green Bay even more — and warm, humid summers. Most facilities maintain fully heated indoor boarding year-round. Wisconsin does not have a statewide kennel licensing requirement for private boarding facilities.
+Milwaukee, Wisconsin's largest city, has a brewing and industrial heritage that has given it a gritty, proud character — and a pet care market that has evolved significantly as the city's Third Ward and Bay View neighborhoods have attracted young creative professionals. Madison, home to the University of Wisconsin and the state capital, consistently ranks among the best cities in the country for quality of life, with an excellent boarding market reflecting its highly educated, civic-minded population. Green Bay, famous worldwide as the Packers' home, has a community-oriented boarding scene that reflects its tight-knit character.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Madison's University of Wisconsin community has driven growth in premium, enrichment-focused cage-free boarding facilities. Door County's peninsula tourism and Wisconsin Dells water parks create seasonal boarding demand from June through August. Milwaukee's Brewers and Packers fan culture also creates event-driven boarding demand throughout the year.
-
-PetBedNStay connects Wisconsin pet owners with trusted boarding from Milwaukee to the Northwoods lake country.`,
+Wisconsin winters are serious — Lake Effect snow off Lake Michigan can be brutal, and temperatures below zero are routine from December through February. Any facility in Wisconsin must be fully winterized and experienced with real cold. The payoff is summer: Wisconsin between June and September is luminous, with perfect temperatures, endless outdoor activity, and that particular Midwestern contentment that comes from having truly earned the warm weather.`,
   },
   {
-    stateSlug: "wyoming",
-    stateName: "Wyoming",
-    writeup: `Pet boarding in Wyoming serves one of the most sparsely populated states in the country, where open landscapes and an outdoor culture define daily life. Cheyenne, Casper, Laramie, Gillette, Rock Springs, and Jackson Hole are the primary boarding markets, with Jackson Hole holding an outsized share due to its tourism economy and wealthy seasonal population.
+    slug: "wyoming",
+    name: "Wyoming",
+    tagline: "🐄 The Cowboy State — Yellowstone geysers, Grand Teton peaks & more elk than people",
+    writeup: `Wyoming is the least populated state in the country — about 580,000 people — but it contains two of the most extraordinary places on Earth: Yellowstone National Park and Grand Teton National Park, sitting side by side in the state's northwestern corner. Yellowstone is the world's first and most famous national park, a volcanic landscape of geysers, hot springs, bison herds, and wolf packs that is genuinely unlike anywhere else on the planet. The Grand Tetons rise from the Jackson Hole valley with a dramatic verticality that stops first-time visitors cold. Dogs who spend time in Wyoming are very, very lucky.
 
-Wyoming has a continental climate with cold winters — Casper sees temperatures below 0°F regularly — and warm, dry summers. Laramie sits at 7,165 feet above sea level; allow pets acclimatization time before strenuous activities. Wyoming does not have a statewide kennel licensing requirement.
+Cheyenne, the capital, is Wyoming's largest city and the center of its most developed pet boarding market. Despite its small population (about 60,000 people), Cheyenne has solid options that serve both residents and travelers on the I-80 corridor between Denver and Salt Lake City. Casper in central Wyoming is the state's second city, with a modest but functional market. Jackson Hole, in the northwest near the parks, has premium boarding options matching its luxury tourism economy and affluent resident base.
 
-Required vaccinations include Rabies (required by state law), DHPP, and Bordetella. Jackson Hole's proximity to Grand Teton and Yellowstone National Parks drives enormous boarding demand from May through October, as both parks restrict pet access on most trails and backcountry areas. Yellowstone gateway communities of Cody and Cooke City have limited but growing options. Cheyenne Frontier Days in late July creates regional boarding demand, and the oil and gas industry supports extended-stay boarding near Casper and Gillette.
-
-PetBedNStay lists trusted pet boarding across Wyoming, from Cheyenne to the Tetons.`,
+Wyoming winters are legendary — the wind on the open plains can make temperatures feel like -50°F even when the thermometer reads -10°F. Facilities anywhere in Wyoming must be built for genuine, no-apologies winter conditions. Summer is Wyoming's glory: warm days, cool nights, spectacular wildlife, and landscapes that reward active dogs and their humans. The fall elk rut in Jackson Hole is one of the great wildlife spectacles in North America. Book early for boarding near the national parks; quality facilities fill up months in advance for summer visits.`,
   },
 ];
 
 async function main() {
-  console.log(`Seeding state content for ${STATE_CONTENT.length} states...`);
+  console.log(`\n🌎 Seeding content for ${STATES.length} states...\n`);
+  let upserted = 0;
 
-  for (const s of STATE_CONTENT) {
+  for (const s of STATES) {
     await db.stateContent.upsert({
-      where:  { stateSlug: s.stateSlug },
-      create: { stateSlug: s.stateSlug, stateName: s.stateName, writeup: s.writeup, listingCount: 0 },
-      update: { writeup: s.writeup },
+      where:  { stateSlug: s.slug },
+      update: { stateName: s.name, tagline: s.tagline, writeup: s.writeup },
+      create: { stateSlug: s.slug, stateName: s.name, tagline: s.tagline, writeup: s.writeup },
     });
-    process.stdout.write(`  ✓ ${s.stateName}\n`);
+    console.log(`  ✓ ${s.name}`);
+    upserted++;
   }
 
-  console.log(`\nDone! ${STATE_CONTENT.length} states seeded.`);
+  console.log(`\n✅ Done — ${upserted} states seeded.\n`);
+  await db.$disconnect();
 }
 
-main()
-  .catch(console.error)
-  .finally(() => db.$disconnect());
+main().catch(async (e) => {
+  console.error(e);
+  await db.$disconnect();
+  process.exit(1);
+});

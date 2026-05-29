@@ -177,6 +177,7 @@ model StateContent {
   id           String   @id @default(cuid())
   stateSlug    String   @unique
   stateName    String
+  tagline      String?
   writeup      String   @db.Text
   imageUrl     String?
   listingCount Int      @default(0)
