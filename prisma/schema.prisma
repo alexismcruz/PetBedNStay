@@ -47,6 +47,8 @@ model Listing {
   phone       String?
   email       String?
   website     String?
+  googleUrl   String?
+  yelpUrl     String?
   tier        ListingTier @default(FREE)
   isVerified  Boolean     @default(false)
   isActive    Boolean     @default(true)

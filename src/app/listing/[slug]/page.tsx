@@ -72,6 +72,12 @@ export default async function ListingPage({
   const photoUrl = primaryImage?.url ?? getPlaceholderPhoto(listing.id);
   const mapsUrl = googleMapsUrl(listing);
 
+  // External review links — use stored URL or fall back to search
+  const googleReviewUrl = listing.googleUrl
+    ?? `https://www.google.com/search?q=${encodeURIComponent(`${listing.name} ${listing.city} ${listing.state} reviews`)}`;
+  const yelpReviewUrl = listing.yelpUrl
+    ?? `https://www.yelp.com/search?find_desc=${encodeURIComponent(listing.name)}&find_loc=${encodeURIComponent(`${listing.city}, ${listing.state}`)}`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -300,6 +306,29 @@ export default async function ListingPage({
               >
                 <Navigation className="h-4 w-4 shrink-0" />
                 Open in Google Maps
+              </a>
+            </div>
+
+            {/* External reviews */}
+            <div className="bg-white rounded-2xl border border-amber-100 shadow-sm p-6 space-y-3">
+              <h2 className="font-semibold text-stone-800">Reviews Elsewhere</h2>
+              <a
+                href={googleReviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 w-full border border-stone-200 hover:border-brand-400 hover:shadow-sm text-stone-700 hover:text-brand-600 text-sm font-medium px-4 py-2.5 rounded-xl transition-all"
+              >
+                <span className="text-base">🔍</span>
+                Read Google Reviews
+              </a>
+              <a
+                href={yelpReviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 w-full border border-stone-200 hover:border-red-300 hover:shadow-sm text-stone-700 hover:text-red-600 text-sm font-medium px-4 py-2.5 rounded-xl transition-all"
+              >
+                <span className="text-base">⭐</span>
+                Read Yelp Reviews
               </a>
             </div>
 
