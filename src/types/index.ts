@@ -74,6 +74,7 @@ export interface SearchParams {
   city?: string;
   type?: string;
   tier?: string;
+  hasReviews?: string;
   page?: string;
 }
 

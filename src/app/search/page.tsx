@@ -22,6 +22,7 @@ async function getListings(params: SearchParams) {
   if (params.state) where.stateSlug = params.state;
   if (params.type) where.type = params.type;
   if (params.tier) where.tier = params.tier;
+  if (params.hasReviews === "1") where.reviews = { some: { isApproved: true } };
   if (params.q) {
     where.OR = [
       { name:        { contains: params.q, mode: "insensitive" } },
@@ -111,10 +112,11 @@ export default async function SearchPage({
 
             function buildUrl(p: number) {
               const qs = new URLSearchParams();
-              if (params.q)     qs.set("q",     params.q);
-              if (params.state) qs.set("state", params.state);
-              if (params.type)  qs.set("type",  params.type);
-              if (params.tier)  qs.set("tier",  params.tier);
+              if (params.q)          qs.set("q",          params.q);
+              if (params.state)      qs.set("state",      params.state);
+              if (params.type)       qs.set("type",       params.type);
+              if (params.tier)       qs.set("tier",       params.tier);
+              if (params.hasReviews) qs.set("hasReviews", params.hasReviews);
               qs.set("page", String(p));
               return `/search?${qs.toString()}`;
             }
