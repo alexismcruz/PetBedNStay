@@ -92,31 +92,37 @@ export default function ListYourBusinessPage() {
 
   if (submitted) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-24 text-center">
-        <CheckCircle className="h-16 w-16 text-forest-500 mx-auto mb-4" />
-        <h1 className="text-2xl font-bold text-stone-800 mb-2">Request Received!</h1>
-        <p className="text-stone-500">
-          We&apos;ll review your submission and reach out within 1-2 business days to get your listing live.
-        </p>
-        <a
-          href="/"
-          className="inline-block mt-6 bg-brand-500 text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-brand-600 transition-colors"
-        >
-          Back to Home
-        </a>
+      <div className="bg-warm-50 min-h-screen flex items-center justify-center">
+        <div className="max-w-lg mx-auto px-4 py-24 text-center">
+          <CheckCircle className="h-16 w-16 text-forest-500 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-stone-800 mb-2">Request Received!</h1>
+          <p className="text-stone-500">
+            We&apos;ll review your submission and reach out within 1-2 business days to get your listing live.
+          </p>
+          <a
+            href="/"
+            className="inline-block mt-6 bg-brand-500 text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-brand-600 transition-colors"
+          >
+            Back to Home
+          </a>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl sm:text-4xl font-bold text-stone-800">List Your Business</h1>
-        <p className="mt-3 text-stone-500 text-lg max-w-xl mx-auto">
-          Get your pet hotel or boarding service in front of thousands of pet owners. Free to start — upgrade anytime.
-        </p>
+    <div className="bg-warm-50 min-h-screen">
+      {/* White hero header */}
+      <div className="bg-white border-b border-amber-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 text-center">
+          <h1 className="text-3xl sm:text-4xl font-bold text-stone-800">List Your Business</h1>
+          <p className="mt-3 text-stone-500 text-lg max-w-xl mx-auto">
+            Get your pet hotel or boarding service in front of thousands of pet owners. Free to start — upgrade anytime.
+          </p>
+        </div>
       </div>
 
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
       {/* Pricing tiers */}
       <div id="pricing" className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         {PLANS.map((plan) => (
@@ -239,6 +245,7 @@ export default function ListYourBusinessPage() {
         </p>
       </form>
       </div>
+    </div>
     </div>
   );
 }

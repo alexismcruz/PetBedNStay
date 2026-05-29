@@ -184,27 +184,30 @@ export default async function StatePage({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="bg-warm-50 min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       {itemListLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }} />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
-      <Breadcrumb items={[
-        { label: "Home", href: "/" },
-        { label: `Pet Boarding in ${stateName}` },
-      ]} />
-
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl sm:text-4xl font-bold text-stone-800">
-          Pet Boarding in {stateName}
-        </h1>
-        {totalCount > 0 && (
-          <p className="mt-2 text-stone-500">
-            {totalCount}+ boarding {totalCount === 1 ? "facility" : "facilities"} and pet sitters across {totalCities} {totalCities === 1 ? "city" : "cities"} in {stateName}
-          </p>
-        )}
+      {/* White hero header */}
+      <div className="bg-white border-b border-amber-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Breadcrumb items={[
+            { label: "Home", href: "/" },
+            { label: `Pet Boarding in ${stateName}` },
+          ]} />
+          <h1 className="text-3xl sm:text-4xl font-bold text-stone-800 mt-3">
+            Pet Boarding in {stateName}
+          </h1>
+          {totalCount > 0 && (
+            <p className="mt-2 text-stone-500">
+              {totalCount}+ boarding {totalCount === 1 ? "facility" : "facilities"} and pet sitters across {totalCities} {totalCities === 1 ? "city" : "cities"} in {stateName}
+            </p>
+          )}
+        </div>
       </div>
+
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
       {/* Writeup */}
       {data.content?.writeup && (
@@ -324,6 +327,7 @@ export default async function StatePage({
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

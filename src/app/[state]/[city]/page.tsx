@@ -102,25 +102,31 @@ export default async function CityPage({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="bg-warm-50 min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       {itemListLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }} />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
-      <Breadcrumb items={[
-        { label: "Home",                          href: "/" },
-        { label: stateName,                        href: `/${state}` },
-        { label: `Pet Boarding in ${cityName}` },
-      ]} />
 
-      <h1 className="text-3xl sm:text-4xl font-bold text-stone-800 mb-2">
-        Pet Boarding in {cityName}, {stateName}
-      </h1>
-      <p className="text-stone-500 mb-8">
-        {listings.length > 0
-          ? `${listings.length} pet boarding option${listings.length !== 1 ? "s" : ""} in ${cityName}`
-          : `Looking for pet boarding in ${cityName}, ${stateName}`}
-      </p>
+      {/* White hero header */}
+      <div className="bg-white border-b border-amber-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Breadcrumb items={[
+            { label: "Home",                          href: "/" },
+            { label: stateName,                        href: `/${state}` },
+            { label: `Pet Boarding in ${cityName}` },
+          ]} />
+          <h1 className="text-3xl sm:text-4xl font-bold text-stone-800 mt-3">
+            Pet Boarding in {cityName}, {stateName}
+          </h1>
+          <p className="mt-2 text-stone-500">
+            {listings.length > 0
+              ? `${listings.length} pet boarding option${listings.length !== 1 ? "s" : ""} in ${cityName}`
+              : `Looking for pet boarding in ${cityName}, ${stateName}`}
+          </p>
+        </div>
+      </div>
 
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           {listings.length === 0 ? (
@@ -164,6 +170,7 @@ export default async function CityPage({
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 }

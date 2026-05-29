@@ -65,9 +65,9 @@ export default async function SearchPage({
     .map((l) => ({ id: l.id, name: l.name, lat: l.lat, lng: l.lng, city: l.city, state: l.state, slug: l.slug, tier: l.tier }));
 
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] overflow-hidden bg-warm-50">
       {/* Left panel */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto bg-warm-50">
         <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-amber-100 px-4 py-3">
           <div className="max-w-3xl">
             <div className="flex items-center justify-between mb-2">
