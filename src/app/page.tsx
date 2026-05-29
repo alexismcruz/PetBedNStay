@@ -58,9 +58,9 @@ export default async function HomePage() {
       <Hero />
       <Stats listingCount={counts.listings} stateCount={counts.states} />
       <HowItWorks />
+      <StateGrid />
       <HappyPawrents />
       <FeaturedListings listings={featuredTyped} />
-      <StateGrid />
 
       {/* CTA Banner */}
       <section className="bg-stone-900 py-14">

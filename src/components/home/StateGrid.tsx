@@ -50,7 +50,7 @@ export default function StateGrid() {
 
         <div className="text-center mt-6">
           <Link
-            href="/search"
+            href="/states"
             className="inline-flex items-center gap-2 text-brand-600 font-semibold text-sm hover:text-brand-700"
           >
             Browse all 50 states →
