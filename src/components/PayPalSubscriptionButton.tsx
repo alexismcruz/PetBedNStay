@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Script from "next/script";
 
 interface Props {
@@ -54,6 +54,14 @@ export function PayPalSubscriptionButton({ planId, tier, onSuccess }: Props) {
       })
       .render(containerRef.current);
   }
+
+  // If the PayPal SDK was already loaded before this component mounted
+  // (e.g. after a React Strict Mode remount or navigating back to the page),
+  // onLoad will never fire again — so we try to render immediately.
+  useEffect(() => {
+    if (window.paypal) renderButton();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
