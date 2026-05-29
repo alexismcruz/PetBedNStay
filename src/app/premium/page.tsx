@@ -1,9 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Check, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PRICING } from "@/lib/pricing";
+import { PayPalSubscriptionButton } from "@/components/PayPalSubscriptionButton";
+
+// Plan IDs — set NEXT_PUBLIC_PAYPAL_FEATURED_PLAN_ID and
+// NEXT_PUBLIC_PAYPAL_PREMIUM_PLAN_ID in Vercel env vars
+const PLAN_IDS: Record<string, string> = {
+  FEATURED: process.env.NEXT_PUBLIC_PAYPAL_FEATURED_PLAN_ID ?? "P-3XH954649X9970221NIMRLII",
+  PREMIUM:  process.env.NEXT_PUBLIC_PAYPAL_PREMIUM_PLAN_ID  ?? "P-8P733851T85464150NIMR3VA",
+};
 
 const PLANS = [
   {
@@ -68,44 +76,61 @@ const PLANS = [
 ];
 
 export default function PremiumPage() {
-  const [selected, setSelected] = useState<"FEATURED" | "PREMIUM" | null>(null);
-  const [listingId, setListingId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const listingInputRef = useRef<HTMLInputElement>(null);
+  const paymentRef      = useRef<HTMLDivElement>(null);
 
-  async function handleCheckout(tier: "FEATURED" | "PREMIUM") {
+  const [selected,   setSelected]   = useState<"FEATURED" | "PREMIUM" | null>(null);
+  const [listingId,  setListingId]  = useState("");
+  const [inputError, setInputError] = useState(false);
+  const [success,    setSuccess]    = useState(false);
+
+  function handleSelectPlan(tier: "FEATURED" | "PREMIUM") {
     if (!listingId.trim()) {
-      alert("Please enter your Listing ID first. You can find this in your confirmation email.");
+      setInputError(true);
+      listingInputRef.current?.focus();
+      listingInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => setInputError(false), 2500);
       return;
     }
-    setLoading(true);
-    try {
-      const res = await fetch("/api/paypal/create-subscription", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier, listingId }),
-      });
-      const subscription = await res.json();
-      const approveLink = subscription.links?.find((l: any) => l.rel === "approve")?.href;
-      if (approveLink) window.location.href = approveLink;
-      else throw new Error(subscription.error ?? "No approval link returned from PayPal");
-    } catch (err: any) {
-      alert(err?.message ?? "Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    setSelected(tier);
+    setTimeout(() => {
+      paymentRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
   }
 
+  // ── Success screen ──────────────────────────────────────────────────────────
+  if (success) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-24 text-center">
+        <div className="text-6xl mb-5">🎉</div>
+        <h1 className="text-2xl font-bold text-stone-800 mb-3">You&apos;re all set!</h1>
+        <p className="text-stone-500 text-sm leading-relaxed mb-8">
+          Your subscription has been received. Your listing will be upgraded within a few
+          minutes once PayPal confirms the first payment.
+        </p>
+        <a
+          href="/"
+          className="inline-block bg-brand-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-brand-600 transition-colors"
+        >
+          Back to Home
+        </a>
+      </div>
+    );
+  }
+
+  // ── Main page ───────────────────────────────────────────────────────────────
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+
+      {/* Header */}
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 bg-brand-100 text-brand-700 text-sm font-medium px-4 py-1.5 rounded-full mb-4">
           <Star className="h-4 w-4" /> Premium Listings
         </div>
-        <h1 className="text-4xl font-bold text-stone-800 mb-3">
-          Reach More Pet Owners
-        </h1>
+        <h1 className="text-4xl font-bold text-stone-800 mb-3">Reach More Pet Owners</h1>
         <p className="text-stone-500 text-lg max-w-xl mx-auto">
-          Upgrade your listing to get priority placement, more photos, and a premium badge that builds trust with pet owners.
+          Upgrade your listing to get priority placement, more photos, and a premium badge
+          that builds trust with pet owners.
         </p>
       </div>
 
@@ -154,32 +179,76 @@ export default function PremiumPage() {
               </a>
             ) : (
               <button
-                onClick={() => handleCheckout(plan.key as "FEATURED" | "PREMIUM")}
-                disabled={loading}
-                className={cn("w-full py-2.5 rounded-xl font-semibold text-sm transition-colors disabled:opacity-50", plan.btnClass)}
+                onClick={() => handleSelectPlan(plan.key as "FEATURED" | "PREMIUM")}
+                className={cn("w-full py-2.5 rounded-xl font-semibold text-sm transition-colors", plan.btnClass)}
               >
-                {loading ? "Redirecting…" : plan.cta}
+                {plan.cta}
               </button>
             )}
           </div>
         ))}
       </div>
 
-      {/* Listing ID input */}
-      <div className="max-w-md mx-auto bg-white border border-amber-100 rounded-2xl p-6 text-center">
-        <h3 className="font-semibold text-stone-800 mb-2">Already listed? Enter your Listing ID to upgrade.</h3>
-        <p className="text-xs text-stone-400 mb-3">Your Listing ID was sent in your confirmation email when you submitted your listing.</p>
-        <input
-          type="text"
-          value={listingId}
-          onChange={(e) => setListingId(e.target.value)}
-          placeholder="e.g. clx7ab3..."
-          className="w-full border border-amber-200 rounded-lg px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-brand-400 mb-3"
-        />
-        <p className="text-xs text-stone-400">
-          Don&apos;t have a listing yet?{" "}
-          <a href="/list-your-business" className="text-brand-600 hover:underline">List for free first →</a>
-        </p>
+      {/* Listing ID + PayPal payment section */}
+      <div className="max-w-md mx-auto space-y-4">
+
+        {/* Listing ID input */}
+        <div className="bg-white border border-amber-100 rounded-2xl p-6 text-center">
+          <h3 className="font-semibold text-stone-800 mb-1">Already listed? Enter your Listing ID to upgrade.</h3>
+          <p className="text-xs text-stone-400 mb-3">
+            Your Listing ID was sent in your confirmation email when you submitted your listing.
+          </p>
+          <input
+            ref={listingInputRef}
+            type="text"
+            value={listingId}
+            onChange={(e) => { setListingId(e.target.value); setSelected(null); }}
+            placeholder="e.g. clx7ab3..."
+            className={cn(
+              "w-full border rounded-lg px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-brand-400 mb-2 transition-colors",
+              inputError ? "border-red-400 ring-2 ring-red-200" : "border-amber-200"
+            )}
+          />
+          {inputError && (
+            <p className="text-xs text-red-500 mb-2">
+              Please enter your Listing ID before choosing a plan.
+            </p>
+          )}
+          <p className="text-xs text-stone-400">
+            Don&apos;t have a listing yet?{" "}
+            <a href="/list-your-business" className="text-brand-600 hover:underline">
+              List for free first →
+            </a>
+          </p>
+        </div>
+
+        {/* PayPal button — appears once a plan is selected and listing ID is filled */}
+        {selected && listingId.trim() && (
+          <div ref={paymentRef} className="bg-white border border-brand-200 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <p className="font-semibold text-stone-800">
+                  {selected === "FEATURED" ? "Featured" : "⭐ Premium"} —{" "}
+                  ${selected === "FEATURED" ? PRICING.FEATURED.amount : PRICING.PREMIUM.amount}/mo
+                </p>
+                <p className="text-xs text-stone-400 mt-0.5">Listing ID: {listingId}</p>
+              </div>
+              <button
+                onClick={() => setSelected(null)}
+                className="text-xs text-stone-400 hover:text-stone-600 underline"
+              >
+                Change
+              </button>
+            </div>
+
+            <PayPalSubscriptionButton
+              planId={PLAN_IDS[selected]}
+              listingId={listingId}
+              tier={selected}
+              onSuccess={() => setSuccess(true)}
+            />
+          </div>
+        )}
       </div>
 
       {/* FAQ */}
@@ -197,7 +266,7 @@ export default function PremiumPage() {
             },
             {
               q: "When does my listing upgrade take effect?",
-              a: "Within 24 hours of payment confirmation. For faster activation, email us with your PayPal transaction ID.",
+              a: "Within a few minutes of payment confirmation — PayPal sends us an instant webhook notification.",
             },
             {
               q: "What payment methods do you accept?",
@@ -211,6 +280,7 @@ export default function PremiumPage() {
           ))}
         </div>
       </div>
+
     </div>
   );
 }
