@@ -97,31 +97,51 @@ export default async function SearchPage({
           )}
 
           {/* Pagination */}
-          {data.totalPages > 1 && (
-            <div className="flex justify-center gap-2 mt-8 pb-8">
-              {Array.from({ length: data.totalPages }, (_, i) => i + 1).map((p) => {
-                const next = new URLSearchParams();
-                if (params.q) next.set("q", params.q);
-                if (params.state) next.set("state", params.state);
-                if (params.type) next.set("type", params.type);
-                if (params.tier) next.set("tier", params.tier);
-                next.set("page", String(p));
-                return (
-                  <a
-                    key={p}
-                    href={`/search?${next.toString()}`}
-                    className={`w-9 h-9 rounded-lg text-sm font-medium flex items-center justify-center transition-colors ${
-                      p === data.page
-                        ? "bg-brand-500 text-white"
-                        : "bg-white text-stone-600 border border-amber-200 hover:border-brand-300"
-                    }`}
-                  >
-                    {p}
-                  </a>
-                );
-              })}
-            </div>
-          )}
+          {data.totalPages > 1 && (() => {
+            const cur   = data.page;
+            const total = data.totalPages;
+
+            // Returns page numbers (or null for ellipsis) — max 7 slots
+            function getPages(): (number | null)[] {
+              if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+              if (cur <= 4)         return [1, 2, 3, 4, 5, null, total];
+              if (cur >= total - 3) return [1, null, total - 4, total - 3, total - 2, total - 1, total];
+              return [1, null, cur - 1, cur, cur + 1, null, total];
+            }
+
+            function buildUrl(p: number) {
+              const qs = new URLSearchParams();
+              if (params.q)     qs.set("q",     params.q);
+              if (params.state) qs.set("state", params.state);
+              if (params.type)  qs.set("type",  params.type);
+              if (params.tier)  qs.set("tier",  params.tier);
+              qs.set("page", String(p));
+              return `/search?${qs.toString()}`;
+            }
+
+            const btn = "w-9 h-9 rounded-lg text-sm font-medium flex items-center justify-center transition-colors";
+            const active = "bg-brand-500 text-white";
+            const idle   = "bg-white text-stone-600 border border-amber-200 hover:border-brand-300";
+            const disabled = "text-stone-300 border border-stone-100";
+
+            return (
+              <div className="flex justify-center items-center gap-1.5 mt-8 pb-8">
+                {cur > 1
+                  ? <a href={buildUrl(cur - 1)} className={`${btn} ${idle}`}>‹</a>
+                  : <span className={`${btn} ${disabled}`}>‹</span>}
+
+                {getPages().map((p, i) =>
+                  p === null
+                    ? <span key={`ell-${i}`} className="w-6 text-center text-stone-400 text-sm select-none">…</span>
+                    : <a key={p} href={buildUrl(p)} className={`${btn} ${p === cur ? active : idle}`}>{p}</a>
+                )}
+
+                {cur < total
+                  ? <a href={buildUrl(cur + 1)} className={`${btn} ${idle}`}>›</a>
+                  : <span className={`${btn} ${disabled}`}>›</span>}
+              </div>
+            );
+          })()}
         </div>
       </div>
 
