@@ -84,30 +84,6 @@ export default function HappyPawrents() {
           ))}
         </div>
 
-        {/* Photo mosaic strip */}
-        <div className="mt-10 grid grid-cols-4 sm:grid-cols-6 gap-2 rounded-2xl overflow-hidden">
-          {[
-            "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=300&q=75",
-            "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=300&q=75",
-            "https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?auto=format&fit=crop&w=300&q=75",
-            "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=300&q=75",
-            "https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&w=300&q=75",
-            "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=300&q=75",
-          ].map((url, i) => (
-            <div key={i} className="relative aspect-square bg-stone-100">
-              <Image
-                src={url}
-                alt="Happy pet"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-300"
-                sizes="(max-width: 640px) 25vw, 16vw"
-              />
-            </div>
-          ))}
-        </div>
-        <p className="text-center text-xs text-stone-400 mt-2">
-          Photos via Unsplash — free for commercial use
-        </p>
       </div>
     </section>
   );
