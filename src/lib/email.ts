@@ -66,6 +66,53 @@ export async function sendListingRequestNotification(data: {
   });
 }
 
+export async function sendSubscriptionAlert(data: {
+  eventType: "activated" | "cancelled" | "suspended" | "expired";
+  subscriptionId: string;
+  planId: string;
+  tier: string;
+  subscriberEmail?: string;
+  subscriberName?: string;
+}) {
+  const resend = getResend();
+  if (!resend) return;
+
+  const isNew = data.eventType === "activated";
+  const subject = isNew
+    ? `🎉 New ${data.tier} subscription — ${data.subscriberEmail ?? data.subscriptionId}`
+    : `⚠️ Subscription ${data.eventType} — ${data.subscriberEmail ?? data.subscriptionId}`;
+
+  const actionNote = isNew
+    ? `<p style="background:#fef3c7;padding:12px 16px;border-radius:8px;border-left:4px solid #f59e0b;">
+        <strong>Action needed:</strong> Find their listing and upgrade the tier to <strong>${data.tier}</strong>.
+       </p>`
+    : `<p style="background:#fee2e2;padding:12px 16px;border-radius:8px;border-left:4px solid #ef4444;">
+        <strong>Action needed:</strong> Find their listing and revert the tier back to <strong>FREE</strong>.
+       </p>`;
+
+  await resend.emails.send({
+    from: FROM,
+    to: ADMIN_EMAIL,
+    subject,
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:0 auto;">
+        <h2 style="color:#c96b2c;">PayPal Subscription ${data.eventType.charAt(0).toUpperCase() + data.eventType.slice(1)}</h2>
+        <table cellpadding="6" style="font-size:14px;width:100%;">
+          <tr><td><strong>Plan:</strong></td><td>${data.tier}</td></tr>
+          <tr><td><strong>Subscriber:</strong></td><td>${data.subscriberName ?? "—"}</td></tr>
+          <tr><td><strong>Email:</strong></td><td>${data.subscriberEmail ?? "—"}</td></tr>
+          <tr><td><strong>Subscription ID:</strong></td><td><code>${data.subscriptionId}</code></td></tr>
+          <tr><td><strong>Plan ID:</strong></td><td><code>${data.planId}</code></td></tr>
+        </table>
+        <br/>
+        ${actionNote}
+        <hr style="margin:24px 0;border:none;border-top:1px solid #eee;"/>
+        <p style="color:#999;font-size:12px;">PetBedNStay — PayPal webhook notification</p>
+      </div>
+    `,
+  });
+}
+
 export async function sendAdRequestNotification(data: {
   spotName: string;
   billing: string;
