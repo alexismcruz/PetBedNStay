@@ -5,7 +5,6 @@ import Script from "next/script";
 
 interface Props {
   planId: string;
-  listingId: string;
   tier: "FEATURED" | "PREMIUM";
   onSuccess?: (subscriptionId: string) => void;
 }
@@ -16,7 +15,7 @@ declare global {
   }
 }
 
-export function PayPalSubscriptionButton({ planId, listingId, tier, onSuccess }: Props) {
+export function PayPalSubscriptionButton({ planId, tier, onSuccess }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendered    = useRef(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,23 +41,7 @@ export function PayPalSubscriptionButton({ planId, listingId, tier, onSuccess }:
           setLoading(true);
           setError(null);
           try {
-            const res = await fetch("/api/paypal/save-subscription", {
-              method:  "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                subscriptionId: data.subscriptionID,
-                listingId,
-                tier,
-              }),
-            });
-            if (!res.ok) throw new Error("save failed");
             onSuccess?.(data.subscriptionID);
-          } catch {
-            setError(
-              "Your subscription was approved but we had trouble saving it. " +
-              "Please contact hello@petbednstay.com with your subscription ID: " +
-              data.subscriptionID
-            );
           } finally {
             setLoading(false);
           }
