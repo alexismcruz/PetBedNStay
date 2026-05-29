@@ -59,12 +59,27 @@ model Listing {
   amenities   ListingAmenity[]
   hours       ListingHour[]
   premiumPlan PremiumPlan?
+  reviews     Review[]
 
   @@index([stateSlug])
   @@index([stateSlug, citySlug])
   @@index([tier])
   @@index([isActive])
   @@index([lat, lng])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  listingId  String
+  authorName String
+  rating     Int      // 1–5
+  body       String   @db.Text
+  isApproved Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  listing    Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId])
+  @@index([listingId, isApproved])
 }
 
 model ListingImage {

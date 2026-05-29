@@ -10,13 +10,19 @@ import { db } from "@/lib/db";
 import { formatPhone, tierLabel, tierColor, typeLabel, DAYS, cn, getPlaceholderPhoto, googleMapsUrl, generateListingDescription, getStateAbbr } from "@/lib/utils";
 import MapWrapper from "@/components/map/MapWrapper";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import ReviewSection from "@/components/listings/ReviewSection";
 
 // Single cached DB fetch — shared between generateMetadata and the page component
 const getListing = cache(async (slug: string) => {
   try {
     return await db.listing.findUnique({
       where: { slug },
-      include: { images: true, amenities: true, hours: { orderBy: { dayOfWeek: "asc" } } },
+      include: {
+        images: true,
+        amenities: true,
+        hours: { orderBy: { dayOfWeek: "asc" } },
+        reviews: { where: { isApproved: true }, orderBy: { createdAt: "desc" } },
+      },
     });
   } catch {
     return null;
@@ -86,6 +92,17 @@ export default async function ListingPage({
     },
     ...(listing.lat && listing.lng
       ? { geo: { "@type": "GeoCoordinates", latitude: listing.lat, longitude: listing.lng } }
+      : {}),
+    ...(listing.reviews.length > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: (listing.reviews.reduce((s: number, r: any) => s + r.rating, 0) / listing.reviews.length).toFixed(1),
+            reviewCount: listing.reviews.length,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
       : {}),
   };
 
@@ -216,6 +233,19 @@ export default async function ListingPage({
               </div>
             </div>
           )}
+
+          {/* Reviews */}
+          <ReviewSection
+            listingId={listing.id}
+            listingName={listing.name}
+            initialReviews={listing.reviews.map((r: any) => ({
+              id: r.id,
+              authorName: r.authorName,
+              rating: r.rating,
+              body: r.body,
+              createdAt: r.createdAt.toISOString(),
+            }))}
+          />
         </div>
 
         {/* Sidebar */}
