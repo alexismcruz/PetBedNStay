@@ -4,13 +4,14 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  MapPin, Phone, Globe, Mail, BadgeCheck, Clock, Star, Navigation,
+  MapPin, BadgeCheck, Clock,
 } from "lucide-react";
 import { db } from "@/lib/db";
-import { formatPhone, tierLabel, tierColor, typeLabel, DAYS, cn, getPlaceholderPhoto, googleMapsUrl, generateListingDescription, getStateAbbr } from "@/lib/utils";
+import { tierLabel, tierColor, typeLabel, DAYS, cn, getPlaceholderPhoto, googleMapsUrl, generateListingDescription, getStateAbbr } from "@/lib/utils";
 import MapWrapper from "@/components/map/MapWrapper";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ReviewSection from "@/components/listings/ReviewSection";
+import ListingContactSidebar from "@/components/listings/ListingContactSidebar";
 
 // Single cached DB fetch — shared between generateMetadata and the page component
 const getListing = cache(async (slug: string) => {
@@ -256,99 +257,16 @@ export default async function ListingPage({
 
         {/* Sidebar */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="sticky top-24 space-y-4">
-            {/* Contact card */}
-            <div className="bg-white rounded-2xl border border-amber-100 shadow-sm p-6 space-y-4">
-              <h2 className="font-semibold text-stone-800">Contact</h2>
-
-              {listing.phone && (
-                <a
-                  href={`tel:${listing.phone}`}
-                  className="flex items-center gap-3 text-sm text-stone-700 hover:text-brand-600 transition-colors"
-                >
-                  <Phone className="h-4 w-4 text-brand-500 shrink-0" />
-                  {formatPhone(listing.phone)}
-                </a>
-              )}
-
-              {listing.email && (
-                <a
-                  href={`mailto:${listing.email}`}
-                  className="flex items-center gap-3 text-sm text-stone-700 hover:text-brand-600 transition-colors"
-                >
-                  <Mail className="h-4 w-4 text-brand-500 shrink-0" />
-                  {listing.email}
-                </a>
-              )}
-
-              {listing.website && (
-                <a
-                  href={listing.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-sm text-brand-600 hover:text-brand-700 transition-colors"
-                >
-                  <Globe className="h-4 w-4 shrink-0" />
-                  Visit Website
-                </a>
-              )}
-
-              {!listing.phone && !listing.email && !listing.website && (
-                <p className="text-sm text-stone-400">No contact info available</p>
-              )}
-
-              {/* Google Maps — always shown */}
-              <a
-                href={mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 text-sm text-white bg-brand-500 hover:bg-brand-600 transition-colors px-4 py-2.5 rounded-xl font-semibold mt-2"
-              >
-                <Navigation className="h-4 w-4 shrink-0" />
-                Open in Google Maps
-              </a>
-            </div>
-
-            {/* External reviews */}
-            <div className="bg-white rounded-2xl border border-amber-100 shadow-sm p-6 space-y-3">
-              <h2 className="font-semibold text-stone-800">Reviews Elsewhere</h2>
-              <a
-                href={googleReviewUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 w-full border border-stone-200 hover:border-brand-400 hover:shadow-sm text-stone-700 hover:text-brand-600 text-sm font-medium px-4 py-2.5 rounded-xl transition-all"
-              >
-                <span className="text-base">🔍</span>
-                Read Google Reviews
-              </a>
-              <a
-                href={yelpReviewUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 w-full border border-stone-200 hover:border-red-300 hover:shadow-sm text-stone-700 hover:text-red-600 text-sm font-medium px-4 py-2.5 rounded-xl transition-all"
-              >
-                <span className="text-base">⭐</span>
-                Read Yelp Reviews
-              </a>
-            </div>
-
-            {/* Upgrade prompt for free listings */}
-            {listing.tier === "FREE" && (
-              <div className="bg-brand-50 border border-brand-200 rounded-2xl p-5 text-center space-y-3">
-                <Star className="h-8 w-8 text-brand-500 mx-auto" />
-                <p className="text-sm font-semibold text-stone-800">Is this your business?</p>
-                <p className="text-xs text-stone-500">
-                  Claim and upgrade to Featured or Premium to add photos, a full description, and get priority placement.
-                </p>
-                <Link
-                  href="/premium"
-                  className="block w-full bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold py-2 rounded-xl transition-colors"
-                >
-                  Upgrade Listing
-                </Link>
-              </div>
-            )}
-          </div>
+          <ListingContactSidebar
+            listingName={listing.name}
+            phone={listing.phone}
+            email={listing.email}
+            website={listing.website}
+            mapsUrl={mapsUrl}
+            googleReviewUrl={googleReviewUrl}
+            yelpReviewUrl={yelpReviewUrl}
+            tier={listing.tier}
+          />
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { US_STATES } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 import { CheckCircle, Check, Crown, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PRICING } from "@/lib/pricing";
@@ -76,6 +77,7 @@ export default function ListYourBusinessPage() {
         body:    JSON.stringify(data),
       });
       if (!res.ok) throw new Error("Submission failed");
+      trackEvent("listing_request_submitted", { plan: "free" });
       setSubmitted(true);
     } catch {
       setError("Something went wrong. Please try again or email us directly.");
@@ -171,7 +173,7 @@ export default function ListYourBusinessPage() {
             <PayPalSubscriptionButton
               planId={PLAN_IDS.FEATURED}
               tier="FEATURED"
-              onSuccess={() => setPaidSuccess("FEATURED")}
+              onSuccess={() => { trackEvent("subscription_started", { plan: "featured" }); setPaidSuccess("FEATURED"); }}
             />
           </div>
 
@@ -201,7 +203,7 @@ export default function ListYourBusinessPage() {
             <PayPalSubscriptionButton
               planId={PLAN_IDS.PREMIUM}
               tier="PREMIUM"
-              onSuccess={() => setPaidSuccess("PREMIUM")}
+              onSuccess={() => { trackEvent("subscription_started", { plan: "premium" }); setPaidSuccess("PREMIUM"); }}
             />
           </div>
 
