@@ -49,6 +49,8 @@ model Listing {
   website     String?
   googleUrl   String?
   yelpUrl     String?
+  priceMin    Float?
+  priceMax    Float?
   tier        ListingTier @default(FREE)
   isVerified  Boolean     @default(false)
   isActive    Boolean     @default(true)

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
+import { haversineDistance, getBoundingBox, formatDistance } from "@/lib/geo";
 import ListingCard from "@/components/listings/ListingCard";
 import SearchFilters from "@/components/search/SearchFilters";
 import MapWrapper from "@/components/map/MapWrapper";
@@ -14,15 +15,15 @@ export const metadata: Metadata = {
 const PAGE_SIZE = 24;
 
 async function getListings(params: SearchParams) {
-  const page = Math.max(1, parseInt(params.page ?? "1"));
-  const skip = (page - 1) * PAGE_SIZE;
+  const page  = Math.max(1, parseInt(params.page ?? "1"));
+  const skip  = (page - 1) * PAGE_SIZE;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = { isActive: true };
-  if (params.state) where.stateSlug = params.state;
-  if (params.type) where.type = params.type;
-  if (params.tier) where.tier = params.tier;
-  if (params.hasReviews === "1") where.reviews = { some: { isApproved: true } };
+  if (params.state)                where.stateSlug = params.state;
+  if (params.type)                 where.type       = params.type;
+  if (params.tier)                 where.tier       = params.tier;
+  if (params.hasReviews === "1")   where.reviews    = { some: { isApproved: true } };
   if (params.q) {
     where.OR = [
       { name:        { contains: params.q, mode: "insensitive" } },
@@ -33,6 +34,37 @@ async function getListings(params: SearchParams) {
     ];
   }
 
+  // ── Near-me mode ────────────────────────────────────────────────────────────
+  if (params.lat && params.lng) {
+    const userLat = parseFloat(params.lat);
+    const userLng = parseFloat(params.lng);
+    const radius  = parseInt(params.radius ?? "25");
+    const box     = getBoundingBox(userLat, userLng, radius);
+
+    where.lat = { gte: box.latMin, lte: box.latMax };
+    where.lng = { gte: box.lngMin, lte: box.lngMax };
+
+    // Fetch ALL listings in the bounding box, sort by distance in JS, paginate
+    const all = await db.listing.findMany({
+      where,
+      include: { images: true, amenities: true },
+      orderBy: [{ tier: "desc" }, { isVerified: "desc" }],
+    });
+
+    const withDist = all
+      .filter((l) => l.lat != null && l.lng != null)
+      .map((l) => ({
+        ...l,
+        distanceMiles: haversineDistance(userLat, userLng, l.lat!, l.lng!),
+      }))
+      .sort((a, b) => a.distanceMiles - b.distanceMiles);
+
+    const total    = withDist.length;
+    const listings = withDist.slice(skip, skip + PAGE_SIZE);
+    return { listings, total, page, totalPages: Math.ceil(total / PAGE_SIZE) };
+  }
+
+  // ── Normal mode ─────────────────────────────────────────────────────────────
   const [listings, total] = await Promise.all([
     db.listing.findMany({
       where,
@@ -53,8 +85,9 @@ export default async function SearchPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  let data = { listings: [] as any[], total: 0, page: 1, totalPages: 0 };
+  const isNearMe = !!(params.lat && params.lng);
 
+  let data = { listings: [] as any[], total: 0, page: 1, totalPages: 0 };
   try {
     data = await getListings(params);
   } catch {
@@ -65,6 +98,20 @@ export default async function SearchPage({
     .filter((l) => l.lat && l.lng)
     .map((l) => ({ id: l.id, name: l.name, lat: l.lat, lng: l.lng, city: l.city, state: l.state, slug: l.slug, tier: l.tier }));
 
+  function buildUrl(p: number) {
+    const qs = new URLSearchParams();
+    if (params.q)          qs.set("q",          params.q);
+    if (params.state)      qs.set("state",      params.state);
+    if (params.type)       qs.set("type",       params.type);
+    if (params.tier)       qs.set("tier",       params.tier);
+    if (params.hasReviews) qs.set("hasReviews", params.hasReviews);
+    if (params.lat)        qs.set("lat",        params.lat);
+    if (params.lng)        qs.set("lng",        params.lng);
+    if (params.radius)     qs.set("radius",     params.radius);
+    qs.set("page", String(p));
+    return `/search?${qs.toString()}`;
+  }
+
   return (
     <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] overflow-hidden bg-warm-50">
       {/* Left panel */}
@@ -73,7 +120,9 @@ export default async function SearchPage({
           <div className="max-w-3xl">
             <div className="flex items-center justify-between mb-2">
               <h1 className="text-lg font-bold text-stone-800">
-                {data.total > 0 ? `${data.total.toLocaleString()} listings found` : "Browse Pet Hotels & Sitters"}
+                {data.total > 0
+                  ? `${data.total.toLocaleString()} listing${data.total === 1 ? "" : "s"} found${isNearMe ? ` within ${params.radius ?? "25"} miles` : ""}`
+                  : "Browse Pet Hotels & Sitters"}
               </h1>
             </div>
             <Suspense>
@@ -87,12 +136,18 @@ export default async function SearchPage({
             <div className="text-center py-20 text-stone-400">
               <div className="text-5xl mb-4">🐾</div>
               <p className="text-lg font-medium text-stone-600">No listings found</p>
-              <p className="text-sm mt-1">Try adjusting your search filters</p>
+              <p className="text-sm mt-1">
+                {isNearMe ? "Try increasing the radius or clearing Near me" : "Try adjusting your search filters"}
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {data.listings.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} />
+                <ListingCard
+                  key={listing.id}
+                  listing={listing}
+                  distanceMiles={(listing as any).distanceMiles}
+                />
               ))}
             </div>
           )}
@@ -102,28 +157,16 @@ export default async function SearchPage({
             const cur   = data.page;
             const total = data.totalPages;
 
-            // Returns page numbers (or null for ellipsis) — max 7 slots
             function getPages(): (number | null)[] {
               if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-              if (cur <= 4)         return [1, 2, 3, 4, 5, null, total];
-              if (cur >= total - 3) return [1, null, total - 4, total - 3, total - 2, total - 1, total];
+              if (cur <= 4)          return [1, 2, 3, 4, 5, null, total];
+              if (cur >= total - 3)  return [1, null, total - 4, total - 3, total - 2, total - 1, total];
               return [1, null, cur - 1, cur, cur + 1, null, total];
             }
 
-            function buildUrl(p: number) {
-              const qs = new URLSearchParams();
-              if (params.q)          qs.set("q",          params.q);
-              if (params.state)      qs.set("state",      params.state);
-              if (params.type)       qs.set("type",       params.type);
-              if (params.tier)       qs.set("tier",       params.tier);
-              if (params.hasReviews) qs.set("hasReviews", params.hasReviews);
-              qs.set("page", String(p));
-              return `/search?${qs.toString()}`;
-            }
-
-            const btn = "w-9 h-9 rounded-lg text-sm font-medium flex items-center justify-center transition-colors";
-            const active = "bg-brand-500 text-white";
-            const idle   = "bg-white text-stone-600 border border-amber-200 hover:border-brand-300";
+            const btn      = "w-9 h-9 rounded-lg text-sm font-medium flex items-center justify-center transition-colors";
+            const active   = "bg-brand-500 text-white";
+            const idle     = "bg-white text-stone-600 border border-amber-200 hover:border-brand-300";
             const disabled = "text-stone-300 border border-stone-100";
 
             return (

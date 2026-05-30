@@ -39,6 +39,8 @@ export interface Listing {
   phone: string | null;
   email: string | null;
   website: string | null;
+  priceMin: number | null;
+  priceMax: number | null;
   tier: ListingTier;
   isVerified: boolean;
   isActive: boolean;
@@ -76,6 +78,9 @@ export interface SearchParams {
   tier?: string;
   hasReviews?: string;
   page?: string;
+  lat?: string;
+  lng?: string;
+  radius?: string;
 }
 
 export interface AdSpot {

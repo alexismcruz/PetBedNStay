@@ -1,17 +1,28 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Phone, Globe, BadgeCheck, Star } from "lucide-react";
+import { MapPin, Phone, Globe, BadgeCheck } from "lucide-react";
 import { cn, tierColor, tierLabel, typeLabel, formatPhone, getPlaceholderPhoto } from "@/lib/utils";
+import { formatDistance } from "@/lib/geo";
 import type { Listing } from "@/types";
 
 interface Props {
   listing: Listing;
+  distanceMiles?: number;
   className?: string;
 }
 
-export default function ListingCard({ listing, className }: Props) {
+export default function ListingCard({ listing, distanceMiles, className }: Props) {
   const primaryImage = listing.images.find((i) => i.isPrimary) ?? listing.images[0];
   const photoUrl = primaryImage?.url ?? getPlaceholderPhoto(listing.id);
+
+  const hasPrice = listing.priceMin != null || listing.priceMax != null;
+  const priceLabel = hasPrice
+    ? listing.priceMin && listing.priceMax
+      ? `$${listing.priceMin}–$${listing.priceMax}/night`
+      : listing.priceMin
+        ? `From $${listing.priceMin}/night`
+        : `Up to $${listing.priceMax}/night`
+    : null;
 
   return (
     <Link
@@ -42,8 +53,17 @@ export default function ListingCard({ listing, className }: Props) {
           </div>
         )}
 
-        {/* Verified badge */}
-        {listing.isVerified && (
+        {/* Distance badge */}
+        {distanceMiles !== undefined && (
+          <div className="absolute top-3 right-3">
+            <span className="text-xs font-semibold bg-white/90 text-brand-600 px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+              📍 {formatDistance(distanceMiles)}
+            </span>
+          </div>
+        )}
+
+        {/* Verified badge (when no distance shown) */}
+        {listing.isVerified && distanceMiles === undefined && (
           <div className="absolute top-3 right-3">
             <BadgeCheck className="h-5 w-5 text-forest-600 bg-white rounded-full shadow-sm" />
           </div>
@@ -61,11 +81,16 @@ export default function ListingCard({ listing, className }: Props) {
           </span>
         </div>
 
-        <div className="flex items-center gap-1 text-stone-500 text-sm">
-          <MapPin className="h-3.5 w-3.5 shrink-0 text-brand-500" />
-          <span className="line-clamp-1">
-            {listing.city}, {listing.state}
-          </span>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1 text-stone-500 text-sm">
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-brand-500" />
+            <span className="line-clamp-1">{listing.city}, {listing.state}</span>
+          </div>
+          {priceLabel && (
+            <span className="shrink-0 text-xs font-semibold text-forest-700 bg-forest-50 px-2 py-0.5 rounded-full">
+              {priceLabel}
+            </span>
+          )}
         </div>
 
         {listing.description && (
