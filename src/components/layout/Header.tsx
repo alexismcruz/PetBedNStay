@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Menu, X, Search, PawPrint } from "lucide-react";
+import { Menu, X, Search, PawPrint, Heart } from "lucide-react";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -64,6 +64,13 @@ export default function Header() {
                 {l.label}
               </Link>
             ))}
+            <Link
+              href="/saved"
+              className="flex items-center gap-1.5 text-sm font-medium text-stone-600 hover:text-red-500 transition-colors"
+            >
+              <Heart className="h-4 w-4" />
+              Saved
+            </Link>
           </nav>
 
           {/* Mobile menu toggle */}
@@ -103,6 +110,13 @@ export default function Header() {
                 {l.label}
               </Link>
             ))}
+            <Link
+              href="/saved"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-1.5 text-sm font-medium text-stone-700 hover:text-red-500"
+            >
+              <Heart className="h-4 w-4" /> Saved Listings
+            </Link>
           </nav>
         </div>
       )}

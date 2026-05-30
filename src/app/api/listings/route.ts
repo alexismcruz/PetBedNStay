@@ -4,6 +4,17 @@ import { db } from "@/lib/db";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
+
+    // Fetch by specific IDs (used by the Saved/Favorites page)
+    const rawIds = searchParams.get("ids");
+    if (rawIds) {
+      const ids = rawIds.split(",").filter(Boolean);
+      const listings = await db.listing.findMany({
+        where: { id: { in: ids }, isActive: true },
+        include: { images: true, amenities: true },
+      });
+      return NextResponse.json({ listings, total: listings.length });
+    }
     const state = searchParams.get("state");
     const city = searchParams.get("city");
     const type = searchParams.get("type");

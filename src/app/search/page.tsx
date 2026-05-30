@@ -24,6 +24,12 @@ async function getListings(params: SearchParams) {
   if (params.type)                 where.type       = params.type;
   if (params.tier)                 where.tier       = params.tier;
   if (params.hasReviews === "1")   where.reviews    = { some: { isApproved: true } };
+  if (params.petType)              where.amenities  = { some: { name: { contains: params.petType, mode: "insensitive" } } };
+  if (params.priceMax) {
+    const max = parseFloat(params.priceMax);
+    // Show listings with no price OR whose min price is within budget
+    where.OR = [{ priceMin: null }, { priceMin: { lte: max } }];
+  }
   if (params.q) {
     where.OR = [
       { name:        { contains: params.q, mode: "insensitive" } },

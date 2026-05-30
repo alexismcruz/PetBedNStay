@@ -3,6 +3,7 @@ import Image from "next/image";
 import { MapPin, Phone, Globe, BadgeCheck } from "lucide-react";
 import { cn, tierColor, tierLabel, typeLabel, formatPhone, getPlaceholderPhoto } from "@/lib/utils";
 import { formatDistance } from "@/lib/geo";
+import FavoriteButton from "@/components/listings/FavoriteButton";
 import type { Listing } from "@/types";
 
 interface Props {
@@ -53,21 +54,22 @@ export default function ListingCard({ listing, distanceMiles, className }: Props
           </div>
         )}
 
-        {/* Distance badge */}
-        {distanceMiles !== undefined && (
-          <div className="absolute top-3 right-3">
-            <span className="text-xs font-semibold bg-white/90 text-brand-600 px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+        {/* Top-right: distance or verified */}
+        <div className="absolute top-3 right-3 flex items-center gap-1.5">
+          {distanceMiles !== undefined && (
+            <span className="text-xs font-semibold bg-white/90 text-brand-600 px-2 py-0.5 rounded-full shadow-sm">
               📍 {formatDistance(distanceMiles)}
             </span>
-          </div>
-        )}
-
-        {/* Verified badge (when no distance shown) */}
-        {listing.isVerified && distanceMiles === undefined && (
-          <div className="absolute top-3 right-3">
+          )}
+          {listing.isVerified && distanceMiles === undefined && (
             <BadgeCheck className="h-5 w-5 text-forest-600 bg-white rounded-full shadow-sm" />
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* Favorite button — bottom right of image */}
+        <div className="absolute bottom-3 right-3">
+          <FavoriteButton listingId={listing.id} />
+        </div>
       </div>
 
       {/* Content */}

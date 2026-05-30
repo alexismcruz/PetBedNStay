@@ -158,6 +158,11 @@ export default async function ListingPage({
                     <BadgeCheck className="h-4 w-4" /> Verified
                   </span>
                 )}
+                {listing.verifiedAt && (
+                  <span className="text-xs text-stone-400">
+                    Active as of {new Date(listing.verifiedAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                  </span>
+                )}
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold text-stone-800">{listing.name}</h1>
               <div className="flex items-center gap-1 text-stone-500 mt-1">

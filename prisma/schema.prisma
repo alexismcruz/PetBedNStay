@@ -51,6 +51,7 @@ model Listing {
   yelpUrl     String?
   priceMin    Float?
   priceMax    Float?
+  verifiedAt  DateTime?
   tier        ListingTier @default(FREE)
   isVerified  Boolean     @default(false)
   isActive    Boolean     @default(true)

@@ -23,13 +23,14 @@ async function getFeaturedListings() {
 
 async function getCounts() {
   try {
-    const [listings, states] = await Promise.all([
+    const [listings, states, cities] = await Promise.all([
       db.listing.count({ where: { isActive: true } }),
       db.listing.groupBy({ by: ["stateSlug"], where: { isActive: true } }),
+      db.listing.groupBy({ by: ["citySlug"],  where: { isActive: true } }),
     ]);
-    return { listings, states: states.length };
+    return { listings, states: states.length, cities: cities.length };
   } catch {
-    return { listings: 0, states: 0 };
+    return { listings: 0, states: 0, cities: 0 };
   }
 }
 
@@ -56,7 +57,7 @@ export default async function HomePage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       <Hero />
-      <Stats listingCount={counts.listings} stateCount={counts.states} />
+      <Stats listingCount={counts.listings} stateCount={counts.states} cityCount={counts.cities} />
       <HowItWorks />
       <StateGrid />
       <HappyPawrents />

@@ -41,6 +41,7 @@ export interface Listing {
   website: string | null;
   priceMin: number | null;
   priceMax: number | null;
+  verifiedAt: Date | null;
   tier: ListingTier;
   isVerified: boolean;
   isActive: boolean;
@@ -81,6 +82,8 @@ export interface SearchParams {
   lat?: string;
   lng?: string;
   radius?: string;
+  priceMax?: string;
+  petType?: string;
 }
 
 export interface AdSpot {
