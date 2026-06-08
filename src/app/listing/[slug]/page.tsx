@@ -12,6 +12,7 @@ import MapWrapper from "@/components/map/MapWrapper";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ReviewSection from "@/components/listings/ReviewSection";
 import ListingContactSidebar from "@/components/listings/ListingContactSidebar";
+import UnclaimedBanner from "@/components/listings/UnclaimedBanner";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -85,7 +86,7 @@ export default async function ListingPage({
 
   const primaryImage = listing.images.find((i: any) => i.isPrimary) ?? listing.images[0];
   const otherImages = listing.images.filter((i: any) => !i.isPrimary && i !== primaryImage);
-  const photoUrl = primaryImage?.url ?? getPlaceholderPhoto(listing.id);
+  const photoUrl = primaryImage?.url ?? getPlaceholderPhoto(listing.id, listing.type);
   const mapsUrl = googleMapsUrl(listing);
 
   // External review links — use stored URL or fall back to search
@@ -187,6 +188,11 @@ export default async function ListingPage({
             </div>
           </div>
 
+          {/* Unclaimed notice — honest signal + owner lead-gen */}
+          {!listing.claimedAt && (
+            <UnclaimedBanner listingName={listing.name} city={listing.city} state={listing.state} />
+          )}
+
           {/* Images */}
           <div className="rounded-2xl overflow-hidden">
             <div className="relative h-72 sm:h-96 bg-amber-50">
@@ -211,12 +217,12 @@ export default async function ListingPage({
           </div>
 
           {/* Description */}
-          {listing.description && (
-            <div className="bg-white rounded-2xl border border-amber-100 p-6">
-              <h2 className="font-semibold text-stone-800 text-lg mb-3">About</h2>
-              <p className="text-stone-600 leading-relaxed whitespace-pre-line">{listing.description}</p>
-            </div>
-          )}
+          <div className="bg-white rounded-2xl border border-amber-100 p-6">
+            <h2 className="font-semibold text-stone-800 text-lg mb-3">About</h2>
+            <p className="text-stone-600 leading-relaxed whitespace-pre-line">
+              {listing.description ?? generateListingDescription(listing)}
+            </p>
+          </div>
 
           {/* Amenities */}
           {listing.amenities.length > 0 && (

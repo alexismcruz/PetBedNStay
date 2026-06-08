@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Phone, Globe, BadgeCheck } from "lucide-react";
-import { cn, tierColor, tierLabel, typeLabel, formatPhone, getPlaceholderPhoto } from "@/lib/utils";
+import { cn, tierColor, tierLabel, typeLabel, formatPhone, getPlaceholderPhoto, generateListingDescription } from "@/lib/utils";
 import { formatDistance } from "@/lib/geo";
 import FavoriteButton from "@/components/listings/FavoriteButton";
 import type { Listing } from "@/types";
@@ -14,7 +14,7 @@ interface Props {
 
 export default function ListingCard({ listing, distanceMiles, className }: Props) {
   const primaryImage = listing.images.find((i) => i.isPrimary) ?? listing.images[0];
-  const photoUrl = primaryImage?.url ?? getPlaceholderPhoto(listing.id);
+  const photoUrl = primaryImage?.url ?? getPlaceholderPhoto(listing.id, listing.type);
 
   const hasPrice = listing.priceMin != null || listing.priceMax != null;
   const priceLabel = hasPrice
@@ -95,11 +95,9 @@ export default function ListingCard({ listing, distanceMiles, className }: Props
           )}
         </div>
 
-        {listing.description && (
-          <p className="text-stone-500 text-sm line-clamp-2 leading-relaxed">
-            {listing.description}
-          </p>
-        )}
+        <p className="text-stone-500 text-sm line-clamp-2 leading-relaxed">
+          {listing.description ?? generateListingDescription(listing)}
+        </p>
 
         {listing.amenities.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-auto pt-1">

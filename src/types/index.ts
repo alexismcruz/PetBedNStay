@@ -42,6 +42,7 @@ export interface Listing {
   priceMin: number | null;
   priceMax: number | null;
   verifiedAt: Date | null;
+  claimedAt: Date | null;
   tier: ListingTier;
   isVerified: boolean;
   isActive: boolean;

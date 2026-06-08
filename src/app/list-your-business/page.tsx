@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { US_STATES } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics";
-import { CheckCircle, Check, Crown, Zap } from "lucide-react";
+import { CheckCircle, Check, Crown, Zap, BadgeCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PRICING } from "@/lib/pricing";
 import { PayPalSubscriptionButton } from "@/components/PayPalSubscriptionButton";
@@ -46,6 +47,22 @@ function SuccessScreen({ tier }: { tier: "FEATURED" | "PREMIUM" }) {
 }
 
 export default function ListYourBusinessPage() {
+  return (
+    <Suspense fallback={null}>
+      <ListYourBusinessForm />
+    </Suspense>
+  );
+}
+
+function ListYourBusinessForm() {
+  const searchParams = useSearchParams();
+  const claimName  = searchParams.get("claim")  ?? "";
+  const claimCity  = searchParams.get("city")   ?? "";
+  const claimStateRaw = searchParams.get("state") ?? "";
+  // Incoming state may be a display name ("California") — resolve to slug for the select
+  const claimStateSlug =
+    US_STATES.find((s) => s.slug === claimStateRaw || s.name === claimStateRaw)?.slug ?? "";
+
   const [submitted,    setSubmitted]    = useState(false);
   const [paidSuccess,  setPaidSuccess]  = useState<"FEATURED" | "PREMIUM" | null>(null);
   const [loading,      setLoading]      = useState(false);
@@ -77,7 +94,7 @@ export default function ListYourBusinessPage() {
         body:    JSON.stringify(data),
       });
       if (!res.ok) throw new Error("Submission failed");
-      trackEvent("listing_request_submitted", { plan: "free" });
+      trackEvent("listing_request_submitted", { plan: claimName ? "claim" : "free" });
       setSubmitted(true);
     } catch {
       setError("Something went wrong. Please try again or email us directly.");
@@ -219,14 +236,26 @@ export default function ListYourBusinessPage() {
 
         {/* Free listing form */}
         <div id="form" className="max-w-2xl mx-auto">
+          {claimName && (
+            <div className="mb-6 bg-forest-50 border border-forest-200 rounded-2xl p-4 flex items-start gap-3">
+              <BadgeCheck className="h-5 w-5 text-forest-600 shrink-0 mt-0.5" />
+              <p className="text-sm text-stone-700 leading-relaxed">
+                You&apos;re claiming <span className="font-semibold">{claimName}</span>. We&apos;ve pre-filled
+                what we have — just add your contact details and anything you&apos;d like pet owners to see.
+                Once verified, you can add photos, prices, and hours.
+              </p>
+            </div>
+          )}
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-stone-800">Submit Your Free Listing</h2>
+            <h2 className="text-2xl font-bold text-stone-800">
+              {claimName ? "Claim Your Listing" : "Submit Your Free Listing"}
+            </h2>
             <p className="mt-2 text-stone-500">Fill in your details and we'll get you live within 1–2 business days.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-amber-100 shadow-sm p-6 sm:p-8 space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <Field label="Business Name *"        name="businessName" required placeholder="Paws Paradise Hotel" />
+              <Field label="Business Name *"        name="businessName" required placeholder="Paws Paradise Hotel" defaultValue={claimName} />
               <Field label="Owner / Contact Name *" name="ownerName"    required placeholder="Jane Smith" />
             </div>
 
@@ -252,12 +281,13 @@ export default function ListYourBusinessPage() {
             <Field label="Street Address" name="address" placeholder="123 Main St" />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <Field label="City *" name="city" required placeholder="Los Angeles" />
+              <Field label="City *" name="city" required placeholder="Los Angeles" defaultValue={claimCity} />
               <div>
                 <label className="block text-sm font-medium text-stone-700 mb-1">State *</label>
                 <select
                   name="state"
                   required
+                  defaultValue={claimStateSlug}
                   className="w-full border border-amber-200 rounded-lg px-3 py-2.5 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-brand-400"
                 >
                   <option value="">Select state…</option>
@@ -302,9 +332,9 @@ export default function ListYourBusinessPage() {
 }
 
 function Field({
-  label, name, type = "text", required, placeholder,
+  label, name, type = "text", required, placeholder, defaultValue,
 }: {
-  label: string; name: string; type?: string; required?: boolean; placeholder?: string;
+  label: string; name: string; type?: string; required?: boolean; placeholder?: string; defaultValue?: string;
 }) {
   return (
     <div>
@@ -314,6 +344,7 @@ function Field({
         type={type}
         required={required}
         placeholder={placeholder}
+        defaultValue={defaultValue}
         className="w-full border border-amber-200 rounded-lg px-3 py-2.5 text-sm text-stone-700 placeholder-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-400"
       />
     </div>

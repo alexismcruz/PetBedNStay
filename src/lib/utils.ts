@@ -102,23 +102,45 @@ export function typeLabel(type: string): string {
 
 export const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-// Curated Unsplash pet/boarding photos used as placeholders for listings without images
-const PLACEHOLDER_PHOTOS = [
+// Curated Unsplash photos used as placeholders, grouped by facility type so that
+// listings of the same kind don't all show the identical image.
+const PHOTOS_HOTEL = [
+  // kennels, boarding facilities, dogs at play / daycare
+  "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1558929996-da64ba858215?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?auto=format&fit=crop&w=800&q=75",
+];
+const PHOTOS_SITTER = [
+  // cozy in-home, dog on couch / with person at home
   "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=800&q=75",
   "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=800&q=75",
-  "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=800&q=75",
-  "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=800&q=75",
-  "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1494947665470-20322015e3a8?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&w=800&q=75",
   "https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&w=800&q=75",
+];
+const PHOTOS_GENERIC = [
+  // mixed cats + dogs, works for "Both" / cat boarding / luxury
   "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=800&q=75",
+  "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=800&q=75",
   "https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?auto=format&fit=crop&w=800&q=75",
 ];
 
-/** Returns a consistent placeholder photo URL for a listing that has no uploaded images */
-export function getPlaceholderPhoto(seed: string): string {
+/**
+ * Returns a consistent placeholder photo URL for a listing that has no uploaded images.
+ * Pool is chosen by facility type so the directory doesn't look auto-generated.
+ */
+export function getPlaceholderPhoto(seed: string, type?: string | null): string {
+  const pool =
+    type === "HOTEL"  ? PHOTOS_HOTEL  :
+    type === "SITTER" ? PHOTOS_SITTER :
+                        PHOTOS_GENERIC;
   let hash = 0;
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-  return PLACEHOLDER_PHOTOS[hash % PLACEHOLDER_PHOTOS.length];
+  return pool[hash % pool.length];
 }
 
 /** Builds a Google Maps URL using coordinates if available, otherwise falls back to a name search */

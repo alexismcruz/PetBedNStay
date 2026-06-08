@@ -52,6 +52,7 @@ model Listing {
   priceMin    Float?
   priceMax    Float?
   verifiedAt  DateTime?
+  claimedAt   DateTime?
   tier        ListingTier @default(FREE)
   isVerified  Boolean     @default(false)
   isActive    Boolean     @default(true)
