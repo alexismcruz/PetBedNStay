@@ -7,6 +7,12 @@ import ListingCard from "@/components/listings/ListingCard";
 import MapWrapper from "@/components/map/MapWrapper";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 
+export const revalidate = 86400; // 24 hours
+
+export async function generateStaticParams() {
+  return US_STATES.map((s) => ({ state: s.slug }));
+}
+
 const RESERVED = new Set([
   "search", "list-your-business", "premium", "advertise",
   "privacy", "terms", "contact", "api", "favicon.ico",

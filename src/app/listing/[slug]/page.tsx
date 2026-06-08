@@ -13,6 +13,21 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import ReviewSection from "@/components/listings/ReviewSection";
 import ListingContactSidebar from "@/components/listings/ListingContactSidebar";
 
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  try {
+    const listings = await db.listing.findMany({
+      where: { isActive: true, tier: { in: ["FEATURED", "PREMIUM"] } },
+      select: { slug: true },
+    });
+    return listings.map((l) => ({ slug: l.slug }));
+  } catch {
+    return [];
+  }
+}
+
 // Single cached DB fetch — shared between generateMetadata and the page component
 const getListing = cache(async (slug: string) => {
   try {

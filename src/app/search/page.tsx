@@ -10,6 +10,7 @@ import type { SearchParams } from "@/types";
 export const metadata: Metadata = {
   title: "Browse Pet Hotels & Sitters",
   description: "Search and filter pet hotels and sitters across all 50 US states.",
+  robots: { index: false, follow: true },
 };
 
 const PAGE_SIZE = 24;

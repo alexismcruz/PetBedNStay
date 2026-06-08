@@ -7,6 +7,21 @@ import ListingCard from "@/components/listings/ListingCard";
 import MapWrapper from "@/components/map/MapWrapper";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 
+export const revalidate = 86400;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  try {
+    const rows = await db.listing.groupBy({
+      by: ["stateSlug", "citySlug"],
+      where: { isActive: true },
+    });
+    return rows.map((r) => ({ state: r.stateSlug, city: r.citySlug }));
+  } catch {
+    return [];
+  }
+}
+
 export async function generateMetadata({
   params,
 }: {

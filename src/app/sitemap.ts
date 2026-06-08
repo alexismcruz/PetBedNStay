@@ -14,10 +14,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const statics: MetadataRoute.Sitemap = [
     { url: BASE,                          lastModified: now, changeFrequency: "daily"   as const, priority: 1.0 },
-    { url: `${BASE}/search`,              lastModified: now, changeFrequency: "daily"   as const, priority: 0.8 },
-    { url: `${BASE}/blog`,               lastModified: now, changeFrequency: "weekly"  as const, priority: 0.7 },
+    { url: `${BASE}/states`,              lastModified: now, changeFrequency: "monthly" as const, priority: 0.8 },
+    { url: `${BASE}/blog`,                lastModified: now, changeFrequency: "weekly"  as const, priority: 0.7 },
     { url: `${BASE}/list-your-business`,  lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 },
-    { url: `${BASE}/premium`,             lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${BASE}/advertise`,           lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 },
     ...blogPosts.map((p) => ({
       url: `${BASE}/blog/${p.slug}`,
@@ -42,6 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       db.listing.groupBy({
         by: ["stateSlug", "citySlug"],
         where: { isActive: true },
+        _max: { updatedAt: true },
       }),
       db.listing.findMany({
         where: { isActive: true },
@@ -51,7 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     cityPages = cityRows.map((r) => ({
       url: `${BASE}/${r.stateSlug}/${r.citySlug}`,
-      lastModified: now,
+      lastModified: r._max.updatedAt ?? now,
       changeFrequency: "weekly" as const,
       priority: 0.7,
     }));
