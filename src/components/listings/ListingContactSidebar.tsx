@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Phone, Globe, Mail, Star, Navigation } from "lucide-react";
+import { Phone, Globe, Mail, Star, Navigation, ShieldCheck } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { formatPhone } from "@/lib/utils";
 
@@ -82,28 +82,34 @@ export default function ListingContactSidebar({
         </a>
       </div>
 
-      {/* External reviews */}
+      {/* Trust / reputation check */}
       <div className="bg-white rounded-2xl border border-amber-100 shadow-sm p-6 space-y-3">
-        <h2 className="font-semibold text-stone-800">Reviews Elsewhere</h2>
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="h-5 w-5 text-forest-600 shrink-0" />
+          <h2 className="font-semibold text-stone-800">Check Their Reputation</h2>
+        </div>
+        <p className="text-xs text-stone-500 leading-relaxed">
+          Before you book, it&apos;s smart to read recent reviews and ratings from real
+          customers. See what pet owners are saying:
+        </p>
         <a
           href={googleReviewUrl}
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => track("google_reviews")}
-          className="flex items-center gap-3 w-full border border-stone-200 hover:border-brand-400 hover:shadow-sm text-stone-700 hover:text-brand-600 text-sm font-medium px-4 py-2.5 rounded-xl transition-all"
+          className="flex items-center justify-center gap-2 w-full bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
         >
-          <span className="text-base">🔍</span>
-          Read Google Reviews
+          <Star className="h-4 w-4 shrink-0" />
+          See Reviews &amp; Ratings on Google
         </a>
         <a
           href={yelpReviewUrl}
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => track("yelp_reviews")}
-          className="flex items-center gap-3 w-full border border-stone-200 hover:border-red-300 hover:shadow-sm text-stone-700 hover:text-red-600 text-sm font-medium px-4 py-2.5 rounded-xl transition-all"
+          className="flex items-center justify-center gap-2 w-full border border-stone-200 hover:border-red-300 hover:shadow-sm text-stone-600 hover:text-red-600 text-sm font-medium px-4 py-2 rounded-xl transition-all"
         >
-          <span className="text-base">⭐</span>
-          Read Yelp Reviews
+          Also check Yelp →
         </a>
       </div>
 
