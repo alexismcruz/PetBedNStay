@@ -7,6 +7,10 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/"],
     },
-    sitemap: "https://petbednstay.com/sitemap.xml",
+    sitemap: [
+      "https://petbednstay.com/sitemap.xml",
+      "https://petbednstay.com/sitemap-cities",
+      "https://petbednstay.com/sitemap-listings",
+    ],
   };
 }

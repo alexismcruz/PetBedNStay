@@ -13,6 +13,9 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import ReviewSection from "@/components/listings/ReviewSection";
 import ListingContactSidebar from "@/components/listings/ListingContactSidebar";
 import UnclaimedBanner from "@/components/listings/UnclaimedBanner";
+import AffiliateWidget from "@/components/listings/AffiliateWidget";
+import ShareButton from "@/components/listings/ShareButton";
+import ListingCard from "@/components/listings/ListingCard";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -83,6 +86,17 @@ export default async function ListingPage({
   const listing = await getListing(slug);
 
   if (!listing) notFound();
+
+  // Similar listings — same city, exclude self, up to 3
+  let similarListings: any[] = [];
+  try {
+    similarListings = await db.listing.findMany({
+      where: { isActive: true, citySlug: listing.citySlug, id: { not: listing.id } },
+      include: { images: true, amenities: true },
+      orderBy: [{ tier: "desc" }, { isVerified: "desc" }],
+      take: 3,
+    });
+  } catch { /* ignore */ }
 
   const primaryImage = listing.images.find((i: any) => i.isPrimary) ?? listing.images[0];
   const otherImages = listing.images.filter((i: any) => !i.isPrimary && i !== primaryImage);
@@ -186,6 +200,10 @@ export default async function ListingPage({
                 <span>{listing.address ? `${listing.address}, ` : ""}{listing.city}, {listing.state} {listing.zip ?? ""}</span>
               </div>
             </div>
+            <ShareButton
+              title={`${listing.name} — Pet Boarding in ${listing.city}, ${listing.state}`}
+              url={`https://petbednstay.com/listing/${listing.slug}`}
+            />
           </div>
 
           {/* Unclaimed notice — honest signal + owner lead-gen */}
@@ -293,8 +311,23 @@ export default async function ListingPage({
             yelpReviewUrl={yelpReviewUrl}
             tier={listing.tier}
           />
+          <AffiliateWidget />
         </div>
       </div>
+
+      {/* Similar listings */}
+      {similarListings.length > 0 && (
+        <div className="mt-12">
+          <h2 className="text-xl font-bold text-stone-800 mb-5">
+            More Pet Boarding in {listing.city}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {similarListings.map((s: any) => (
+              <ListingCard key={s.id} listing={s} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

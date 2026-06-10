@@ -1,15 +1,30 @@
-import { Resend } from "resend";
+// All transactional email goes through Brevo — same API key used everywhere else.
+// No separate Resend account needed.
 
-const FROM = "PetBedNStay <hello@petbednstay.com>";
+const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
+const SENDER = { name: "PetBedNStay", email: "hello@petbednstay.com" };
 const ADMIN_EMAIL = "hello@petbednstay.com";
 
-function getResend() {
-  const key = process.env.RESEND_API_KEY;
+async function sendBrevoEmail(payload: {
+  to: { email: string; name?: string }[];
+  subject: string;
+  htmlContent: string;
+  replyTo?: { email: string; name?: string };
+}) {
+  const key = process.env.BREVO_API_KEY;
   if (!key) {
-    console.warn("[email] RESEND_API_KEY not set — skipping email");
-    return null;
+    console.warn("[email] BREVO_API_KEY not set — skipping email");
+    return;
   }
-  return new Resend(key);
+  const res = await fetch(BREVO_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "api-key": key },
+    body: JSON.stringify({ sender: SENDER, ...payload }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("[email] Brevo error:", res.status, text);
+  }
 }
 
 export async function sendListingRequestNotification(data: {
@@ -23,15 +38,11 @@ export async function sendListingRequestNotification(data: {
   website?: string;
   message?: string;
 }) {
-  const resend = getResend();
-  if (!resend) return;
-
   // 1. Notify admin
-  await resend.emails.send({
-    from: FROM,
-    to: ADMIN_EMAIL,
+  await sendBrevoEmail({
+    to: [{ email: ADMIN_EMAIL, name: "Alexis" }],
     subject: `New Listing Request: ${data.businessName}`,
-    html: `
+    htmlContent: `
       <h2>New Listing Request</h2>
       <table cellpadding="6" style="font-family:sans-serif;font-size:14px;">
         <tr><td><strong>Business:</strong></td><td>${data.businessName}</td></tr>
@@ -44,14 +55,14 @@ export async function sendListingRequestNotification(data: {
         <tr><td><strong>Message:</strong></td><td>${data.message ?? "—"}</td></tr>
       </table>
     `,
+    replyTo: { email: data.email, name: data.ownerName },
   });
 
-  // 2. Confirmation to submitter
-  await resend.emails.send({
-    from: FROM,
-    to: data.email,
+  // 2. Auto-confirmation to the business owner
+  await sendBrevoEmail({
+    to: [{ email: data.email, name: data.ownerName }],
     subject: `We received your listing request — PetBedNStay`,
-    html: `
+    htmlContent: `
       <div style="font-family:sans-serif;max-width:520px;margin:0 auto;">
         <h2 style="color:#c96b2c;">Thanks, ${data.ownerName}! 🐾</h2>
         <p>We've received your listing request for <strong>${data.businessName}</strong> and will review it within <strong>1–2 business days</strong>.</p>
@@ -74,9 +85,6 @@ export async function sendSubscriptionAlert(data: {
   subscriberEmail?: string;
   subscriberName?: string;
 }) {
-  const resend = getResend();
-  if (!resend) return;
-
   const isNew = data.eventType === "activated";
   const subject = isNew
     ? `🎉 New ${data.tier} subscription — ${data.subscriberEmail ?? data.subscriptionId}`
@@ -90,11 +98,10 @@ export async function sendSubscriptionAlert(data: {
         <strong>Action needed:</strong> Find their listing and revert the tier back to <strong>FREE</strong>.
        </p>`;
 
-  await resend.emails.send({
-    from: FROM,
-    to: ADMIN_EMAIL,
+  await sendBrevoEmail({
+    to: [{ email: ADMIN_EMAIL, name: "Alexis" }],
     subject,
-    html: `
+    htmlContent: `
       <div style="font-family:sans-serif;max-width:520px;margin:0 auto;">
         <h2 style="color:#c96b2c;">PayPal Subscription ${data.eventType.charAt(0).toUpperCase() + data.eventType.slice(1)}</h2>
         <table cellpadding="6" style="font-size:14px;width:100%;">
@@ -125,16 +132,12 @@ export async function sendAdRequestNotification(data: {
   targetState?: string;
   message?: string;
 }) {
-  const resend = getResend();
-  if (!resend) return;
-
   const billingLabel = data.billing === "monthly" ? `$${data.price}/month (recurring)` : `$${data.price} one-time (30 days)`;
 
-  await resend.emails.send({
-    from: FROM,
-    to: ADMIN_EMAIL,
+  await sendBrevoEmail({
+    to: [{ email: ADMIN_EMAIL, name: "Alexis" }],
     subject: `New Ad Request: ${data.spotName} — ${data.businessName}`,
-    html: `
+    htmlContent: `
       <h2>New Ad Space Request</h2>
       <table cellpadding="6" style="font-family:sans-serif;font-size:14px;">
         <tr><td><strong>Ad Spot:</strong></td><td>${data.spotName}</td></tr>
@@ -148,13 +151,13 @@ export async function sendAdRequestNotification(data: {
         <tr><td><strong>Notes:</strong></td><td>${data.message || "—"}</td></tr>
       </table>
     `,
+    replyTo: { email: data.email, name: data.contactName },
   });
 
-  await resend.emails.send({
-    from: FROM,
-    to: data.email,
+  await sendBrevoEmail({
+    to: [{ email: data.email, name: data.contactName }],
     subject: `We received your ad request — PetBedNStay`,
-    html: `
+    htmlContent: `
       <div style="font-family:sans-serif;max-width:520px;margin:0 auto;">
         <h2 style="color:#c96b2c;">Thanks, ${data.contactName}!</h2>
         <p>We've received your request to advertise on <strong>${data.spotName}</strong> at <strong>${billingLabel}</strong>.</p>

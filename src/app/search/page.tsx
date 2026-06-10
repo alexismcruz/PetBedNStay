@@ -1,7 +1,9 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { haversineDistance, getBoundingBox, formatDistance } from "@/lib/geo";
+import { toSlug } from "@/lib/utils";
 import ListingCard from "@/components/listings/ListingCard";
 import SearchFilters from "@/components/search/SearchFilters";
 import MapWrapper from "@/components/map/MapWrapper";
@@ -93,6 +95,21 @@ export default async function SearchPage({
 }) {
   const params = await searchParams;
   const isNearMe = !!(params.lat && params.lng);
+
+  // ── Smart redirect: "Orlando" + state="florida" → /florida/orlando ──────────
+  // If the query looks like a city name (no special chars, short) and a state is
+  // selected, check whether that city exists in our DB and send them straight to
+  // the city page — much more useful than a generic search results page.
+  if (params.q && params.state && !params.lat) {
+    const citySlug = toSlug(params.q.trim());
+    try {
+      const cityExists = await db.listing.findFirst({
+        where: { isActive: true, stateSlug: params.state, citySlug },
+        select: { id: true },
+      });
+      if (cityExists) redirect(`/${params.state}/${citySlug}`);
+    } catch { /* ignore — fall through to normal search */ }
+  }
 
   let data = { listings: [] as any[], total: 0, page: 1, totalPages: 0 };
   try {

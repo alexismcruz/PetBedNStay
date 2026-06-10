@@ -1,29 +1,33 @@
-import Image from "next/image";
-
-const STORIES = [
+const REASONS = [
   {
-    photo: "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=600&q=80",
-    name: "Sarah & Biscuit",
-    location: "Austin, TX",
-    quote:
-      "Found the most amazing boarding facility 10 minutes from our home. Biscuit actually gets excited when we pull into the driveway now!",
-    petEmoji: "🐕",
+    emoji: "🔍",
+    title: "Free to Search",
+    body: "Browse hundreds of pet hotels, kennels, and sitters across all 50 states — no account or fees required.",
   },
   {
-    photo: "https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&w=600&q=80",
-    name: "Marcus & Noodle",
-    location: "Denver, CO",
-    quote:
-      "Traveled for two weeks without a worry in the world. The sitter sent daily updates and photos. Noodle was in great hands the whole time.",
-    petEmoji: "🐈",
+    emoji: "📞",
+    title: "Contact Directly",
+    body: "Every listing shows contact details so you can call, email, or visit the facility before you commit.",
   },
   {
-    photo: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80",
-    name: "The Rodriguezes & Luna",
-    location: "Miami, FL",
-    quote:
-      "As a family with three kids and a dog, we needed someone who could handle the energy. Luna came back tired and happy — perfect!",
-    petEmoji: "🐶",
+    emoji: "📍",
+    title: "Local & Nationwide",
+    body: "Whether you need boarding in your city or across the country, we have options in every state.",
+  },
+  {
+    emoji: "⭐",
+    title: "See Their Reputation",
+    body: "Every listing links to Google and Yelp reviews so you can read what real customers are saying before you book.",
+  },
+  {
+    emoji: "🏨",
+    title: "Hotels & Sitters",
+    body: "Find full-service pet hotels, home-based sitters, and everything in between — filtered to exactly what your pet needs.",
+  },
+  {
+    emoji: "🐾",
+    title: "Dogs & Cats Welcome",
+    body: "Our directory covers facilities that care for both dogs and cats, so the whole family is covered.",
   },
 ];
 
@@ -34,56 +38,25 @@ export default function HappyPawrents() {
         <div className="text-center mb-12">
           <span className="text-2xl">🐾</span>
           <h2 className="text-3xl sm:text-4xl font-bold text-stone-800 mt-2">
-            Real Stories from Real Pawrents
+            Why Pet Owners Use PetBedNStay
           </h2>
           <p className="mt-3 text-stone-500 text-lg max-w-xl mx-auto">
-            Thousands of pet owners across the US have found trusted care through PetBedNStay.
+            Finding safe, trusted care for your pet shouldn&apos;t be hard. Here&apos;s what makes us different.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {STORIES.map((story) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {REASONS.map((r) => (
             <div
-              key={story.name}
-              className="bg-white rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-md transition-shadow"
+              key={r.title}
+              className="bg-white rounded-2xl border border-amber-100 shadow-sm p-6 hover:shadow-md transition-shadow"
             >
-              {/* Photo */}
-              <div className="relative h-52 bg-stone-100">
-                <Image
-                  src={story.photo}
-                  alt={`${story.name} — happy pet owner`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
-                {/* Pet emoji badge */}
-                <div className="absolute top-3 right-3 bg-white rounded-full w-9 h-9 flex items-center justify-center shadow text-lg">
-                  {story.petEmoji}
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-5">
-                <p className="text-stone-600 text-sm leading-relaxed italic mb-4">
-                  &ldquo;{story.quote}&rdquo;
-                </p>
-                <div className="flex items-center gap-2 border-t border-stone-100 pt-3">
-                  <div>
-                    <p className="text-sm font-semibold text-stone-800">{story.name}</p>
-                    <p className="text-xs text-stone-400">{story.location}</p>
-                  </div>
-                  {/* Stars */}
-                  <div className="ml-auto flex gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i} className="text-brand-500 text-sm">★</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <div className="text-3xl mb-3">{r.emoji}</div>
+              <h3 className="font-semibold text-stone-800 mb-2">{r.title}</h3>
+              <p className="text-stone-500 text-sm leading-relaxed">{r.body}</p>
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );

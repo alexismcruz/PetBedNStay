@@ -2,6 +2,7 @@ import Hero from "@/components/home/Hero";
 import FeaturedListings from "@/components/home/FeaturedListings";
 import HowItWorks from "@/components/home/HowItWorks";
 import HappyPawrents from "@/components/home/HappyPawrents";
+import NewsletterSignup from "@/components/home/NewsletterSignup";
 import Stats from "@/components/home/Stats";
 import StateGrid from "@/components/home/StateGrid";
 import { db } from "@/lib/db";
@@ -61,6 +62,7 @@ export default async function HomePage() {
       <HowItWorks />
       <StateGrid />
       <HappyPawrents />
+      <NewsletterSignup />
       <FeaturedListings listings={featuredTyped} />
 
       {/* CTA Banner */}
