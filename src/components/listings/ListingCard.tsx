@@ -16,6 +16,11 @@ export default function ListingCard({ listing, distanceMiles, className }: Props
   const primaryImage = listing.images.find((i) => i.isPrimary) ?? listing.images[0];
   const photoUrl = primaryImage?.url ?? getPlaceholderPhoto(listing.id, listing.type);
 
+  const reviews = listing.reviews ?? [];
+  const avgRating = reviews.length > 0
+    ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+    : null;
+
   const hasPrice = listing.priceMin != null || listing.priceMax != null;
   const priceLabel = hasPrice
     ? listing.priceMin && listing.priceMax
@@ -94,6 +99,13 @@ export default function ListingCard({ listing, distanceMiles, className }: Props
             </span>
           )}
         </div>
+
+        {avgRating !== null && (
+          <div className="flex items-center gap-1">
+            <span className="text-amber-400 text-sm">{"★".repeat(Math.round(avgRating))}{"☆".repeat(5 - Math.round(avgRating))}</span>
+            <span className="text-xs text-stone-500">{avgRating.toFixed(1)} ({reviews.length})</span>
+          </div>
+        )}
 
         <p className="text-stone-500 text-sm line-clamp-2 leading-relaxed">
           {listing.description ?? generateListingDescription(listing)}

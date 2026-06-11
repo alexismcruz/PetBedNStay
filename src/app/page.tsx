@@ -13,7 +13,7 @@ async function getFeaturedListings() {
   try {
     return await db.listing.findMany({
       where: { isActive: true, tier: { in: ["FEATURED", "PREMIUM"] } },
-      include: { images: true, amenities: true },
+      include: { images: true, amenities: true, reviews: { where: { isApproved: true }, select: { rating: true } } },
       orderBy: [{ tier: "desc" }, { createdAt: "desc" }],
       take: 6,
     });
@@ -59,11 +59,11 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       <Hero />
       <Stats listingCount={counts.listings} stateCount={counts.states} cityCount={counts.cities} />
-      <HowItWorks />
-      <StateGrid />
-      <HappyPawrents />
-      <NewsletterSignup />
       <FeaturedListings listings={featuredTyped} />
+      <HowItWorks />
+      <HappyPawrents />
+      <StateGrid />
+      <NewsletterSignup />
 
       {/* CTA Banner */}
       <section className="bg-stone-900 py-14">

@@ -52,6 +52,7 @@ export interface Listing {
   images: ListingImage[];
   amenities: ListingAmenity[];
   hours?: ListingHour[];
+  reviews?: { rating: number }[];
 }
 
 export interface ListingRequest {

@@ -77,7 +77,7 @@ async function getListings(params: SearchParams) {
   const [listings, total] = await Promise.all([
     db.listing.findMany({
       where,
-      include: { images: true, amenities: true },
+      include: { images: true, amenities: true, reviews: { where: { isApproved: true }, select: { rating: true } } },
       orderBy: [{ tier: "desc" }, { isVerified: "desc" }, { createdAt: "desc" }],
       skip,
       take: PAGE_SIZE,

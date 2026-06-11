@@ -40,7 +40,7 @@ export async function generateMetadata({
 async function getCityData(stateSlug: string, citySlug: string) {
   return db.listing.findMany({
     where: { stateSlug, citySlug, isActive: true },
-    include: { images: true, amenities: true },
+    include: { images: true, amenities: true, reviews: { where: { isApproved: true }, select: { rating: true } } },
     orderBy: [{ tier: "desc" }, { isVerified: "desc" }],
   });
 }
