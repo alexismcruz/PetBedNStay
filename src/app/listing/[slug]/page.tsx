@@ -218,7 +218,7 @@ export default async function ListingPage({
                 src={photoUrl}
                 alt={listing.name}
                 fill
-                className="object-cover"
+                className={photoUrl.includes("logo") ? "object-contain p-6" : "object-cover"}
                 sizes="(max-width: 1024px) 100vw, 66vw"
                 priority
               />
