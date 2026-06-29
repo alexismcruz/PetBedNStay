@@ -51,7 +51,7 @@ export default function Hero({ listingCount = 800, stateCount = 49 }: Props) {
 
         {/* Search box */}
         <form onSubmit={handleSearch}
-          className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,.2)] p-2 flex flex-col sm:flex-row gap-2 max-w-[620px] mx-auto">
+          className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,.2)] p-2 flex flex-col sm:flex-row sm:items-stretch gap-2 max-w-[620px] mx-auto">
           <div className="flex flex-1 flex-col sm:flex-row">
             <input
               type="text"
@@ -70,7 +70,7 @@ export default function Hero({ listingCount = 800, stateCount = 49 }: Props) {
           </div>
           <button
             type="submit"
-            className="bg-o hover:bg-o-dark text-white font-bold text-[.95rem] px-6 py-3 rounded-[10px] flex items-center gap-2 shrink-0 transition-colors"
+            className="bg-o hover:bg-o-dark text-white font-bold text-[.95rem] px-6 py-3 rounded-xl flex items-center justify-center gap-2 shrink-0 transition-colors self-stretch min-h-[48px]"
           >
             <Search className="h-4 w-4" />
             Find Stays
