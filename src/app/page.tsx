@@ -2,10 +2,10 @@ import Hero from "@/components/home/Hero";
 import FeaturedListings from "@/components/home/FeaturedListings";
 import HowItWorks from "@/components/home/HowItWorks";
 import HappyPawrents from "@/components/home/HappyPawrents";
-import NewsletterSignup from "@/components/home/NewsletterSignup";
-import Stats from "@/components/home/Stats";
 import StateGrid from "@/components/home/StateGrid";
+import TrustBand from "@/components/home/TrustBand";
 import { db } from "@/lib/db";
+import Link from "next/link";
 
 export const revalidate = 3600;
 
@@ -24,22 +24,18 @@ async function getFeaturedListings() {
 
 async function getCounts() {
   try {
-    const [listings, states, cities] = await Promise.all([
+    const [listings, states] = await Promise.all([
       db.listing.count({ where: { isActive: true } }),
       db.listing.groupBy({ by: ["stateSlug"], where: { isActive: true } }),
-      db.listing.groupBy({ by: ["citySlug"],  where: { isActive: true } }),
     ]);
-    return { listings, states: states.length, cities: cities.length };
+    return { listings, states: states.length };
   } catch {
-    return { listings: 0, states: 0, cities: 0 };
+    return { listings: 800, states: 49 };
   }
 }
 
 export default async function HomePage() {
   const [featured, counts] = await Promise.all([getFeaturedListings(), getCounts()]);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const featuredTyped = featured as any[];
 
   const websiteJsonLd = {
     "@context": "https://schema.org",
@@ -57,40 +53,46 @@ export default async function HomePage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
-      <Hero />
-      <Stats listingCount={counts.listings} stateCount={counts.states} cityCount={counts.cities} />
-      <FeaturedListings listings={featuredTyped} />
-      <HowItWorks />
-      <HappyPawrents />
-      <StateGrid />
-      <NewsletterSignup />
 
-      {/* CTA Banner */}
-      <section className="bg-stone-900 py-14">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white mb-3">
-            Own a Pet Hotel or Boarding Facility?
-          </h2>
-          <p className="text-stone-400 mb-6 text-lg">
-            List your business for free and reach thousands of pet owners searching for boarding near them.
-            Upgrade to Featured or Premium for priority placement.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a
-              href="/list-your-business"
-              className="inline-block bg-brand-500 hover:bg-brand-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
-            >
-              List Your Business — Free
-            </a>
-            <a
-              href="/list-your-business#pricing"
-              className="inline-block bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3 rounded-xl transition-colors border border-white/20"
-            >
-              See Premium Plans
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* Hero with stats built-in */}
+      <Hero listingCount={counts.listings || 800} stateCount={counts.states || 49} />
+
+      {/* Wave divider */}
+      <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+        className="block -mt-px w-full" style={{ background: "#2D6A4F" }}>
+        <path d="M0 48 C360 0 1080 0 1440 48 L1440 48 L0 48Z" fill="#FAFAF5"/>
+      </svg>
+
+      {/* Browse by State */}
+      <StateGrid />
+
+      {/* Featured listings */}
+      <FeaturedListings listings={featured as any[]} />
+
+      {/* How it works */}
+      <HowItWorks />
+
+      {/* Trust band */}
+      <TrustBand />
+
+      {/* Testimonials */}
+      <HappyPawrents />
+
+      {/* Business CTA */}
+      <div className="py-[60px] px-6 text-center" style={{ background: "linear-gradient(135deg, #F4845F 0%, #F9A87A 100%)" }}>
+        <h2 className="font-[family-name:var(--font-nunito)] font-black text-white mb-3" style={{ fontSize: "clamp(1.6rem,3vw,2rem)" }}>
+          Own a Pet Boarding Business? 🏡
+        </h2>
+        <p className="text-white/88 text-[1rem] mb-7">
+          Join 800+ businesses already listed. It&apos;s free to get started — upgrade anytime for premium placement.
+        </p>
+        <Link
+          href="/list-your-business"
+          className="inline-block bg-white text-o-dark font-extrabold text-[.95rem] px-8 py-3.5 rounded-full shadow-[0_4px_20px_rgba(0,0,0,.15)] hover:shadow-[0_8px_28px_rgba(0,0,0,.2)] hover:-translate-y-0.5 transition-all"
+        >
+          List Your Business — It&apos;s Free →
+        </Link>
+      </div>
     </>
   );
 }

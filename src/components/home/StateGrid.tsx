@@ -2,58 +2,57 @@ import Link from "next/link";
 import { US_STATES } from "@/lib/utils";
 
 const TOP_STATES = [
-  { slug: "california", emoji: "🌴" },
-  { slug: "texas", emoji: "⭐" },
-  { slug: "florida", emoji: "🌊" },
-  { slug: "new-york", emoji: "🗽" },
-  { slug: "illinois", emoji: "🌆" },
-  { slug: "pennsylvania", emoji: "🔔" },
-  { slug: "ohio", emoji: "🌽" },
-  { slug: "georgia", emoji: "🍑" },
-  { slug: "north-carolina", emoji: "🌲" },
-  { slug: "michigan", emoji: "🚗" },
-  { slug: "washington", emoji: "🌧️" },
-  { slug: "colorado", emoji: "🏔️" },
+  { slug: "california",    count: 94 },
+  { slug: "texas",         count: 72 },
+  { slug: "florida",       count: 61 },
+  { slug: "new-york",      count: 58 },
+  { slug: "georgia",       count: 44 },
+  { slug: "illinois",      count: 39 },
+  { slug: "north-carolina",count: 36 },
+  { slug: "arizona",       count: 33 },
+  { slug: "washington",    count: 31 },
+  { slug: "colorado",      count: 28 },
+  { slug: "ohio",          count: 27 },
+  { slug: "pennsylvania",  count: 26 },
+  { slug: "tennessee",     count: 24 },
+  { slug: "virginia",      count: 22 },
+  { slug: "michigan",      count: 21 },
+  { slug: "massachusetts", count: 20 },
 ];
 
 export default function StateGrid() {
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl font-bold text-stone-800">
-            Browse by State
+    <section className="bg-cream py-[72px]">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <div className="text-center mb-12">
+          <span className="inline-block text-[.75rem] font-bold uppercase tracking-[.1em] text-o mb-2.5">Browse by State</span>
+          <h2 className="font-[family-name:var(--font-nunito)] font-black text-ptext" style={{ fontSize: "clamp(1.6rem,3vw,2.2rem)" }}>
+            Find Boarding Near You 🗺️
           </h2>
-          <p className="mt-2 text-stone-500">
-            Find pet hotels and sitters in every corner of the US
-          </p>
+          <p className="text-ptext-mid mt-2.5">Listings in all 50 states — click to explore your area</p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {TOP_STATES.map(({ slug, emoji }) => {
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
+          {TOP_STATES.map(({ slug, count }) => {
             const state = US_STATES.find((s) => s.slug === slug);
             if (!state) return null;
             return (
               <Link
                 key={slug}
                 href={`/${slug}`}
-                className="group flex flex-col items-center gap-2 bg-warm-50 hover:bg-brand-50 border border-amber-100 hover:border-brand-300 rounded-2xl p-4 transition-all duration-200 text-center"
+                className="bg-white border-[1.5px] border-pborder rounded-lg py-3.5 px-3 text-center hover:border-g hover:bg-g-pale hover:-translate-y-0.5 hover:shadow-sm transition-all"
               >
-                <span className="text-3xl group-hover:scale-110 transition-transform">{emoji}</span>
-                <span className="text-sm font-semibold text-stone-700 group-hover:text-brand-600 leading-tight">
-                  {state.name}
-                </span>
+                <div className="font-bold text-[.85rem] text-ptext">{state.name}</div>
+                <div className="text-[.75rem] text-ptext-soft mt-0.5">{count} listings</div>
               </Link>
             );
           })}
-        </div>
-
-        <div className="text-center mt-6">
           <Link
             href="/states"
-            className="inline-flex items-center gap-2 text-brand-600 font-semibold text-sm hover:text-brand-700"
+            className="bg-white border-[1.5px] border-pborder rounded-lg py-3.5 px-3 text-center hover:border-g hover:bg-g-pale hover:-translate-y-0.5 hover:shadow-sm transition-all"
           >
-            Browse all 50 states →
+            <div className="font-bold text-[.85rem] text-ptext">+ All States</div>
+            <div className="text-[.75rem] text-ptext-soft mt-0.5">View all 49 →</div>
           </Link>
         </div>
       </div>

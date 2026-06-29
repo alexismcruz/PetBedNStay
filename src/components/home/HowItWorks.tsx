@@ -1,47 +1,34 @@
-import { Search, Star, CalendarCheck } from "lucide-react";
-
 const steps = [
-  {
-    icon: Search,
-    title: "Search Your Area",
-    description: "Enter your city or state to browse verified pet hotels and sitters near you.",
-    color: "bg-brand-100 text-brand-600",
-  },
-  {
-    icon: Star,
-    title: "Compare Listings",
-    description: "View photos, check amenities, and compare options to find the perfect match.",
-    color: "bg-forest-100 text-forest-600",
-  },
-  {
-    icon: CalendarCheck,
-    title: "Contact & Book",
-    description: "Reach out directly to confirm availability and book your pet's stay.",
-    color: "bg-sky-100 text-sky-600",
-  },
+  { num: 1, icon: "🔍", title: "Search Your Area",     body: "Enter your city, zip code, or state. Filter by pet type — dogs, cats, exotics, or all furry friends." },
+  { num: 2, icon: "📋", title: "Compare Options",      body: "Browse kennels, hotels, and sitters side by side. Read real reviews from real pawrents like you." },
+  { num: 3, icon: "📞", title: "Contact Directly",     body: "Reach out straight to the business — no middleman, no extra fees. Book on your terms." },
+  { num: 4, icon: "✈️", title: "Travel Worry-Free",    body: "Your pet is in great hands. Enjoy your trip knowing they're happy, safe, and well cared for." },
 ];
 
 export default function HowItWorks() {
   return (
-    <section className="bg-white py-8 border-b border-amber-50">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-lg font-bold text-stone-700 text-center mb-5 uppercase tracking-widest text-sm">
-          How It Works
+    <section className="py-20 px-6 max-w-[1200px] mx-auto">
+      <div className="text-center mb-12">
+        <span className="inline-block text-[.75rem] font-bold uppercase tracking-[.1em] text-o mb-2.5">Super Simple</span>
+        <h2 className="font-[family-name:var(--font-nunito)] font-black text-ptext" style={{ fontSize: "clamp(1.6rem,3vw,2.2rem)" }}>
+          Finding a Stay Takes 3 Steps 🐾
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {steps.map((step, i) => (
-            <div key={i} className="flex items-start gap-3 bg-warm-50 rounded-xl p-4">
-              <div className={`rounded-xl p-2.5 shrink-0 ${step.color}`}>
-                <step.icon className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-stone-400 mb-0.5">Step {i + 1}</p>
-                <h3 className="text-sm font-semibold text-stone-800">{step.title}</h3>
-                <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">{step.description}</p>
-              </div>
+        <p className="text-ptext-mid mt-2.5">No accounts needed. No booking fees. Just find and contact directly.</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {steps.map((s) => (
+          <div key={s.num} className="relative bg-white border-[1.5px] border-pborder rounded-[14px] p-8 text-center">
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-g text-white flex items-center justify-center font-[family-name:var(--font-nunito)] font-black text-[.9rem]">
+              {s.num}
             </div>
-          ))}
-        </div>
+            <div className="w-[72px] h-[72px] rounded-[18px] bg-g-pale flex items-center justify-center text-[2rem] mx-auto mb-4 mt-2">
+              {s.icon}
+            </div>
+            <h3 className="font-[family-name:var(--font-nunito)] font-extrabold text-[1.05rem] text-ptext mb-2.5">{s.title}</h3>
+            <p className="text-[.88rem] text-ptext-mid leading-[1.7]">{s.body}</p>
+          </div>
+        ))}
       </div>
     </section>
   );

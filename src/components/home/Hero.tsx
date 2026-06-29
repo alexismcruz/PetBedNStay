@@ -2,117 +2,94 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, MapPin } from "lucide-react";
-import Image from "next/image";
+import { Search } from "lucide-react";
 import { US_STATES } from "@/lib/utils";
 
-export default function Hero() {
+interface Props {
+  listingCount?: number;
+  stateCount?:   number;
+}
+
+export default function Hero({ listingCount = 800, stateCount = 49 }: Props) {
   const router = useRouter();
-  const [query, setQuery] = useState("");
-  const [state, setState] = useState("");
+  const [petType, setPetType] = useState("");
+  const [location, setLocation] = useState("");
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (query.trim()) params.set("q", query.trim());
-    if (state) params.set("state", state);
+    if (location.trim()) params.set("q", location.trim());
     router.push(`/search?${params.toString()}`);
   }
 
   return (
-    <section className="relative min-h-[580px] flex items-center text-white overflow-hidden">
-      {/* Background photo */}
-      <Image
-        src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1600&q=80"
-        alt="Happy dog owner with their pet"
-        fill
-        className="object-cover object-center"
-        priority
+    <section
+      className="relative text-white text-center overflow-hidden py-20 px-6 pb-[100px]"
+      style={{ background: "linear-gradient(145deg, #1B4D35 0%, #2D6A4F 60%, #3A8C6A 100%)" }}
+    >
+      {/* Subtle dot pattern */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px)", backgroundSize: "60px 60px" }}
       />
 
-      {/* Warm dark overlay — keeps text readable, tones down photo */}
-      <div className="absolute inset-0 bg-gradient-to-br from-stone-900/80 via-brand-900/70 to-stone-900/75" />
-
-      {/* Subtle warm vignette at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-stone-900/60 to-transparent" />
-
-      <div className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center">
-        <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 text-white/90 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
-          <span>🐾</span>
-          <span>Trusted pet boarding directory across all 50 states</span>
+      <div className="relative max-w-2xl mx-auto">
+        {/* Tag */}
+        <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 text-white text-[.82rem] font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-[.04em]">
+          <span className="w-2 h-2 rounded-full bg-y inline-block" />
+          {listingCount}+ Listings Across {stateCount} States
         </div>
 
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 tracking-tight drop-shadow-md">
-          Find the Perfect
-          <span className="block text-brand-300">Bed &amp; Stay for Your Pet</span>
+        <h1 className="font-[family-name:var(--font-nunito)] font-black text-white leading-[1.15] mb-4"
+            style={{ fontSize: "clamp(2.2rem, 5vw, 3.6rem)" }}>
+          Find the Perfect Stay<br/>for Your <em className="not-italic text-y">Furry Family</em>
         </h1>
 
-        <p className="text-lg sm:text-xl text-white/80 mb-10 max-w-2xl mx-auto drop-shadow-sm">
-          Discover top-rated pet hotels and trusted sitters near you. Your furry
-          family member deserves the very best while you&apos;re away.
+        <p className="text-white/82 text-[1.1rem] max-w-[540px] mx-auto mb-9">
+          The easiest way to discover trusted pet hotels, kennels, and sitters — wherever you are in the US.
         </p>
 
-        {/* Search form */}
-        <form
-          onSubmit={handleSearch}
-          className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-3 flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto"
-        >
-          <div className="flex-1 flex items-center gap-2 px-3">
-            <Search className="h-5 w-5 text-stone-400 shrink-0" />
+        {/* Search box */}
+        <form onSubmit={handleSearch}
+          className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,.2)] p-2 flex flex-col sm:flex-row gap-2 max-w-[620px] mx-auto">
+          <div className="flex flex-1 flex-col sm:flex-row">
             <input
               type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by name, city, or zip…"
-              className="w-full text-stone-800 placeholder-stone-400 text-sm focus:outline-none bg-transparent"
+              value={petType}
+              onChange={(e) => setPetType(e.target.value)}
+              placeholder="🐾  Dog, cat, rabbit…"
+              className="flex-1 px-4 py-2.5 text-ptext text-[.95rem] placeholder:text-ptext-soft border-none outline-none bg-transparent sm:border-r sm:border-pborder rounded-lg sm:rounded-none sm:rounded-l-lg font-[family-name:var(--font-inter)]"
+            />
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="📍  City or state"
+              className="flex-1 px-4 py-2.5 text-ptext text-[.95rem] placeholder:text-ptext-soft border-t sm:border-t-0 border-pborder outline-none bg-transparent rounded-lg sm:rounded-none sm:rounded-r-lg font-[family-name:var(--font-inter)]"
             />
           </div>
-
-          <div className="sm:w-48 flex items-center gap-2 px-3 sm:border-l border-stone-100">
-            <MapPin className="h-5 w-5 text-stone-400 shrink-0" />
-            <select
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-              className="w-full text-stone-700 text-sm bg-transparent focus:outline-none cursor-pointer"
-            >
-              <option value="">All States</option>
-              {US_STATES.map((s) => (
-                <option key={s.slug} value={s.slug}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
           <button
             type="submit"
-            className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm shrink-0 shadow-sm"
+            className="bg-o hover:bg-o-dark text-white font-bold text-[.95rem] px-6 py-3 rounded-[10px] flex items-center gap-2 shrink-0 transition-colors"
           >
-            Search
+            <Search className="h-4 w-4" />
+            Find Stays
           </button>
         </form>
 
-        {/* Quick state links */}
-        <div className="flex flex-wrap justify-center gap-2 mt-6">
-          {["california", "texas", "florida", "new-york", "illinois"].map((slug) => {
-            const s = US_STATES.find((st) => st.slug === slug);
-            if (!s) return null;
-            return (
-              <a
-                key={slug}
-                href={`/${slug}`}
-                className="text-xs bg-white/15 hover:bg-white/25 border border-white/20 text-white px-3 py-1 rounded-full transition-colors"
-              >
-                {s.name}
-              </a>
-            );
-          })}
-          <a
-            href="/search"
-            className="text-xs bg-white/15 hover:bg-white/25 border border-white/20 text-white px-3 py-1 rounded-full transition-colors"
-          >
-            View all states →
-          </a>
+        {/* Hero stats */}
+        <div className="flex justify-center gap-10 mt-11 flex-wrap">
+          {[
+            { value: `${listingCount}+`, label: "Verified Listings" },
+            { value: String(stateCount), label: "States Covered" },
+            { value: "3 Types",          label: "Hotels · Kennels · Sitters" },
+            { value: "Free",             label: "To Search & Browse" },
+          ].map((s) => (
+            <div key={s.label} className="text-center">
+              <strong className="block font-[family-name:var(--font-nunito)] font-black text-[1.8rem] text-white">{s.value}</strong>
+              <span className="text-[.82rem] text-white/70 font-medium">{s.label}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>

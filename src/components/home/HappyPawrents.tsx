@@ -1,59 +1,52 @@
-const REASONS = [
+const REVIEWS = [
   {
-    emoji: "🔍",
-    title: "Free to Search",
-    body: "Browse hundreds of pet hotels, kennels, and sitters across all 50 states — no account or fees required.",
+    stars: 5,
+    text: '"Found an amazing kennel in 10 minutes for our rescue pup. The reviews were so helpful — we knew exactly what to expect. Mochi had the best week of his life!"',
+    avatar: "🐕",
+    name: "Sarah M.",
+    sub: "Dog mom · Austin, TX",
   },
   {
-    emoji: "📞",
-    title: "Contact Directly",
-    body: "Every listing shows contact details so you can call, email, or visit the facility before you commit.",
+    stars: 5,
+    text: '"I was so stressed about leaving my two cats. PetBedNStay helped me find a cat-only boarding place nearby. Zero anxiety on my vacation — highly recommend!"',
+    avatar: "😻",
+    name: "James & Priya K.",
+    sub: "Cat parents · Portland, OR",
   },
   {
-    emoji: "📍",
-    title: "Local & Nationwide",
-    body: "Whether you need boarding in your city or across the country, we have options in every state.",
-  },
-  {
-    emoji: "⭐",
-    title: "See Their Reputation",
-    body: "Every listing links to Google and Yelp reviews so you can read what real customers are saying before you book.",
-  },
-  {
-    emoji: "🏨",
-    title: "Hotels & Sitters",
-    body: "Find full-service pet hotels, home-based sitters, and everything in between — filtered to exactly what your pet needs.",
-  },
-  {
-    emoji: "🐾",
-    title: "Dogs & Cats Welcome",
-    body: "Our directory covers facilities that care for both dogs and cats, so the whole family is covered.",
+    stars: 5,
+    text: '"I travel for work every month. This site has saved me so much time — I find a great boarding spot in any city in minutes. It\'s my go-to resource now."',
+    avatar: "✈️",
+    name: "Marcus T.",
+    sub: "Frequent traveler · Chicago, IL",
   },
 ];
 
 export default function HappyPawrents() {
   return (
-    <section className="bg-warm-50 py-16 sm:py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-cream py-20 px-6">
+      <div className="max-w-[1200px] mx-auto">
         <div className="text-center mb-12">
-          <span className="text-2xl">🐾</span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-stone-800 mt-2">
-            Why Pet Owners Use PetBedNStay
+          <span className="inline-block text-[.75rem] font-bold uppercase tracking-[.1em] text-o mb-2.5">Pawrent Reviews</span>
+          <h2 className="font-[family-name:var(--font-nunito)] font-black text-ptext" style={{ fontSize: "clamp(1.6rem,3vw,2.2rem)" }}>
+            From Pet Parents Who&apos;ve Been There 🐾
           </h2>
-          <p className="mt-3 text-stone-500 text-lg max-w-xl mx-auto">
-            Finding safe, trusted care for your pet shouldn&apos;t be hard. Here&apos;s what makes us different.
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {REASONS.map((r) => (
-            <div
-              key={r.title}
-              className="bg-white rounded-2xl border border-amber-100 shadow-sm p-6 hover:shadow-md transition-shadow"
-            >
-              <div className="text-3xl mb-3">{r.emoji}</div>
-              <h3 className="font-semibold text-stone-800 mb-2">{r.title}</h3>
-              <p className="text-stone-500 text-sm leading-relaxed">{r.body}</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {REVIEWS.map((r) => (
+            <div key={r.name} className="bg-white border-[1.5px] border-pborder rounded-[14px] p-7">
+              <div className="text-y text-[1rem] mb-3.5">{"★".repeat(r.stars)}</div>
+              <p className="text-[.92rem] text-ptext italic leading-[1.7] mb-4">{r.text}</p>
+              <div className="flex items-center gap-3">
+                <div className="w-[42px] h-[42px] rounded-full bg-g-pale flex items-center justify-center text-[1.3rem] shrink-0">
+                  {r.avatar}
+                </div>
+                <div>
+                  <div className="font-bold text-[.88rem] text-ptext">{r.name}</div>
+                  <div className="text-[.78rem] text-ptext-soft">{r.sub}</div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
